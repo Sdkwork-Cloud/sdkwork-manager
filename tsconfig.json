@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "apps/sdkwork-manager-common/packages/**/*.ts",
+    "apps/sdkwork-manager-pc/**/*.ts",
+    "apps/sdkwork-manager-pc/**/*.tsx",
+    "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/**/*.ts",
+    "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/**/*.ts"
+  ]
+}

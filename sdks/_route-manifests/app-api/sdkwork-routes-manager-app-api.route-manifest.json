@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.route.manifest",
+  "packageName": "sdkwork-routes-manager-app-api",
+  "surface": "app-api",
+  "owner": "sdkwork-manager",
+  "domain": "platform",
+  "capability": "manager",
+  "apiAuthority": "sdkwork-manager-app-api",
+  "sdkFamily": "sdkwork-manager-app-sdk",
+  "prefix": "/app/v3/api",
+  "source": {
+    "crateRoot": "crates/sdkwork-routes-manager-app-api/src",
+    "crateImport": "sdkwork_routes_manager_app_api"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/app/v3/api/manager/preferences",
+      "operationId": "manager.preferences.retrieve",
+      "tags": ["manager"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "app-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "retrieve_preferences" },
+      "schemas": { "request": null, "response": "SdkWorkResourceResponse", "problem": "ProblemDetail" },
+      "ownership": { "owner": "sdkwork-manager", "apiAuthority": "sdkwork-manager-app-api" },
+      "source": {
+        "packageName": "sdkwork-routes-manager-app-api",
+        "file": "crates/sdkwork-routes-manager-app-api/src/http_route_manifest.rs"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/app/v3/api/manager/preferences",
+      "operationId": "manager.preferences.update",
+      "tags": ["manager"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "app-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "update_preferences" },
+      "schemas": {
+        "request": "UpdateManagerPreferencesRequest",
+        "response": "SdkWorkResourceResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-manager", "apiAuthority": "sdkwork-manager-app-api" },
+      "source": {
+        "packageName": "sdkwork-routes-manager-app-api",
+        "file": "crates/sdkwork-routes-manager-app-api/src/http_route_manifest.rs"
+      }
+    }
+  ]
+}

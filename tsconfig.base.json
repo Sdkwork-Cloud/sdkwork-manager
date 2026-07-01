@@ -1,0 +1,72 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@sdkwork/utils": [
+        "../sdkwork-utils/packages/sdkwork-utils-typescript/src/index.ts"
+      ],
+      "@sdkwork/iam-app-sdk": [
+        "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/generated/server-openapi/src/index.ts"
+      ],
+      "@sdkwork/iam-backend-sdk": [
+        "../sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/generated/server-openapi/src/index.ts"
+      ],
+      "@sdkwork/auth-pc-react": [
+        "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src/index.ts"
+      ],
+      "@sdkwork/auth-runtime-pc-react": [
+        "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-runtime-pc-react/src/index.ts"
+      ],
+      "@sdkwork/iam-contracts": [
+        "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-contracts/src/index.ts"
+      ],
+      "@sdkwork/iam-credential-entry": [
+        "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/index.ts"
+      ],
+      "@sdkwork/sdk-common": [
+        "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts"
+      ],
+      "@sdkwork/manager-client-core": [
+        "apps/sdkwork-manager-common/packages/sdkwork-manager-client-core/src/index.ts"
+      ],
+      "@sdkwork/manager-contracts": [
+        "apps/sdkwork-manager-common/packages/sdkwork-manager-contracts/src/index.ts"
+      ],
+      "@sdkwork/manager-service": [
+        "apps/sdkwork-manager-common/packages/sdkwork-manager-service/src/index.ts"
+      ],
+      "@sdkwork/manager-pc-core": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/src/index.ts"
+      ],
+      "@sdkwork/manager-pc-shell": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx"
+      ],
+      "sdkwork-manager-app-sdk-generated-typescript": [
+        "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/generated/server-openapi/src/index.ts"
+      ],
+      "sdkwork-manager-backend-sdk-generated-typescript": [
+        "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/generated/server-openapi/src/index.ts"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": [
+      "node"
+    ],
+    "ignoreDeprecations": "6.0"
+  }
+}

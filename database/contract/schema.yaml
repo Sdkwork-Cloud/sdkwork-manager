@@ -1,0 +1,13 @@
+schema_version: 1
+kind: sdkwork.database.schema
+module_id: manager
+contract_version: 1.0.0
+owner_team: manager-platform
+compliance_level: L2
+engines:
+  - postgres
+table_prefix: platform_
+tables:
+  - name: platform_manager_preference
+    lifecycle_status: active
+    owner: manager-platform

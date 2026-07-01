@@ -1,0 +1,32 @@
+{
+  "name": "@sdkwork/manager-pc-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5190",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "pnpm --dir ../.. run test:vitest",
+    "lint": "pnpm run typecheck"
+  },
+  "dependencies": {
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/manager-pc-shell": "workspace:*",
+    "@sdkwork/manager-service": "workspace:*",
+    "@sdkwork/sdk-common": "workspace:*",
+    "@sdkwork/utils": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "catalog:",
+    "tailwindcss": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

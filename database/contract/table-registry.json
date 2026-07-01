@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.database.table-registry",
+  "tables": [
+    {
+      "name": "platform_manager_preference",
+      "prefix": "platform_",
+      "domain": "manager"
+    }
+  ]
+}

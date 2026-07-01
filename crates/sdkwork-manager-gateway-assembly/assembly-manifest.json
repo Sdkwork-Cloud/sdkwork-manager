@@ -1,0 +1,30 @@
+{
+  "kind": "sdkwork.gateway.assembly",
+  "schemaVersion": 1,
+  "applicationCode": "manager",
+  "packageName": "sdkwork-manager-gateway-assembly",
+  "crateDir": "crates/sdkwork-manager-gateway-assembly",
+  "generatedAt": "2026-06-25T13:08:05.592Z",
+  "routeCrates": [
+    {
+      "packageName": "sdkwork-routes-manager-app-api",
+      "memberDir": "crates/sdkwork-routes-manager-app-api",
+      "libName": "sdkwork_routes_manager_app_api",
+      "surface": "app-api",
+      "pathPrefix": null,
+      "mountOrder": 0,
+      "hasGatewayMount": true,
+      "hasGatewayRouteManifest": true
+    },
+    {
+      "packageName": "sdkwork-routes-manager-backend-api",
+      "memberDir": "crates/sdkwork-routes-manager-backend-api",
+      "libName": "sdkwork_routes_manager_backend_api",
+      "surface": "backend-api",
+      "pathPrefix": null,
+      "mountOrder": 1,
+      "hasGatewayMount": true,
+      "hasGatewayRouteManifest": true
+    }
+  ]
+}

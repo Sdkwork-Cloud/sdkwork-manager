@@ -1,0 +1,22 @@
+[package]
+name = "sdkwork-routes-manager-app-api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+axum = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sdkwork_platform_manager_service.workspace = true
+sdkwork_manager_service_host.workspace = true
+sdkwork_routes_manager_common.workspace = true
+sdkwork-web-core.workspace = true
+sdkwork-web-axum.workspace = true
+sdkwork-web-bootstrap.workspace = true
+sdkwork-iam-web-adapter.workspace = true
+uuid = { workspace = true }

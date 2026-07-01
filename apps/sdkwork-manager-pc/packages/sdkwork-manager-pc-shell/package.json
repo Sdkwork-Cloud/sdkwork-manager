@@ -1,0 +1,20 @@
+{
+  "name": "@sdkwork/manager-pc-shell",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "dependencies": {
+    "@sdkwork/auth-pc-react": "workspace:*",
+    "@sdkwork/manager-client-core": "workspace:*",
+    "@sdkwork/manager-contracts": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/utils": "workspace:*",
+    "react": "catalog:",
+    "react-router-dom": "catalog:",
+    "sdkwork-manager-backend-sdk-generated-typescript": "workspace:*",
+    "sdkwork-manager-app-sdk-generated-typescript": "workspace:*"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "workspace": "sdkwork-manager-app-sdk",
+  "sdkOwner": "sdkwork-manager",
+  "apiAuthority": "sdkwork-manager-app-api",
+  "sourceAuthoritySpec": "../../apis/app-api/manager/manager-app-api.openapi.json",
+  "authoritySpec": "openapi/sdkwork-manager-app-api.openapi.json",
+  "generationInputSpec": "openapi/sdkwork-manager-app-api.sdkgen.json",
+  "derivedSpecs": {
+    "default": "openapi/sdkwork-manager-app-api.sdkgen.json"
+  },
+  "discoverySurface": {
+    "sdkTarget": "app",
+    "apiPrefix": "/app/v3/api",
+    "generatedProtocols": [
+      "http-openapi"
+    ],
+    "manualTransports": []
+  },
+  "languages": [
+    {
+      "language": "typescript",
+      "workspace": "sdkwork-manager-app-sdk-typescript",
+      "generationState": "declared",
+      "releaseState": "not_published",
+      "generatedPath": "sdkwork-manager-app-sdk-typescript/generated/server-openapi",
+      "name": "@sdkwork/sdkwork-manager-app-sdk",
+      "version": "0.1.0"
+    }
+  ],
+  "sdkDependencies": []
+}

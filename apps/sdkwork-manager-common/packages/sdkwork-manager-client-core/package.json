@@ -1,0 +1,15 @@
+{
+  "name": "@sdkwork/manager-client-core",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@sdkwork/manager-contracts": "workspace:*",
+    "@sdkwork/utils": "workspace:*",
+    "sdkwork-manager-backend-sdk-generated-typescript": "workspace:*",
+    "sdkwork-manager-app-sdk-generated-typescript": "workspace:*"
+  }
+}
