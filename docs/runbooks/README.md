@@ -1,5 +1,9 @@
-# runbooks
+# Runbooks
 
-See `DOCUMENTATION_SPEC.md` section 2.
+Operational guides for SDKWork Manager.
 
-See `DOCUMENTATION_SPEC.md` section 2.
+| Runbook | Purpose |
+| --- | --- |
+| [LAUNCH_READINESS.md](LAUNCH_READINESS.md) | Pre-launch verification, IAM bootstrap, and cloud packaging |
+
+Standards: `sdkwork-specs/DOCUMENTATION_SPEC.md`

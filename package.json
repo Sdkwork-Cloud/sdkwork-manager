@@ -12,7 +12,7 @@
     "test:node": "node --test tests/static/*.test.mjs tests/contract/*.test.mjs",
     "test:vitest": "vitest run --config vitest.config.ts --configLoader native --pool vmThreads",
     "check": "pnpm run check:app-composition && pnpm api:envelope:check && pnpm api:check && pnpm route-manifest:check && pnpm sdk:check && pnpm db:validate && pnpm typecheck",
-    "verify": "pnpm check && pnpm deploy:validate && pnpm topology:validate && pnpm fmt:rust:check && cargo clippy --workspace --tests -- -D warnings && cargo test --workspace",
+    "verify": "pnpm check && pnpm deploy:validate && pnpm topology:validate && pnpm build && pnpm gateway:validate:cloud && pnpm fmt:rust:check && cargo clippy --workspace --tests -- -D warnings && cargo test --workspace",
     "clean": "node -e \"console.log('Remove target/, node_modules/, dist/ manually or via CI cache reset')\"",
     "typecheck": "tsc --noEmit",
     "fmt:rust": "cargo fmt -p sdkwork-manager-gateway-assembly -p sdkwork-routes-manager-common -p sdkwork-platform-manager-service -p sdkwork-platform-manager-repository-sqlx -p sdkwork-routes-manager-app-api -p sdkwork-routes-manager-backend-api -p sdkwork-manager-database-host -p sdkwork-manager-service-host -p sdkwork-manager-standalone-gateway",

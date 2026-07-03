@@ -50,7 +50,9 @@ Specs: `sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md`, `WEB_FRAMEWORK_SPEC.md`, `DA
 
 ```bash
 pnpm verify
+pnpm build
 pnpm deploy:validate
 pnpm topology:validate
+pnpm gateway:validate:cloud
 node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace ..
 ```

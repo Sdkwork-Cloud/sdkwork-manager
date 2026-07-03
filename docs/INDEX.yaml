@@ -4,5 +4,8 @@ repository: manager
 canon:
   prd: docs/product/prd/PRD.md
   techArchitecture: docs/architecture/tech/TECH_ARCHITECTURE.md
-entries: []
+  launchReadiness: docs/runbooks/LAUNCH_READINESS.md
+entries:
+  - id: developer-guide
+    path: docs/guides/developer/README.md
 domains: []

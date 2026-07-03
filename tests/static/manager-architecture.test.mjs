@@ -32,3 +32,26 @@ test("package scripts follow PNPM_SCRIPT_SPEC minimum surface", () => {
     assert.ok(pkg.scripts[script], `missing script: ${script}`);
   }
 });
+
+test("vite production aliases include sdk-common for generated SDK bundles", () => {
+  const viteConfig = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/vite.config.ts"),
+    "utf8",
+  );
+  assert.match(viteConfig, /@sdkwork\/sdk-common/);
+  assert.match(viteConfig, /sdkwork-manager-app-sdk-generated-typescript/);
+});
+
+test("verify pipeline includes production build and gateway validation", () => {
+  const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
+  assert.match(pkg.scripts.verify, /pnpm build/);
+  assert.match(pkg.scripts.verify, /gateway:validate:cloud/);
+});
+
+test("launch readiness runbook documents IAM bootstrap via sdkwork-iam", () => {
+  const runbook = readFileSync(path.join(root, "docs/runbooks/LAUNCH_READINESS.md"), "utf8");
+  const docsIndex = readFileSync(path.join(root, "docs/INDEX.yaml"), "utf8");
+  assert.match(runbook, /--appbase-root sdkwork-iam/);
+  assert.match(runbook, /bootstrap-all-apps\.mjs --filter sdkwork-manager/);
+  assert.match(docsIndex, /launchReadiness: docs\/runbooks\/LAUNCH_READINESS\.md/);
+});

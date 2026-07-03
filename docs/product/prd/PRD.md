@@ -37,13 +37,12 @@ Non-goals (current release):
 ## 5. User Scenarios
 
 1. Operator signs in through IAM `/auth/login`
-2. Operator signs in through IAM `/auth/login`
-3. Shell loads and edits preferences via `sdkwork-manager-app-sdk` (`retrieve` / `update`)
-4. Backend admin lists tenant preferences via `sdkwork-manager-backend-sdk`
+2. Shell loads and edits preferences via `sdkwork-manager-app-sdk` (`retrieve` / `update`)
+3. Backend admin lists tenant preferences via `sdkwork-manager-backend-sdk`
 
 ## 6. Success Metrics
 
-- `pnpm verify` and `pnpm test` pass in CI
+- `pnpm verify` and `pnpm test` pass in CI (verify includes production PC build)
 - IAM session propagates to SDK clients through `TokenManager`
 - No legacy portal naming or non-standard API envelopes
 

@@ -59,6 +59,7 @@ Read `sdkwork.app.config.json` and `apps/sdkwork-manager-pc/sdkwork.app.config.j
 
 ```bash
 pnpm verify
+pnpm build
 pnpm db:validate
 node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace ..
 ```
@@ -68,6 +69,7 @@ node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace ..
 - [docs/README.md](docs/README.md)
 - [docs/product/prd/PRD.md](docs/product/prd/PRD.md)
 - [docs/architecture/tech/TECH_ARCHITECTURE.md](docs/architecture/tech/TECH_ARCHITECTURE.md)
+- [docs/runbooks/LAUNCH_READINESS.md](docs/runbooks/LAUNCH_READINESS.md)
 
 ## HTTP API Response Envelope
 
