@@ -39,7 +39,7 @@ pnpm db:migrate
 pnpm db:status
 ```
 
-## 4. IAM PlusApp bootstrap
+## 4. IAM app bootstrap
 
 Manifests are bootstrap-ready (`audit-app-manifest-bootstrap` reports 2 ready, 0 blocked).
 

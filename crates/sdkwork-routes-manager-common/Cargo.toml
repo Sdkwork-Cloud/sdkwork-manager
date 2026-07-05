@@ -9,7 +9,7 @@ publish.workspace = true
 axum = { workspace = true }
 serde = { workspace = true }
 uuid = { workspace = true }
-sdkwork-utils-rust = { path = "../../../sdkwork-utils/packages/sdkwork-utils-rust" }
+sdkwork-utils-rust = { workspace = true }
 sdkwork-web-core.workspace = true
 
 [dev-dependencies]

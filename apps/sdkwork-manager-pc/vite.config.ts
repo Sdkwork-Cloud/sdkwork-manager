@@ -33,10 +33,10 @@ export default defineConfig(({ mode }) => {
           "sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts",
         ),
         "@sdkwork/iam-app-sdk": workspacePath(
-          "sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/generated/server-openapi/src/index.ts",
+          "sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/src/index.ts",
         ),
         "@sdkwork/iam-backend-sdk": workspacePath(
-          "sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/generated/server-openapi/src/index.ts",
+          "sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/src/index.ts",
         ),
         "@sdkwork/auth-pc-react": workspacePath(
           "sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src/index.ts",
@@ -65,11 +65,11 @@ export default defineConfig(({ mode }) => {
         "@sdkwork/manager-pc-shell": repoPath(
           "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx",
         ),
-        "sdkwork-manager-app-sdk-generated-typescript": repoPath(
-          "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/generated/server-openapi/src/index.ts",
+        "@sdkwork/manager-app-sdk": repoPath(
+          "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/src/index.ts",
         ),
-        "sdkwork-manager-backend-sdk-generated-typescript": repoPath(
-          "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/generated/server-openapi/src/index.ts",
+        "@sdkwork/manager-backend-sdk": repoPath(
+          "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/src/index.ts",
         ),
       },
     },

@@ -28,7 +28,7 @@ pnpm --dir apps/sdkwork-manager-pc dev
 | `sdkwork-drive` | not required yet | Integrate before adding file upload features |
 | `sdkwork-discovery` | deferred | No RPC services yet |
 | IAM login | integrated | PC shell uses `@sdkwork/auth-pc-react` + `auth-runtime-pc-react` |
-| IAM PlusApp bootstrap | manifest-ready | `node bin/bootstrap-all-apps.mjs --filter sdkwork-manager --appbase-root sdkwork-iam --profile dev` |
+| IAM app bootstrap | manifest-ready | `node bin/bootstrap-all-apps.mjs --filter sdkwork-manager --appbase-root sdkwork-iam --profile dev` |
 
 ## Operator surfaces
 

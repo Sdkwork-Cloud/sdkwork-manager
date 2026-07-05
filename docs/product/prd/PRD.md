@@ -53,7 +53,7 @@ Non-goals (current release):
 | M0 | Repository scaffold + verify pipeline |
 | M1 | IAM login, SDK client wiring, tenant preference admin panel (current) |
 | M2 | Extended admin modules + drive-backed uploads |
-| M3 | Production packaging and IAM PlusApp bootstrap execution |
+| M3 | Production packaging and IAM app bootstrap execution |
 
 ## 8. Linked Requirements
 

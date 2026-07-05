@@ -1,6 +1,6 @@
 import type { ManagerPreferences, UpdateManagerPreferencesInput } from "@sdkwork/manager-contracts";
 import { isBlank } from "@sdkwork/utils";
-import type { SdkworkAppClient } from "sdkwork-manager-app-sdk-generated-typescript";
+import type { SdkworkAppClient } from "@sdkwork/manager-app-sdk";
 
 function readPreferenceFields(item: Record<string, unknown>): ManagerPreferences | null {
   const pinnedAppKeys = Array.isArray(item.pinnedAppKeys)

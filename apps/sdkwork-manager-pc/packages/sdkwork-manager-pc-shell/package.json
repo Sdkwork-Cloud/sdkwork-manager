@@ -4,7 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.tsx"
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
   },
   "dependencies": {
     "@sdkwork/auth-pc-react": "workspace:*",
@@ -14,7 +18,7 @@
     "@sdkwork/utils": "workspace:*",
     "react": "catalog:",
     "react-router-dom": "catalog:",
-    "sdkwork-manager-backend-sdk-generated-typescript": "workspace:*",
-    "sdkwork-manager-app-sdk-generated-typescript": "workspace:*"
+    "@sdkwork/manager-backend-sdk": "workspace:*",
+    "@sdkwork/manager-app-sdk": "workspace:*"
   }
 }

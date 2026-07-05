@@ -19,6 +19,7 @@ license = "UNLICENSED"
 publish = false
 
 [workspace.dependencies]
+sdkwork-utils-rust = { path = "../../../sdkwork-utils/packages/sdkwork-utils-rust" }
 axum = "0.8"
 tokio = { version = "1.51", features = ["macros", "rt-multi-thread", "net", "sync"] }
 serde = { version = "1", features = ["derive"] }
@@ -45,10 +46,6 @@ sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-databa
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi" }
 sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx" }
 sdkwork-database-ops-http = { path = "../sdkwork-database/crates/sdkwork-database-ops-http" }
-sdkwork_database_config = { path = "../sdkwork-database/crates/sdkwork-database-config", package = "sdkwork-database-config" }
-sdkwork_database_lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle", package = "sdkwork-database-lifecycle" }
-sdkwork_database_spi = { path = "../sdkwork-database/crates/sdkwork-database-spi", package = "sdkwork-database-spi" }
-sdkwork_database_sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx", package = "sdkwork-database-sqlx" }
 sdkwork_platform_manager_service = { path = "crates/sdkwork-platform-manager-service", package = "sdkwork-platform-manager-service" }
 sdkwork_platform_manager_repository_sqlx = { path = "crates/sdkwork-platform-manager-repository-sqlx", package = "sdkwork-platform-manager-repository-sqlx" }
 sdkwork_routes_manager_common = { path = "crates/sdkwork-routes-manager-common", package = "sdkwork-routes-manager-common" }

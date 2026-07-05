@@ -2,7 +2,7 @@ import { useState } from "react";
 import { updateManagerPreferences } from "@sdkwork/manager-client-core";
 import { buildManagerPreferencesDraft } from "@sdkwork/manager-pc-core";
 import type { ManagerPreferences } from "@sdkwork/manager-contracts";
-import type { SdkworkAppClient } from "sdkwork-manager-app-sdk-generated-typescript";
+import type { SdkworkAppClient } from "@sdkwork/manager-app-sdk";
 
 interface PreferenceEditorPanelProps {
   appClient: SdkworkAppClient;

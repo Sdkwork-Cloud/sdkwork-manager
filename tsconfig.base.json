@@ -14,10 +14,10 @@
         "../sdkwork-utils/packages/sdkwork-utils-typescript/src/index.ts"
       ],
       "@sdkwork/iam-app-sdk": [
-        "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/generated/server-openapi/src/index.ts"
+        "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/src/index.ts"
       ],
       "@sdkwork/iam-backend-sdk": [
-        "../sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/generated/server-openapi/src/index.ts"
+        "../sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/src/index.ts"
       ],
       "@sdkwork/auth-pc-react": [
         "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src/index.ts"
@@ -49,11 +49,11 @@
       "@sdkwork/manager-pc-shell": [
         "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx"
       ],
-      "sdkwork-manager-app-sdk-generated-typescript": [
-        "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/generated/server-openapi/src/index.ts"
+      "@sdkwork/manager-app-sdk": [
+        "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/src/index.ts"
       ],
-      "sdkwork-manager-backend-sdk-generated-typescript": [
-        "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/generated/server-openapi/src/index.ts"
+      "@sdkwork/manager-backend-sdk": [
+        "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/src/index.ts"
       ]
     },
     "allowImportingTsExtensions": true,

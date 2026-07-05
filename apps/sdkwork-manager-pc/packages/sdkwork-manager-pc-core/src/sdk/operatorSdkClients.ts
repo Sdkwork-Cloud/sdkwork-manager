@@ -2,11 +2,11 @@ import { attachSdkworkSdkSessionAuthBoundary } from "@sdkwork/auth-runtime-pc-re
 import {
   createClient as createAppClient,
   type SdkworkAppClient,
-} from "sdkwork-manager-app-sdk-generated-typescript";
+} from "@sdkwork/manager-app-sdk";
 import {
   createClient as createBackendClient,
   type SdkworkBackendClient,
-} from "sdkwork-manager-backend-sdk-generated-typescript";
+} from "@sdkwork/manager-backend-sdk";
 import { resolveManagerApiBaseUrl } from "@sdkwork/manager-client-core";
 
 import { loadManagerIamSession } from "../session/iamOperatorSessionBridge";

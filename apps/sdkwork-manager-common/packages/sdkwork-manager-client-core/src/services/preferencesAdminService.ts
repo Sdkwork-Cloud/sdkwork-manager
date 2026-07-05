@@ -1,6 +1,6 @@
 import type { AdminPreferenceSummary } from "@sdkwork/manager-contracts";
 import type { SdkWorkPageData } from "@sdkwork/utils";
-import type { SdkworkBackendClient } from "sdkwork-manager-backend-sdk-generated-typescript";
+import type { SdkworkBackendClient } from "@sdkwork/manager-backend-sdk";
 
 function isAdminPreferenceSummary(value: unknown): value is AdminPreferenceSummary {
   if (!value || typeof value !== "object") {

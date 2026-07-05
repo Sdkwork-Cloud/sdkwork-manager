@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { listAdminPreferences } from "@sdkwork/manager-client-core";
 import type { OperatorSession } from "@sdkwork/manager-pc-core";
 import type { AdminPreferenceSummary } from "@sdkwork/manager-contracts";
-import type { SdkworkBackendClient } from "sdkwork-manager-backend-sdk-generated-typescript";
+import type { SdkworkBackendClient } from "@sdkwork/manager-backend-sdk";
 
 interface PreferenceAdminPanelProps {
   session: OperatorSession | null;
