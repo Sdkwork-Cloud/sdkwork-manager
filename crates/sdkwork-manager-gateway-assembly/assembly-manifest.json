@@ -4,7 +4,7 @@
   "applicationCode": "manager",
   "packageName": "sdkwork-manager-gateway-assembly",
   "crateDir": "crates/sdkwork-manager-gateway-assembly",
-  "generatedAt": "2026-06-25T13:08:05.592Z",
+  "generatedAt": "2026-07-08T01:34:14.473Z",
   "routeCrates": [
     {
       "packageName": "sdkwork-routes-manager-app-api",
