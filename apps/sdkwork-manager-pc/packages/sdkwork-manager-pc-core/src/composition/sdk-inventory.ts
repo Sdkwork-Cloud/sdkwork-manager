@@ -1,3 +1,3 @@
 export function listSdkworkCoreSdkInventory() {
-  return [] as const;
+  return ["@sdkwork/iam-app-sdk"] as const;
 }

@@ -1,6 +1,5 @@
 import type {
   SdkworkAuthAppearanceConfig,
-  SdkworkAuthRuntimeConfig,
   SdkworkIamRuntimeAuthRuntimeLike,
 } from "@sdkwork/auth-pc-react";
 import {
@@ -17,14 +16,18 @@ import {
   loadManagerIamSession,
   type ManagerIamSession,
 } from "../session/iamOperatorSessionBridge";
-import { getOperatorTokenManager } from "../session/operatorSession";
-import { getAppbaseAppSdkClient } from "./appbaseAppSdkClient";
 import {
-  getOperatorAuthenticatedSdkClients,
-  resetOperatorAuthenticatedSdkClients,
-} from "./operatorSdkClients";
+  clearOperatorTokenManagerTokens,
+  getOperatorTokenManager,
+} from "../session/operatorSession";
+import {
+  getManagerAuthenticatedSdkClients,
+  resetManagerAuthenticatedSdkClients,
+} from "./authenticatedSdkClients";
+import { getAppbaseAppSdkClient } from "./appbaseAppSdkClient";
+import { resetManagerAuthRuntimeConfig } from "./authRuntimeConfig";
 
-const MANAGER_APP_ID = "sdkwork-manager";
+const MANAGER_APP_ID = "sdkwork-manager-pc";
 
 let iamRuntimeComposition: SdkworkAppbasePcAuthRuntimeComposition | null = null;
 
@@ -38,22 +41,9 @@ function readEnvValue(...keys: string[]): string | undefined {
   return undefined;
 }
 
-function parseBoolean(value: string | undefined): boolean | undefined {
-  const normalized = (value ?? "").trim().toLowerCase();
-  if (!normalized) {
-    return undefined;
-  }
-  if (["1", "on", "true", "yes"].includes(normalized)) {
-    return true;
-  }
-  if (["0", "false", "no", "off"].includes(normalized)) {
-    return false;
-  }
-  return undefined;
-}
-
 function resolveIamEnvironment(): "dev" | "prod" | "test" {
   const value = readEnvValue(
+    "VITE_SDKWORK_MANAGER_ENVIRONMENT",
     "VITE_SDKWORK_MANAGER_IAM_ENVIRONMENT",
     "VITE_SDKWORK_IAM_ENVIRONMENT",
   );
@@ -65,11 +55,25 @@ function resolveIamEnvironment(): "dev" | "prod" | "test" {
 }
 
 function resolveIamDeploymentMode(): "local" | "private" | "saas" {
+  const deploymentProfile = readEnvValue(
+    "VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE",
+    "VITE_SDKWORK_DEPLOYMENT_PROFILE",
+  );
+  if (deploymentProfile === "cloud") {
+    return "saas";
+  }
+  if (deploymentProfile === "standalone") {
+    // The manager initial release is a browser host, not a native desktop shell.
+    return "private";
+  }
   const value = readEnvValue(
     "VITE_SDKWORK_MANAGER_IAM_DEPLOYMENT_MODE",
     "VITE_SDKWORK_IAM_DEPLOYMENT_MODE",
   );
-  return value === "saas" || value === "private" || value === "local" ? value : "saas";
+  if (value === "saas" || value === "private" || value === "local") {
+    return value;
+  }
+  return resolveIamEnvironment() === "dev" ? "private" : "saas";
 }
 
 function createManagerIamRuntimeComposition(): SdkworkAppbasePcAuthRuntimeComposition {
@@ -91,18 +95,20 @@ function createManagerIamRuntimeComposition(): SdkworkAppbasePcAuthRuntimeCompos
     },
     hooks: {
       onSessionChanged: () => {
-        resetOperatorAuthenticatedSdkClients();
+        resetManagerAuthenticatedSdkClients();
       },
     },
-    sdkClients: getOperatorAuthenticatedSdkClients() as SdkworkAppbasePcAuthRuntimeSdkClient[],
+    localeProvider: () => "zh-CN",
+    sdkClients: getManagerAuthenticatedSdkClients() as SdkworkAppbasePcAuthRuntimeSdkClient[],
     sessionBridge: {
       clearSession: () => {
         clearManagerIamSession();
-        resetOperatorAuthenticatedSdkClients();
+        clearOperatorTokenManagerTokens();
+        resetManagerAuthenticatedSdkClients();
       },
       commitSession: (session) => {
         commitManagerIamSession(session as ManagerIamSession);
-        resetOperatorAuthenticatedSdkClients();
+        resetManagerAuthenticatedSdkClients();
       },
       readSession: () => loadManagerIamSession(),
     },
@@ -119,54 +125,58 @@ export function getManagerIamRuntime(): SdkworkIamRuntimeAuthRuntimeLike {
 
 export function resetManagerIamRuntime(): void {
   iamRuntimeComposition = null;
-}
-
-function resolveDevelopmentPrefill(): SdkworkAuthRuntimeConfig["developmentPrefill"] {
-  const account = readEnvValue("VITE_SDKWORK_MANAGER_AUTH_DEV_DEFAULT_ACCOUNT");
-  const email = readEnvValue("VITE_SDKWORK_MANAGER_AUTH_DEV_DEFAULT_EMAIL");
-  const phone = readEnvValue("VITE_SDKWORK_MANAGER_AUTH_DEV_DEFAULT_PHONE");
-  const password = readEnvValue("VITE_SDKWORK_MANAGER_AUTH_DEV_DEFAULT_PASSWORD");
-  const enabled = parseBoolean(readEnvValue("VITE_SDKWORK_MANAGER_AUTH_DEV_PREFILL_ENABLED"));
-  const shouldEnable = enabled ?? Boolean(account || email || phone || password);
-  if (!shouldEnable) {
-    return undefined;
-  }
-  return {
-    account: account || email || phone,
-    email,
-    enabled: true,
-    loginMethod: "password",
-    password,
-    phone,
-  };
-}
-
-export function resolveManagerAuthRuntimeConfig(): SdkworkAuthRuntimeConfig {
-  const developmentPrefill = resolveDevelopmentPrefill();
-  return {
-    leftRailMode: "qr-only",
-    loginMethods: ["password"],
-    oauthLoginEnabled: false,
-    oauthProviders: [],
-    qrLoginEnabled: true,
-    recoveryMethods: [],
-    registerMethods: ["email", "phone"],
-    verificationPolicy: {
-      emailCodeLoginEnabled: false,
-      emailRegistrationVerificationRequired: false,
-      phoneCodeLoginEnabled: false,
-      phoneRegistrationVerificationRequired: false,
-    },
-    ...(developmentPrefill ? { developmentPrefill } : {}),
-  };
+  resetManagerAuthRuntimeConfig();
 }
 
 export function resolveManagerAuthAppearance(): SdkworkAuthAppearanceConfig {
   return {
+    asidePanelClassName: "manager-auth-aside-panel",
+    bodyClassName: "manager-auth-body",
+    contentContainerClassName: "manager-auth-content",
     pageClassName: "sdkwork-manager-auth-page",
-    shellClassName: "sdkwork-manager-auth-shell",
+    qrFrameClassName: "manager-auth-qr-frame",
+    shellClassName: "sdkwork-manager-auth-card-shell",
+    slotProps: {
+      background: {
+        className: "manager-auth-background",
+      },
+      page: {
+        className: "sdkwork-manager-auth-page",
+      },
+      shell: {
+        className: "sdkwork-manager-auth-card-shell",
+      },
+    },
     theme: {
-      pageBackgroundColor: "#f6f8fb",
+      asideCardBackgroundColor: "var(--manager-auth-aside-card-bg)",
+      asideCardBorderColor: "var(--manager-auth-aside-card-border)",
+      asidePanelBackgroundColor: "var(--manager-auth-aside-bg)",
+      asidePanelBorderColor: "var(--manager-auth-aside-border)",
+      asidePanelColor: "var(--manager-auth-aside-text)",
+      badgeBackgroundColor: "var(--manager-auth-aside-badge-bg)",
+      badgeTextColor: "var(--manager-auth-aside-badge-text)",
+      contentBackgroundColor: "var(--manager-auth-content-bg)",
+      contentBorderColor: "transparent",
+      contentTextColor: "var(--manager-auth-content-text)",
+      descriptionColor: "var(--manager-auth-muted-text)",
+      dividerColor: "var(--manager-auth-divider)",
+      fieldBackgroundColor: "var(--manager-auth-field-bg)",
+      fieldBorderColor: "transparent",
+      fieldPlaceholderColor: "#9ca3af",
+      fieldTextColor: "var(--manager-auth-content-text)",
+      formMutedTextColor: "var(--manager-auth-muted-text)",
+      iconMutedColor: "var(--manager-auth-muted-text)",
+      labelColor: "var(--manager-auth-content-text)",
+      pageBackgroundColor: "var(--manager-auth-bg)",
+      qrFrameBackgroundColor: "var(--manager-auth-qr-bg)",
+      qrFrameBorderColor: "var(--manager-auth-qr-border)",
+      shellBackgroundColor: "var(--manager-auth-content-bg)",
+      shellBorderColor: "transparent",
+      tabActiveBackgroundColor: "var(--manager-auth-tab-active-bg)",
+      tabActiveTextColor: "var(--manager-auth-content-text)",
+      tabBackgroundColor: "transparent",
+      tabInactiveTextColor: "var(--manager-auth-muted-text)",
+      titleColor: "var(--manager-auth-content-text)",
     },
   };
 }

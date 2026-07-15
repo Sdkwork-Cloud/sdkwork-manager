@@ -1,24 +1,8 @@
-import {
-  buildManagerPreferencesDraft,
-  describeManager,
-} from "./preferences";
-
 export {
-  buildManagerPreferencesDraft,
-  describeManager,
-};
-
-export {
-  resolveManagerApiBaseUrl,
-  resolveIamAppApiBaseUrl,
-} from "@sdkwork/manager-client-core";
-
-export {
-  buildOperatorSdkHeaders,
+  clearOperatorTokenManagerTokens,
   getOperatorTokenManager,
   loadOperatorSession,
-  readOperatorSessionFromEnv,
-  saveOperatorSession,
+  resetOperatorTokenManager,
   OPERATOR_SESSION_STORAGE_KEY,
   OPERATOR_SESSION_CHANGED_EVENT,
   type OperatorSession,
@@ -27,6 +11,8 @@ export {
 export {
   clearManagerIamSession,
   commitManagerIamSession,
+  getManagerCommercialEntitlementKeys,
+  getManagerPermissionScope,
   loadManagerIamSession,
   toOperatorSession,
   MANAGER_IAM_SESSION_STORAGE_KEY,
@@ -34,13 +20,18 @@ export {
 } from "./session/iamOperatorSessionBridge";
 
 export {
+  getAppbaseAppSdkClient,
+  resetAppbaseAppSdkClient,
   getManagerIamRuntime,
+  loadManagerAuthRuntimeConfig,
   resetManagerIamRuntime,
+  resetManagerAuthRuntimeConfig,
   resolveManagerAuthAppearance,
   resolveManagerAuthRuntimeConfig,
-  getManagerAppSdkClient,
-  getManagerBackendSdkClient,
-  resetOperatorAuthenticatedSdkClients,
+  resolveManagerAuthRuntimeConfigFromMetadata,
+  getManagerAuthenticatedSdkClients,
+  registerManagerAuthenticatedSdkCacheResetter,
+  resetManagerAuthenticatedSdkClients,
 } from "./sdk";
 
 export * from "./composition";

@@ -12,13 +12,10 @@
   },
   "dependencies": {
     "@sdkwork/auth-pc-react": "workspace:*",
-    "@sdkwork/manager-client-core": "workspace:*",
-    "@sdkwork/manager-contracts": "workspace:*",
+    "@sdkwork/auth-runtime-pc-react": "workspace:*",
     "@sdkwork/manager-pc-core": "workspace:*",
-    "@sdkwork/utils": "workspace:*",
     "react": "catalog:",
     "react-router-dom": "catalog:",
-    "@sdkwork/manager-backend-sdk": "workspace:*",
-    "@sdkwork/manager-app-sdk": "workspace:*"
+    "lucide-react": "catalog:"
   }
 }

@@ -6,21 +6,15 @@ import {
 import { resolveIamAppApiBaseUrl } from "@sdkwork/manager-client-core";
 
 import { getOperatorTokenManager } from "../session/operatorSession";
-import {
-  loadManagerIamSession,
-  type ManagerIamSession,
-} from "../session/iamOperatorSessionBridge";
+import type { ManagerIamSession } from "../session/iamOperatorSessionBridge";
 
 let appbaseAppSdkClient: SdkworkAppClient | null = null;
 
 export function createAppbaseAppSdkClientConfig(
-  session?: ManagerIamSession | null,
+  _session?: ManagerIamSession | null,
 ): SdkworkAppConfig {
-  const currentSession = session ?? loadManagerIamSession();
   return {
     baseUrl: resolveIamAppApiBaseUrl(),
-    accessToken: currentSession?.accessToken,
-    authToken: currentSession?.authToken,
     platform: "pc",
     tokenManager: getOperatorTokenManager(),
   };

@@ -1,0 +1,799 @@
+@import "tailwindcss";
+@import "@sdkwork/ui-pc-react/styles.css";
+@source "../packages";
+@source "../src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-react/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-tenant/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-organization/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-permission/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-oauth/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-account-binding/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-audit/src";
+@source "../../../../sdkwork-ui/sdkwork-ui-pc-react/src";
+
+:root {
+  color: #17201d;
+  background: #f4f6f5;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--sdk-color-text-primary);
+  background: var(--sdk-color-surface-canvas);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.manager-admin-app {
+  min-height: 100vh;
+  background: var(--sdk-color-surface-canvas);
+}
+
+.manager-global-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(196px, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 56px;
+  gap: 18px;
+  padding: 0 20px;
+  color: #f7fbf8;
+  background: #17201d;
+  border-bottom: 1px solid #2c3934;
+}
+
+.manager-brand,
+.manager-global-header__actions,
+.manager-global-header__modules,
+.manager-brand__mark,
+.manager-sign-out,
+.manager-icon-button,
+.manager-module-switcher,
+.manager-search,
+.manager-module-header__tools,
+.manager-welcome__heading {
+  display: flex;
+  align-items: center;
+}
+
+.manager-brand {
+  min-width: 0;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.manager-brand__mark {
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #17201d;
+  background: #9ee2cb;
+  border-radius: 7px;
+}
+
+.manager-brand__badge {
+  padding: 2px 6px;
+  color: #bcecdc;
+  font-size: 11px;
+  font-weight: 650;
+  border: 1px solid #416154;
+  border-radius: 4px;
+}
+
+.manager-global-header__modules {
+  min-width: 0;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.manager-global-header__modules::-webkit-scrollbar {
+  display: none;
+}
+
+.manager-module-switcher {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 0 10px;
+  color: #b8c6bf;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.manager-module-switcher:hover,
+.manager-module-switcher.is-active {
+  color: #ffffff;
+  background: #2c3e36;
+}
+
+.manager-global-header__actions {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.manager-search {
+  width: min(220px, 18vw);
+  height: 32px;
+  gap: 6px;
+  padding: 0 9px;
+  color: #99aaa2;
+  background: #24302b;
+  border: 1px solid #3a4a43;
+  border-radius: 6px;
+}
+
+.manager-search input {
+  width: 100%;
+  min-width: 0;
+  color: #eef5f1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.manager-search input::placeholder {
+  color: #99aaa2;
+}
+
+.manager-icon-button,
+.manager-sign-out,
+.manager-button {
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.manager-icon-button {
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #c2d0c9;
+  background: transparent;
+  border-radius: 6px;
+}
+
+.manager-icon-button:hover {
+  color: #ffffff;
+  background: #2c3e36;
+}
+
+.manager-sign-out {
+  justify-content: center;
+  min-height: 32px;
+  gap: 6px;
+  padding: 0 9px;
+  color: #f8d3d1;
+  font-size: 13px;
+  font-weight: 650;
+  background: #4a2729;
+  border-color: #6c383d;
+  border-radius: 6px;
+}
+
+.manager-sign-out:hover {
+  background: #613034;
+}
+
+.manager-admin-workspace {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  min-height: calc(100vh - 56px);
+}
+
+.manager-admin-workspace--collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.manager-sidebar {
+  padding: 18px 12px;
+  background: #ffffff;
+  border-right: 1px solid #d9e0dc;
+}
+
+.manager-sidebar__heading {
+  margin: 0 8px 12px;
+  color: #526159;
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.manager-sidebar__nav {
+  display: grid;
+  gap: 3px;
+}
+
+.manager-sidebar__link {
+  display: grid;
+  gap: 2px;
+  padding: 9px 10px;
+  color: #33443a;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.manager-sidebar__link:hover {
+  background: #e8f2ed;
+}
+
+.manager-sidebar__link.is-active {
+  color: #154c3c;
+  background: #d7efe4;
+}
+
+.manager-sidebar__link small {
+  color: #6e7e75;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.manager-sidebar__empty,
+.manager-sidebar__permission {
+  margin: 0 8px;
+  color: #6e7e75;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.manager-sidebar__permission {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #e4e9e6;
+}
+
+.manager-main-content {
+  min-width: 0;
+  padding: 22px 28px 36px;
+}
+
+.manager-module-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid #d9e0dc;
+}
+
+.manager-module-header__identity h1,
+.manager-welcome h1,
+.manager-integration-page h2,
+.manager-module-card h2 {
+  margin: 0;
+  color: #17201d;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+
+.manager-module-header__identity h1 {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.manager-module-header__identity p,
+.manager-welcome__heading p,
+.manager-integration-page > p:not(.manager-welcome__eyebrow),
+.manager-module-card > div > p {
+  margin: 7px 0 0;
+  color: #5f6f66;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.manager-module-header__eyebrow,
+.manager-welcome__eyebrow,
+.manager-module-card__domain {
+  color: #33745e !important;
+  font-size: 11px !important;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.manager-module-header__tools {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.manager-button {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 650;
+  border-radius: 6px;
+}
+
+.manager-button--primary {
+  color: #ffffff;
+  background: #17664f;
+}
+
+.manager-button--secondary {
+  color: #315342;
+  background: #ffffff;
+  border-color: #bfcac4;
+}
+
+.manager-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.manager-welcome,
+.manager-integration-page {
+  max-width: 1080px;
+  padding-top: 30px;
+}
+
+.manager-welcome__heading {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.manager-welcome__heading > svg {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  color: #17664f;
+}
+
+.manager-welcome h1 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.manager-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.manager-module-card {
+  display: grid;
+  gap: 20px;
+  min-height: 198px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-module-card:hover {
+  border-color: #79b79e;
+  box-shadow: 0 4px 12px rgba(36, 73, 56, 0.08);
+}
+
+.manager-module-card h2 {
+  margin-top: 4px;
+  font-size: 17px;
+}
+
+.manager-module-card dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid #e4e9e6;
+}
+
+.manager-module-card dl div {
+  min-width: 0;
+}
+
+.manager-module-card dt {
+  color: #75847c;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.manager-module-card dd {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  color: #2b3c33;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-welcome__note {
+  margin: 18px 0 0;
+  padding: 11px 12px;
+  color: #375245;
+  font-size: 13px;
+  background: #e8f2ed;
+  border-left: 3px solid #4c9a7c;
+}
+
+.manager-integration-page h2 {
+  margin-top: 4px;
+  font-size: 22px;
+}
+
+.manager-integration-page ul {
+  display: grid;
+  gap: 9px;
+  margin: 22px 0 0;
+  padding-left: 20px;
+  color: #405148;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+html.sdkwork-manager-auth-active,
+body.sdkwork-manager-auth-active {
+  overflow: hidden;
+  scrollbar-gutter: auto;
+}
+
+.sdkwork-manager-auth-host {
+  --manager-auth-bg: #0c0d11;
+  --manager-auth-header-bg: #0e0e11;
+  --manager-auth-header-border: rgba(255, 255, 255, 0.08);
+  --manager-auth-header-text: #f4f4f5;
+  --manager-auth-content-bg: rgba(17, 18, 24, 0.96);
+  --manager-auth-content-border: transparent;
+  --manager-auth-content-text: #f8fafc;
+  --manager-auth-muted-text: #a1a1aa;
+  --manager-auth-field-bg: rgba(255, 255, 255, 0.06);
+  --manager-auth-field-border: transparent;
+  --manager-auth-field-placeholder: #9ca3af;
+  --manager-auth-divider: rgba(255, 255, 255, 0.12);
+  --manager-auth-aside-bg: #101114;
+  --manager-auth-aside-border: rgba(255, 255, 255, 0.08);
+  --manager-auth-aside-text: #f5f5f5;
+  --manager-auth-aside-card-bg: rgba(255, 255, 255, 0.08);
+  --manager-auth-aside-card-border: rgba(255, 255, 255, 0.1);
+  --manager-auth-aside-icon-bg: rgba(229, 80, 57, 0.16);
+  --manager-auth-aside-icon-color: #f8a08f;
+  --manager-auth-aside-badge-bg: rgba(229, 80, 57, 0.14);
+  --manager-auth-aside-badge-text: #f8a08f;
+  --manager-auth-qr-bg: rgba(8, 11, 18, 0.94);
+  --manager-auth-qr-border: transparent;
+  --manager-auth-tab-active-bg: transparent;
+  --manager-auth-validation-text: #fda4af;
+  --manager-auth-brand: #e55039;
+  --manager-auth-brand-hover: #c83f2a;
+  --manager-auth-brand-soft: rgba(229, 80, 57, 0.14);
+  --manager-auth-color-scheme: dark;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(229, 80, 57, 0.16), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(200, 63, 42, 0.12), transparent 32%),
+    linear-gradient(180deg, #111217 0%, #0c0d11 100%);
+  color: var(--manager-auth-content-text);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  inset: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  z-index: 55;
+}
+
+html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-host {
+  --manager-auth-bg: #f4f4f5;
+  --manager-auth-header-bg: #ffffff;
+  --manager-auth-header-border: rgba(15, 23, 42, 0.08);
+  --manager-auth-header-text: #18181b;
+  --manager-auth-content-bg: rgba(255, 255, 255, 0.96);
+  --manager-auth-content-border: transparent;
+  --manager-auth-content-text: #18181b;
+  --manager-auth-muted-text: #71717a;
+  --manager-auth-field-bg: rgba(15, 23, 42, 0.04);
+  --manager-auth-field-border: transparent;
+  --manager-auth-field-placeholder: #9ca3af;
+  --manager-auth-divider: rgba(15, 23, 42, 0.1);
+  --manager-auth-aside-bg: #ffffff;
+  --manager-auth-aside-border: rgba(15, 23, 42, 0.08);
+  --manager-auth-aside-text: #18181b;
+  --manager-auth-aside-card-bg: rgba(15, 23, 42, 0.04);
+  --manager-auth-aside-card-border: rgba(15, 23, 42, 0.08);
+  --manager-auth-aside-icon-bg: rgba(229, 80, 57, 0.1);
+  --manager-auth-aside-icon-color: #c83f2a;
+  --manager-auth-aside-badge-bg: rgba(229, 80, 57, 0.12);
+  --manager-auth-aside-badge-text: #c83f2a;
+  --manager-auth-qr-bg: rgba(255, 255, 255, 0.94);
+  --manager-auth-qr-border: transparent;
+  --manager-auth-tab-active-bg: transparent;
+  --manager-auth-validation-text: #b42318;
+  --manager-auth-brand: #e55039;
+  --manager-auth-brand-hover: #c83f2a;
+  --manager-auth-brand-soft: rgba(229, 80, 57, 0.12);
+  --manager-auth-color-scheme: light;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(229, 80, 57, 0.1), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(200, 63, 42, 0.08), transparent 32%),
+    linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+}
+
+.sdkwork-manager-auth-header {
+  align-items: center;
+  background: var(--manager-auth-header-bg);
+  border-bottom: 1px solid var(--manager-auth-header-border);
+  color: var(--manager-auth-header-text);
+  display: grid;
+  flex: 0 0 44px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  height: 40px;
+  padding: 0 8px;
+}
+
+.sdkwork-manager-auth-header-brand {
+  align-items: center;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 600;
+  gap: 9px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.sdkwork-manager-auth-header-mark {
+  align-items: center;
+  background: linear-gradient(135deg, #e55039, #c83f2a);
+  border-radius: 6px;
+  color: #ffffff;
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.sdkwork-manager-auth-header-actions {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.sdkwork-manager-auth-theme-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.sdkwork-manager-auth-theme-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.sdkwork-manager-auth-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.manager-auth-route-status {
+  align-items: center;
+  color: var(--manager-auth-content-text);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+}
+
+.manager-auth-route-status p {
+  color: var(--manager-auth-muted-text);
+  margin: 0;
+}
+
+.manager-auth-route-status__retry {
+  background: transparent;
+  border: 0;
+  color: var(--manager-auth-brand);
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 6px;
+}
+
+.manager-auth-route-status__retry:hover {
+  color: var(--manager-auth-brand-hover);
+}
+
+.sdkwork-manager-auth-host .sdkwork-iam-auth-routes {
+  background: transparent !important;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sdkwork-manager-auth-host .manager-auth-background,
+.sdkwork-manager-auth-host .sdkwork-manager-auth-page {
+  background: transparent !important;
+}
+
+.sdkwork-manager-auth-host[data-sdk-color-mode] .sdkwork-auth-surface {
+  --sdk-color-brand-primary: var(--manager-auth-brand);
+  --sdk-color-brand-primary-hover: var(--manager-auth-brand-hover);
+  --sdk-color-brand-primary-soft: var(--manager-auth-brand-soft);
+  --sdkwork-auth-action-button-text-color: var(--manager-auth-brand);
+  --sdkwork-auth-content-text-color: var(--manager-auth-content-text);
+  --sdkwork-auth-divider-color: var(--manager-auth-divider);
+  --sdkwork-auth-field-background-color: var(--manager-auth-field-bg);
+  --sdkwork-auth-field-border-color: var(--manager-auth-field-border);
+  --sdkwork-auth-field-placeholder-color: var(--manager-auth-field-placeholder);
+  --sdkwork-auth-field-text-color: var(--manager-auth-content-text);
+  --sdkwork-auth-icon-muted-color: var(--manager-auth-muted-text);
+  --sdkwork-auth-label-color: var(--manager-auth-content-text);
+  --sdkwork-auth-muted-color: var(--manager-auth-muted-text);
+  --sdkwork-auth-outline-button-text-color: var(--manager-auth-brand);
+  --sdkwork-auth-page-background-color: transparent;
+  --sdkwork-auth-primary-button-background-color: var(--manager-auth-brand);
+  --sdkwork-auth-primary-button-text-color: #ffffff;
+  --sdkwork-auth-tab-active-background-color: var(--manager-auth-tab-active-bg);
+  --sdkwork-auth-tab-active-icon-color: var(--manager-auth-brand);
+  --sdkwork-auth-tab-active-text-color: var(--manager-auth-content-text);
+  --sdkwork-auth-tab-hover-background-color: var(--manager-auth-brand-soft);
+  --sdkwork-auth-tab-hover-text-color: var(--manager-auth-content-text);
+  --sdkwork-auth-tab-inactive-icon-color: var(--manager-auth-muted-text);
+  --sdkwork-auth-tab-inactive-text-color: var(--manager-auth-muted-text);
+  --sdkwork-auth-tabs-background-color: transparent;
+  --sdkwork-auth-validation-message-color: var(--manager-auth-validation-text);
+  box-sizing: border-box;
+  color-scheme: var(--manager-auth-color-scheme);
+  height: 100%;
+  max-height: 100%;
+  min-height: 0 !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sdkwork-manager-auth-card-shell,
+.manager-auth-content {
+  backdrop-filter: blur(18px);
+}
+
+.sdkwork-manager-auth-host .manager-auth-aside-panel {
+  background: var(--manager-auth-aside-bg) !important;
+  border-color: var(--manager-auth-aside-border) !important;
+  color: var(--manager-auth-aside-text) !important;
+}
+
+.sdkwork-manager-auth-host .manager-auth-content {
+  background: var(--manager-auth-content-bg) !important;
+  border-color: var(--manager-auth-content-border) !important;
+  color: var(--manager-auth-content-text) !important;
+}
+
+.sdkwork-manager-auth-host .manager-auth-qr-frame {
+  background: var(--manager-auth-qr-bg) !important;
+  border-color: var(--manager-auth-qr-border) !important;
+}
+
+.manager-module-loading,
+.manager-session-check {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  color: var(--sdk-color-text-secondary);
+  font-size: 14px;
+}
+
+.manager-module-loading {
+  min-height: 320px;
+}
+
+.manager-session-check {
+  min-height: 100vh;
+  background: var(--sdk-color-surface-canvas);
+}
+
+.manager-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 860px) {
+  .manager-global-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 0 14px;
+  }
+
+  .manager-global-header__modules {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-height: 38px;
+    margin: -8px -14px 0;
+    padding: 0 14px 6px;
+  }
+
+  .manager-search,
+  .manager-icon-button {
+    display: none;
+  }
+
+  .manager-admin-workspace,
+  .manager-admin-workspace--collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: calc(100vh - 94px);
+  }
+
+  .manager-sidebar {
+    display: none;
+  }
+
+  .manager-main-content {
+    padding: 18px;
+  }
+
+  .manager-module-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .manager-module-header__tools {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .manager-brand__badge {
+    display: none;
+  }
+
+  .manager-sign-out {
+    width: 32px;
+    padding: 0;
+  }
+
+  .manager-sign-out svg {
+    margin: 0;
+  }
+
+  .manager-sign-out {
+    font-size: 0;
+  }
+
+  .manager-module-card dl {
+    grid-template-columns: 1fr 1fr;
+  }
+}

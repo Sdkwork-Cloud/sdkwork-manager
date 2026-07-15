@@ -2,12 +2,16 @@ export {
   getManagerIamRuntime,
   resetManagerIamRuntime,
   resolveManagerAuthAppearance,
-  resolveManagerAuthRuntimeConfig,
 } from "./appAuthRuntime";
+export {
+  loadManagerAuthRuntimeConfig,
+  resetManagerAuthRuntimeConfig,
+  resolveManagerAuthRuntimeConfig,
+  resolveManagerAuthRuntimeConfigFromMetadata,
+} from "./authRuntimeConfig";
 export { getAppbaseAppSdkClient, resetAppbaseAppSdkClient } from "./appbaseAppSdkClient";
 export {
-  getManagerAppSdkClient,
-  getManagerBackendSdkClient,
-  getOperatorAuthenticatedSdkClients,
-  resetOperatorAuthenticatedSdkClients,
-} from "./operatorSdkClients";
+  getManagerAuthenticatedSdkClients,
+  registerManagerAuthenticatedSdkCacheResetter,
+  resetManagerAuthenticatedSdkClients,
+} from "./authenticatedSdkClients";

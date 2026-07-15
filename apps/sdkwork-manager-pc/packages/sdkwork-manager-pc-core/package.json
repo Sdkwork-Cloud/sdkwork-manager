@@ -42,12 +42,8 @@
     "@sdkwork/iam-contracts": "workspace:*",
     "@sdkwork/iam-credential-entry": "workspace:*",
     "@sdkwork/manager-client-core": "workspace:*",
-    "@sdkwork/manager-contracts": "workspace:*",
-    "@sdkwork/manager-service": "workspace:*",
     "@sdkwork/sdk-common": "workspace:*",
-    "@sdkwork/utils": "workspace:*",
-    "@sdkwork/manager-app-sdk": "workspace:*",
-    "@sdkwork/manager-backend-sdk": "workspace:*"
+    "@sdkwork/utils": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0"

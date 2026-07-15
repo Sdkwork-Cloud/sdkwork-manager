@@ -21,8 +21,6 @@
     "grantMode": "current",
     "platform": "WEB",
     "appId": "sdkwork-manager-pc",
-    "tenantId": "100001",
-    "organizationId": "0",
     "accessTokenPermissionScope": [
       "iam.users.read",
       "iam.organizations.read",
@@ -45,6 +43,60 @@
       "cloud"
     ],
     "defaultDeploymentProfile": "cloud"
+  },
+  "envBindings": {
+    "schemaVersion": 2,
+    "family": "web",
+    "runtime": "vite-react",
+    "preset": "vite-react-standard",
+    "outputStrategy": "dotenv-overlay",
+    "platform": "web",
+    "ownerMode": "tenant",
+    "grantMode": "current",
+    "tokenPlatform": "WEB",
+    "variables": [
+      {
+        "name": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+        "required": true,
+        "tracked": true,
+        "surface": "app-api",
+        "sdkFamily": "sdkwork-manager-app-sdk"
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL",
+        "required": true,
+        "tracked": true,
+        "surface": "backend-api",
+        "sdkFamily": "sdkwork-iam-backend-sdk"
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_VITE_DEV_PROXY_ENABLED",
+        "required": false,
+        "tracked": true
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_ENVIRONMENT",
+        "required": true,
+        "tracked": true
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE",
+        "required": true,
+        "tracked": true
+      }
+    ],
+    "sdkBaseUrls": {
+      "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+      "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+      "dependencySdkBaseUrlKeys": {
+        "sdkwork-iam-app-sdk": {
+          "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-iam-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        }
+      }
+    }
   },
   "media": {
     "icons": {

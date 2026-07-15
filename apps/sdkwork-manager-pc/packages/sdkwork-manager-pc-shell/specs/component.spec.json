@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/manager-pc-shell",
+    "displayName": "SDKWork Manager PC Admin Shell",
+    "type": "typescript-package",
+    "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell",
+    "domain": "platform",
+    "capability": "manager-admin-shell",
+    "surface": "backend-admin",
+    "languages": ["typescript"],
+    "generated": false
+  },
+  "canonicalSpecs": [
+    {
+      "file": "APP_PC_ARCHITECTURE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md"
+    },
+    {
+      "file": "BACKEND_UI_SPEC.md",
+      "path": "../../../../../sdkwork-specs/BACKEND_UI_SPEC.md"
+    }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "sdkDependencies": [],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["pnpm --filter @sdkwork/manager-pc-shell typecheck"]
+  }
+}

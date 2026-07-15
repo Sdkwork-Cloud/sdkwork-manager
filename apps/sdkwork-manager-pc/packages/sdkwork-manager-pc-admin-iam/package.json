@@ -1,0 +1,40 @@
+{
+  "name": "@sdkwork/manager-pc-admin-iam",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager integration adapter for published IAM backend-admin capabilities.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/iam-pc-admin-account-binding": "workspace:*",
+    "@sdkwork/iam-pc-admin-audit": "workspace:*",
+    "@sdkwork/iam-pc-admin-oauth": "workspace:*",
+    "@sdkwork/iam-pc-admin-organization": "workspace:*",
+    "@sdkwork/iam-pc-admin-permission": "workspace:*",
+    "@sdkwork/iam-pc-admin-tenant": "workspace:*",
+    "@sdkwork/iam-pc-admin-user": "workspace:*",
+    "@sdkwork/iam-service": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  },
+  "sdkwork": {
+    "architecture": "pc-admin",
+    "surface": "backend-admin",
+    "domain": "iam",
+    "capability": "iam-integration",
+    "packageType": "integration-adapter",
+    "status": "standard"
+  }
+}

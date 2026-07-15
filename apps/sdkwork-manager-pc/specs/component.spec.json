@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/manager-pc-app",
+    "displayName": "SDKWork Manager PC Admin Host",
+    "type": "typescript-package",
+    "root": "apps/sdkwork-manager-pc",
+    "domain": "platform",
+    "capability": "manager-admin-host",
+    "surface": "backend-admin",
+    "languages": ["typescript"],
+    "generated": false
+  },
+  "canonicalSpecs": [
+    {
+      "file": "APP_PC_ARCHITECTURE_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md"
+    },
+    {
+      "file": "BACKEND_UI_SPEC.md",
+      "path": "../../../sdkwork-specs/BACKEND_UI_SPEC.md"
+    },
+    {
+      "file": "IAM_LOGIN_INTEGRATION_SPEC.md",
+      "path": "../../../sdkwork-specs/IAM_LOGIN_INTEGRATION_SPEC.md"
+    }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "runtimeEntrypoints": ["src/main.tsx"],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-iam-app-sdk",
+        "surface": "app-api",
+        "credentialMode": "authenticated-app-api"
+      },
+      {
+        "workspace": "sdkwork-iam-backend-sdk",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": [
+      "pnpm --dir apps/sdkwork-manager-pc typecheck",
+      "pnpm --dir apps/sdkwork-manager-pc build"
+    ]
+  }
+}

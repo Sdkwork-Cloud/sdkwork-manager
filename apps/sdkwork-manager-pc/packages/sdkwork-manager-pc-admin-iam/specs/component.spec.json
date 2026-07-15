@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/manager-pc-admin-iam",
+    "displayName": "SDKWork Manager PC IAM Integration Adapter",
+    "type": "react-package",
+    "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam",
+    "domain": "iam",
+    "capability": "iam-integration",
+    "surface": "backend-admin",
+    "languages": ["typescript", "react"],
+    "generated": false
+  },
+  "canonicalSpecs": [
+    {
+      "file": "BACKEND_UI_SPEC.md",
+      "path": "../../../../../sdkwork-specs/BACKEND_UI_SPEC.md"
+    },
+    {
+      "file": "APP_SDK_INTEGRATION_SPEC.md",
+      "path": "../../../../../sdkwork-specs/APP_SDK_INTEGRATION_SPEC.md"
+    }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-iam-backend-sdk",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["pnpm --filter @sdkwork/manager-pc-admin-iam typecheck"]
+  }
+}

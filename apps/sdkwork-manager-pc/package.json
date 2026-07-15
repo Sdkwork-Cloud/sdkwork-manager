@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 5190",
+    "dev": "node ../../../sdkwork-iam/scripts/dev/run-pc-renderer-dev-with-bootstrap.mjs --cwd . --repo-root ../.. --manifest-path apps/sdkwork-manager-pc/sdkwork.app.config.json -- vite --host 127.0.0.1 --port 5190",
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "pnpm --dir ../.. run test:vitest",
@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/manager-pc-admin-core": "workspace:*",
+    "@sdkwork/manager-pc-admin-iam": "workspace:*",
     "@sdkwork/manager-pc-shell": "workspace:*",
-    "@sdkwork/manager-service": "workspace:*",
-    "@sdkwork/sdk-common": "workspace:*",
-    "@sdkwork/utils": "workspace:*",
+    "@sdkwork/ui-pc-react": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router-dom": "catalog:",

@@ -22,6 +22,7 @@
     "api:materialize": "node tools/manager_openapi_export.mjs",
     "api:check": "node tools/manager_openapi_export.mjs --check",
     "api:envelope:check": "node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace ..",
+    "admin:bootstrap:app": "node ../sdkwork-iam/scripts/bootstrap/bootstrap-app.mjs",
     "route-manifest:export": "node tools/manager_route_manifest_export.mjs",
     "route-manifest:check": "node tools/manager_route_manifest_export.mjs --check",
     "db:validate": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
@@ -45,6 +46,7 @@
     "deploy:validate": "node ../sdkwork-specs/tools/check-deploy-standard.mjs"
   },
   "devDependencies": {
+    "@sdkwork/iam-application-bootstrap": "workspace:*",
     "@sdkwork/utils": "workspace:*",
     "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",

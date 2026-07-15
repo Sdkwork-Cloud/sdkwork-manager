@@ -1,50 +1,106 @@
-import { createTokenManager, type AuthTokenManager } from "@sdkwork/sdk-common";
 import {
-  buildOperatorSdkHeaders,
-  loadOperatorSessionFromStorage,
-  readOperatorSessionFromEnv,
-  saveOperatorSessionToStorage,
-  type OperatorSession,
-} from "@sdkwork/manager-client-core";
+  createTokenManager,
+  type AuthTokenManager,
+  type AuthTokens,
+} from "@sdkwork/sdk-common";
 
 import { loadManagerIamSession, toOperatorSession } from "./iamOperatorSessionBridge";
+import { OPERATOR_SESSION_CHANGED_EVENT } from "./sessionEvents";
+export { OPERATOR_SESSION_CHANGED_EVENT } from "./sessionEvents";
 
-export type { OperatorSession };
+export type OperatorSession = {
+  accessToken?: string;
+  authToken?: string;
+  organizationId?: string;
+  tenantId?: string;
+  userId?: string;
+};
 
 export const OPERATOR_SESSION_STORAGE_KEY = "sdkwork-manager-pc:session:v1";
-export const OPERATOR_SESSION_CHANGED_EVENT = "sdkwork-manager-pc:session-changed";
 
 let globalTokenManager: AuthTokenManager | null = null;
 
 export function loadOperatorSession(): OperatorSession | null {
-  const iamSession = toOperatorSession(loadManagerIamSession());
-  if (iamSession) {
-    return iamSession;
-  }
-  return loadOperatorSessionFromStorage(OPERATOR_SESSION_STORAGE_KEY);
+  return toOperatorSession(loadManagerIamSession());
 }
 
-export function saveOperatorSession(session: OperatorSession | null): void {
-  saveOperatorSessionToStorage(OPERATOR_SESSION_STORAGE_KEY, session);
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(
-      new CustomEvent(OPERATOR_SESSION_CHANGED_EVENT, { detail: { session } }),
-    );
-  }
+export function resetOperatorTokenManager(): void {
+  globalTokenManager?.clearTokens();
+}
+
+export function clearOperatorTokenManagerTokens(): void {
+  globalTokenManager?.clearTokens();
 }
 
 export function getOperatorTokenManager(): AuthTokenManager {
   if (!globalTokenManager) {
     globalTokenManager = createTokenManager();
   }
-  const session = loadOperatorSession();
-  if (session?.accessToken || session?.authToken) {
-    globalTokenManager.setTokens({
-      ...(session.accessToken ? { accessToken: session.accessToken } : {}),
-      ...(session.authToken ? { authToken: session.authToken } : {}),
-    });
-  }
+  syncOperatorTokenManagerFromIamSession();
   return globalTokenManager;
 }
 
-export { buildOperatorSdkHeaders, readOperatorSessionFromEnv };
+/**
+ * Keep every authenticated SDK bound to one manager object while replacing
+ * only its token contents as the IAM-owned browser session changes.
+ */
+export function syncOperatorTokenManagerFromIamSession(): void {
+  if (!globalTokenManager) {
+    return;
+  }
+
+  const tokens = toAuthTokens(loadManagerIamSession());
+  if (tokens.accessToken && tokens.authToken) {
+    globalTokenManager.setTokens(tokens);
+    return;
+  }
+  globalTokenManager.clearTokens();
+}
+
+function toAuthTokens(session: ReturnType<typeof loadManagerIamSession>): AuthTokens {
+  const accessToken = normalizeToken(session?.accessToken);
+  const authToken = normalizeToken(session?.authToken);
+  if (!accessToken || !authToken || isExpired(session?.expiresAt)) {
+    return {};
+  }
+
+  const refreshToken = normalizeToken(session?.refreshToken);
+  const expiresAt = normalizeExpiresAt(session?.expiresAt);
+  return {
+    accessToken,
+    authToken,
+    ...(refreshToken ? { refreshToken } : {}),
+    ...(expiresAt ? { expiresAt } : {}),
+  };
+}
+
+function normalizeToken(value: unknown): string | undefined {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  return normalized || undefined;
+}
+
+function normalizeExpiresAt(value: unknown): number | undefined {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value !== "string" || !value.trim()) {
+    return undefined;
+  }
+  const numeric = Number(value);
+  if (Number.isFinite(numeric)) {
+    return numeric;
+  }
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function isExpired(value: unknown): boolean {
+  const expiresAt = normalizeExpiresAt(value);
+  return expiresAt !== undefined && Date.now() >= expiresAt;
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener(OPERATOR_SESSION_CHANGED_EVENT, () => {
+    syncOperatorTokenManagerFromIamSession();
+  });
+}

@@ -7,7 +7,15 @@ Specs: `sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md`, `WEB_FRAMEWORK_SPEC.md`, `DA
 
 ## 1. Architecture Overview
 
-`sdkwork-manager` is the platform manager capability application. It exposes operator preferences and admin workflows through Rust HTTP route crates, persists state in PostgreSQL via `sdkwork-database`, and delivers a PC React admin shell under `apps/sdkwork-manager-pc/`.
+`sdkwork-manager` is the platform manager capability application. It provides
+the integration host and platform-manager backend capability, persists its own
+state in PostgreSQL via `sdkwork-database`, and delivers a PC React unified
+admin host under `apps/sdkwork-manager-pc/`. The PC host composes business admin
+modules from their owning application workspaces instead of absorbing their
+implementation.
+
+Detailed PC integration and commercialization design:
+[TECH-unified-admin-host.md](TECH-unified-admin-host.md).
 
 ## 2. Technology Choices
 
@@ -26,7 +34,8 @@ Specs: `sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md`, `WEB_FRAMEWORK_SPEC.md`, `DA
 - `crates/sdkwork-platform-manager-service`: domain service
 - `crates/sdkwork-manager-standalone-gateway`: unified process entrypoint
 - `apps/sdkwork-manager-common/packages/sdkwork-manager-client-core/`: URL resolution, operator session storage, admin preference list helpers
-- `apps/sdkwork-manager-pc/`: PC browser admin shell, IAM/bootstrap wiring, tenant preference admin panel
+- `apps/sdkwork-manager-pc/`: PC browser unified admin host, IAM/bootstrap
+  wiring, module registry, Header composition, and route assembly
 
 ## 4. API, SDK, And Data Ownership
 
