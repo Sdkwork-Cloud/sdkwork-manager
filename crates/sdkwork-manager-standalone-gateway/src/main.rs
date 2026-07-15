@@ -2,7 +2,6 @@ use sdkwork_manager_gateway_assembly::assemble_application_router;
 use sdkwork_manager_service_host::ManagerServiceHost;
 use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 use std::sync::Arc;
-use tower_http::cors::CorsLayer;
 
 #[tokio::main]
 async fn main() {
@@ -12,7 +11,12 @@ async fn main() {
     let host = Arc::new(ManagerServiceHost::new().await);
     let assembly = assemble_application_router(host).await;
 
-    let business = assembly.router.layer(CorsLayer::permissive());
+    let business = assembly.router.layer(
+        sdkwork_web_bootstrap::application_cors_layer_from_env(
+            &["SDKWORK_MANAGER_ENVIRONMENT"],
+            &["SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS", "SDKWORK_CORS_ALLOWED_ORIGINS"],
+        ),
+    );
     let app = service_router(business, ServiceRouterConfig::default().with_always_ready());
 
     let addr = std::env::var("MANAGER_API_BIND").unwrap_or_else(|_| "0.0.0.0:18092".to_owned());
