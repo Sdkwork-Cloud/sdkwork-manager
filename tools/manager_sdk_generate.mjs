@@ -141,7 +141,7 @@ function syncFamily(family) {
   const sdkgenPath = path.join(familyRoot, "openapi", `${family.authorityName}.sdkgen.json`);
   writeJson(authorityPath, openapi);
   writeJson(sdkgenPath, openapi);
-  writeJson(path.join(familyRoot, ".sdkwork-assembly.json"), {
+  writeJson(path.join(familyRoot, "sdk-manifest.json"), {
     schemaVersion: 1,
     workspace: family.familyName,
     sdkOwner: "sdkwork-manager",
