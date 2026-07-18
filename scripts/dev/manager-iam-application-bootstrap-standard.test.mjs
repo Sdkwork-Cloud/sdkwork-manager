@@ -85,7 +85,9 @@ test("Manager standalone profile supplies the IAM and Manager CORS allowlists", 
   const profileEnv = resolveManagerProfileEnv({});
 
   assert.equal(profileEnv.SDKWORK_MANAGER_PROFILE_ID, "standalone.development");
+  assert.equal(profileEnv.SDKWORK_ENVIRONMENT, "development");
   assert.equal(profileEnv.SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
+  assert.equal(profileEnv.SDKWORK_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(profileEnv.SDKWORK_IAM_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(
     profileEnv.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,

@@ -149,6 +149,30 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
     standaloneProfile.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
     standaloneProfile.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
   );
+  assert.equal(
+    standaloneProfile.SDKWORK_ENVIRONMENT,
+    standaloneProfile.SDKWORK_MANAGER_ENVIRONMENT,
+  );
+  assert.equal(
+    standaloneProfile.SDKWORK_CORS_ALLOWED_ORIGINS,
+    standaloneProfile.SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS,
+  );
+});
+
+test("Manager cloud gateway exposes Drive backend and storage SDK paths", () => {
+  for (const profile of ["development", "production"]) {
+    const gatewayConfig = readFileSync(
+      path.join(root, `etc/sdkwork-api-cloud-gateway.manager.${profile}.toml`),
+      "utf8",
+    );
+    assert.match(gatewayConfig, /serviceId = "sdkwork-drive-backend-api"/);
+    assert.match(gatewayConfig, /workspace = "sdkwork-drive"/);
+    assert.match(gatewayConfig, /apiPrefix = "\/backend\/v3\/api\/drive"/);
+    assert.match(
+      gatewayConfig,
+      /sdkwork_drive_gateway_assembly::assemble_application_business_router_from_env/,
+    );
+  }
 });
 
 test("Manager browser has no Vite API proxy and IAM SDKs use application ingress", () => {

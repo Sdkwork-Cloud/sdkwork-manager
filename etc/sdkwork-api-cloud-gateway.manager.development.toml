@@ -34,6 +34,20 @@ sameOriginAllowed = true
 requiredBaseUrlKey = "SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"
 coverage = "manager-app-api-upstream-routes"
 
+[[dependencySurfaces]]
+serviceId = "sdkwork-drive-backend-api"
+workspace = "sdkwork-drive"
+sdkFamily = "sdkwork-drive-backend-sdk"
+apiAuthority = "sdkwork-drive-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/drive"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_drive_gateway_assembly::assemble_application_business_router_from_env"
+cargoFeature = "foundation-drive"
+cargoDependency = "sdkwork-drive-gateway-assembly"
+coverage = "sdkwork-drive-backend-api-embedded-assembly-routes"
+
 [[upstreams]]
 serviceId = "sdkwork-manager-app-api"
 baseUrl = "http://127.0.0.1:8080"
