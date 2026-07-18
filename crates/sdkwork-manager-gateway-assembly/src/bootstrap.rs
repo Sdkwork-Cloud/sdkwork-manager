@@ -11,6 +11,8 @@ pub struct ApplicationAssembly {
 
 pub async fn assemble_application_router(host: Arc<ManagerServiceHost>) -> ApplicationAssembly {
     let mut router = Router::new();
+    let iam = sdkwork_iam_gateway_assembly::assemble_application_business_router().await;
+    router = router.merge(iam.router);
     router = router.merge(sdkwork_routes_manager_app_api::gateway_mount(host.clone()).await);
     router = router.merge(sdkwork_routes_manager_backend_api::gateway_mount(host).await);
     ApplicationAssembly { router }

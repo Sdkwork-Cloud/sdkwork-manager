@@ -8,24 +8,28 @@ import {
 
 import { ManagerAuthShell } from "./ManagerAuthShell";
 import type { ManagerAuthRuntimeConfigState } from "./useManagerAuthRuntimeConfig";
+import { useManagerShellMessages } from "../i18n";
 
 export function ManagerAuthRoutes({
   authRuntime,
+  locale,
 }: {
   authRuntime: ManagerAuthRuntimeConfigState;
+  locale: string;
 }) {
+  const { auth } = useManagerShellMessages();
   if (authRuntime.status !== "ready") {
     return (
       <ManagerAuthShell>
         <section aria-live="polite" className="manager-auth-route-status" role="status">
           <p>
             {authRuntime.status === "loading"
-              ? "Connecting to IAM..."
-              : "IAM sign-in is currently unavailable."}
+              ? auth.connecting
+              : auth.unavailable}
           </p>
           {authRuntime.status === "unavailable" ? (
             <button className="manager-auth-route-status__retry" onClick={authRuntime.retry} type="button">
-              Retry
+              {auth.retry}
             </button>
           ) : null}
         </section>
@@ -41,7 +45,7 @@ export function ManagerAuthRoutes({
         className="manager-auth-routes !bg-transparent"
         getRuntime={getManagerIamRuntime}
         homePath="/"
-        locale="zh-CN"
+        locale={locale}
         runtimeConfig={authRuntime.runtimeConfig}
         viewportMode="flow"
       />

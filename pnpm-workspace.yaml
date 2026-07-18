@@ -3,14 +3,6 @@ packages:
   - "apps/sdkwork-manager-common/packages/*"
   - "apps/sdkwork-manager-pc"
   - "apps/sdkwork-manager-pc/packages/*"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-core"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-tenant"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-organization"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-permission"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-oauth"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-account-binding"
-  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-audit"
   - "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript"
   - "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript"
   - "sdks/*"
@@ -23,9 +15,10 @@ packages:
   - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react"
   - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-runtime-pc-react"
   - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-react"
-  - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry"
   - "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript"
   - "../sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript"
+  - "../sdkwork-iam/sdks/sdkwork-iam-open-sdk/sdkwork-iam-open-sdk-typescript"
+  - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry"
   - "../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap"
   - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-appbase-pc-react"
   - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react"
@@ -33,8 +26,56 @@ packages:
   - "../sdkwork-ui/sdkwork-ui-pc-react"
   - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
   - "../sdkwork-utils/packages/sdkwork-utils-typescript"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-core"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-tenant"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-organization"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-permission"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-oauth"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-account-binding"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-audit"
+  - "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-core"
+  - "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-commons"
+  - "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-core"
+  - "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-operations"
+  - "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-storage-providers"
+  - "../sdkwork-drive/sdks/sdkwork-drive-backend-sdk/sdkwork-drive-backend-sdk-typescript"
+  - "../sdkwork-drive/sdks/sdkwork-drive-admin-storage-sdk/sdkwork-drive-admin-storage-sdk-typescript"
+  - "../sdkwork-drive/sdks/sdkwork-drive-app-sdk/sdkwork-drive-app-sdk-typescript"
+  - "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-contracts"
+  - "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-sdk-ports"
+  - "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-service"
+  - "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-core"
+  - "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-channel"
+  - "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-provider"
+  - "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-monitor"
+  - "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-devconfig"
+  - "../sdkwork-payment/sdks/sdkwork-payment-backend-sdk/sdkwork-payment-backend-sdk-typescript"
+  - "../sdkwork-order/apps/sdkwork-order-common/packages/sdkwork-order-contracts"
+  - "../sdkwork-order/apps/sdkwork-order-common/packages/sdkwork-order-sdk-ports"
+  - "../sdkwork-order/apps/sdkwork-order-common/packages/sdkwork-order-service"
+  - "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-core"
+  - "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-orders"
+  - "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-core"
+  - "../sdkwork-order/sdks/sdkwork-order-app-sdk/sdkwork-order-app-sdk-typescript"
+  - "../sdkwork-order/sdks/sdkwork-order-backend-sdk/sdkwork-order-backend-sdk-typescript"
+  - "../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-contracts"
+  - "../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-sdk-ports"
+  - "../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-service"
+  - "../sdkwork-promotion/sdks/sdkwork-promotion-backend-sdk/sdkwork-promotion-backend-sdk-typescript"
+  - "../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-contracts"
+  - "../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-sdk-ports"
+  - "../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service"
+  - "../sdkwork-membership/sdks/sdkwork-membership-app-sdk/sdkwork-membership-app-sdk-typescript"
+  - "../sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript"
 
 catalog:
+  react: ^19.2.4
+  react-dom: ^19.2.4
+  typescript: ~6.0.2
+  vite: ^8.0.3
+  "@types/react": ^19.2.14
+  "@types/react-dom": ^19.2.3
   "@monaco-editor/react": ^4.7.0
   "@playwright/test": ^1.52.0
   "@radix-ui/react-avatar": ^1.1.11
@@ -97,8 +138,6 @@ catalog:
   "@types/markdown-it": ^14.1.2
   "@types/node": ^25.9.2
   "@types/qrcode": ^1.5.6
-  "@types/react": ^19.2.14
-  "@types/react-dom": ^19.2.3
   "@vitejs/plugin-react": ^6.0.1
   "@xterm/addon-fit": ^0.11.0
   "@xterm/addon-image": ^0.9.0
@@ -124,21 +163,17 @@ catalog:
   motion: ^12.23.24
   postcss: ^8.5.8
   qrcode: ^1.5.4
-  react: ^19.2.4
-  react-dom: ^19.2.4
   react-hook-form: ^7.72.1
   react-i18next: ^17.0.7
   react-markdown: ^10.1.0
-  react-router: ^7.15.0
-  react-router-dom: ^7.15.0
+  react-router: ">=6.0.0 <8.0.0"
+  react-router-dom: ">=6.0.0 <8.0.0"
   sonner: ^2.0.7
   tailwind-merge: ^3.5.0
   tailwindcss: ^4.1.14
   tailwindcss-animate: ^1.0.7
   tsup: ^8.5.0
   tsx: ^4.21.0
-  typescript: ~6.0.2
-  vite: ^8.0.3
   vite-plugin-dts: ^4.5.4
-  vitest: ^4.1.8
+  vitest: ^4.1.2
   zustand: ^5.0.12

@@ -12,7 +12,19 @@
     "languages": ["typescript"],
     "generated": false
   },
-  "canonicalSpecs": [
+    "canonicalSpecs": [
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/CODE_STYLE_SPEC.md"
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../../../sdkwork-specs/NAMING_SPEC.md"
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md"
+    },
     {
       "file": "APP_PC_ARCHITECTURE_SPEC.md",
       "path": "../../../../../sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md"
@@ -20,6 +32,10 @@
     {
       "file": "BACKEND_UI_SPEC.md",
       "path": "../../../../../sdkwork-specs/BACKEND_UI_SPEC.md"
+    },
+    {
+      "file": "I18N_SPEC.md",
+      "path": "../../../../../sdkwork-specs/I18N_SPEC.md"
     }
   ],
   "contracts": {
@@ -29,6 +45,9 @@
     "dependencyApiSurfaces": []
   },
   "verification": {
-    "commands": ["pnpm --filter @sdkwork/manager-pc-shell typecheck"]
+    "commands": [
+      "pnpm --dir apps/sdkwork-manager-pc typecheck",
+      "pnpm exec vitest run --config vitest.config.ts --configLoader native apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/tests"
+    ]
   }
 }

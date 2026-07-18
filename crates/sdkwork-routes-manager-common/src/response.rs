@@ -63,6 +63,13 @@ impl ApiProblem {
         }
     }
 
+    pub fn conflict(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+            status: StatusCode::CONFLICT,
+        }
+    }
+
     pub fn internal_server_error(message: impl Into<String>) -> Self {
         Self {
             message: message.into(),
@@ -74,6 +81,7 @@ impl ApiProblem {
         let kind = match self.status {
             StatusCode::BAD_REQUEST => WebFrameworkErrorKind::BadRequest,
             StatusCode::UNAUTHORIZED => WebFrameworkErrorKind::MissingCredentials,
+            StatusCode::CONFLICT => WebFrameworkErrorKind::Conflict,
             StatusCode::INTERNAL_SERVER_ERROR => WebFrameworkErrorKind::InternalServerError,
             _ => WebFrameworkErrorKind::InternalServerError,
         };

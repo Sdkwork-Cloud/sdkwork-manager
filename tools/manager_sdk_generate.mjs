@@ -26,6 +26,7 @@ const families = [
     routeManifest: "sdks/_route-manifests/app-api/sdkwork-routes-manager-app-api.route-manifest.json",
     sourceOpenapi: "apis/app-api/manager/manager-app-api.openapi.json",
     defaultBaseUrl: "http://127.0.0.1:18092",
+    languages: ["typescript"],
     sdkDependencies: [],
   },
   {
@@ -38,6 +39,7 @@ const families = [
       "sdks/_route-manifests/backend-api/sdkwork-routes-manager-backend-api.route-manifest.json",
     sourceOpenapi: "apis/backend-api/manager/manager-backend-api.openapi.json",
     defaultBaseUrl: "http://127.0.0.1:18092",
+    languages: ["typescript", "rust"],
     sdkDependencies: [],
   },
 ];
@@ -137,12 +139,27 @@ function syncFamily(family) {
   const openapi = readJson(sourceOpenapiPath);
   validateOpenapi(family, openapi);
   const familyRoot = path.join(workspaceRoot, "sdks", family.familyName);
+  const consumerPackageName = `@sdkwork/${family.familyName.replace(/^sdkwork-/, "")}`;
+  const transportPackageName = `${family.familyName}-generated-typescript`;
+  const languageContracts = family.languages.map((language) => ({
+    language,
+    workspace: `${family.familyName}-${language}`,
+    generationState: "declared",
+    releaseState: "not_published",
+    generatedPath: `${family.familyName}-${language}/generated/server-openapi`,
+    name: language === "typescript" ? consumerPackageName : family.familyName,
+    version: "0.1.0",
+  }));
   const authorityPath = path.join(familyRoot, "openapi", `${family.authorityName}.openapi.json`);
   const sdkgenPath = path.join(familyRoot, "openapi", `${family.authorityName}.sdkgen.json`);
   writeJson(authorityPath, openapi);
   writeJson(sdkgenPath, openapi);
   writeJson(path.join(familyRoot, "sdk-manifest.json"), {
     schemaVersion: 1,
+    sdkFamily: family.familyName,
+    sdkName: family.familyName,
+    packageName: consumerPackageName,
+    transportPackageName,
     workspace: family.familyName,
     sdkOwner: "sdkwork-manager",
     apiAuthority: family.authorityName,
@@ -158,29 +175,25 @@ function syncFamily(family) {
       generatedProtocols: ["http-openapi"],
       manualTransports: [],
     },
-    languages: [
-      {
-        language: "typescript",
-        workspace: `${family.familyName}-typescript`,
-        generationState: "declared",
-        releaseState: "not_published",
-        generatedPath: `${family.familyName}-typescript/generated/server-openapi`,
-        name: `@sdkwork/${family.familyName}`,
-        version: "0.1.0",
-      },
-    ],
+    typescript: {
+      composedRoot: `${family.familyName}-typescript`,
+      composedEntry: `${family.familyName}-typescript/src/index.ts`,
+      transportRoot: `${family.familyName}-typescript/generated/server-openapi`,
+      transportEntry: `${family.familyName}-typescript/generated/server-openapi/src/index.ts`,
+    },
+    languages: languageContracts,
     sdkDependencies: family.sdkDependencies,
   });
   return { familyRoot, sdkgenPath };
 }
 
-function runSdkgen(family, synced, baseUrl) {
+function runSdkgen(family, synced, language, baseUrl) {
   if (!existsSync(GENERATOR_BIN)) {
     throw new Error(`standard SDK generator not found: ${GENERATOR_BIN}`);
   }
   const outputPath = path.join(
     synced.familyRoot,
-    `${family.familyName}-typescript`,
+    `${family.familyName}-${language}`,
     "generated",
     "server-openapi",
   );
@@ -198,7 +211,7 @@ function runSdkgen(family, synced, baseUrl) {
       "--type",
       family.sdkType,
       "--language",
-      "typescript",
+      language,
       "--base-url",
       baseUrl || family.defaultBaseUrl,
       "--api-prefix",
@@ -210,14 +223,14 @@ function runSdkgen(family, synced, baseUrl) {
       "--sdk-name",
       family.familyName,
       "--package-name",
-      `${family.familyName}-generated-typescript`,
+      `${family.familyName}-generated-${language}`,
       "--standard-profile",
       STANDARD_PROFILE,
     ],
     { cwd: synced.familyRoot, stdio: "inherit" },
   );
   if (result.status !== 0) {
-    throw new Error(`sdkgen failed for ${family.familyName}`);
+    throw new Error(`sdkgen failed for ${family.familyName} (${language})`);
   }
 }
 
@@ -236,7 +249,9 @@ try {
   for (const family of targets) {
     const synced = syncFamily(family);
     if (!checkMode) {
-      runSdkgen(family, synced);
+      for (const language of family.languages) {
+        runSdkgen(family, synced, language);
+      }
     }
   }
 } catch (error) {

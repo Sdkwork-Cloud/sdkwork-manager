@@ -5,13 +5,23 @@ import type {
 } from "@sdkwork/manager-pc-core";
 import type { SdkworkIamService } from "@sdkwork/iam-service";
 
+import {
+  MANAGER_IAM_ADMIN_I18N_CATALOG,
+  useManagerIamAdminMessages,
+} from "./i18n";
+
 type IamRouteDependencies = {
   getPermissionScope: () => readonly string[];
   getService: () => SdkworkIamService;
 };
 
+type IamContributionDependencies = IamRouteDependencies & {
+  locale?: string | null;
+};
+
 function IamRouteLoadingState() {
-  return <div className="manager-module-loading" role="status">Loading IAM admin capability</div>;
+  const { module } = useManagerIamAdminMessages();
+  return <div className="manager-module-loading" role="status">{module.loading}</div>;
 }
 
 const LazyIamUserRoute = lazy(async () => {
@@ -91,7 +101,12 @@ const LazyIamAuditRoute = lazy(async () => {
 });
 
 function IamModuleHeaderContext({ module }: AdminModuleHeaderSlotProps) {
-  return <span className="manager-module-header__context">{module.commercial.releaseChannel} channel</span>;
+  const messages = useManagerIamAdminMessages().module;
+  return (
+    <span className="manager-module-header__context">
+      {messages.channelTemplate.replace("{channel}", module.commercial.releaseChannel)}
+    </span>
+  );
 }
 
 function createLazyRoute(
@@ -108,8 +123,9 @@ function createLazyRoute(
 }
 
 export function createSdkworkManagerIamAdminContribution(
-  dependencies: IamRouteDependencies,
+  dependencies: IamContributionDependencies,
 ): AdminModuleContribution {
+  const messages = MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages(dependencies.locale).module;
   return {
     access: {
       permissionMode: "any",
@@ -127,15 +143,15 @@ export function createSdkworkManagerIamAdminContribution(
     commercial: {
       entitlementKey: "sdkwork.iam.admin",
       releaseChannel: "stable",
-      tier: "foundation",
+      tier: "standard",
     },
     defaultPath: "/admin/iam/users",
-    displayName: "Identity & Access",
+    displayName: messages.displayName,
     domain: "iam",
     header: {
       Context: IamModuleHeaderContext,
-      description: "Operator administration for identities, tenant boundaries, access policy, and security audit.",
-      title: "Identity & Access",
+      description: messages.description,
+      title: messages.title,
     },
     id: "iam.identity-access",
     packageName: "@sdkwork/manager-pc-admin-iam",
@@ -143,57 +159,57 @@ export function createSdkworkManagerIamAdminContribution(
     routes: [
       {
         Component: createLazyRoute(LazyIamUserRoute, dependencies),
-        description: "Directory records and lifecycle",
+        description: messages.routes.users.description,
         id: "iam.users",
-        label: "Users",
+        label: messages.routes.users.label,
         path: "/admin/iam/users",
         requiredPermissions: ["iam.users.read"],
       },
       {
         Component: createLazyRoute(LazyIamTenantRoute, dependencies),
-        description: "Tenant boundaries and members",
+        description: messages.routes.tenants.description,
         id: "iam.tenants",
-        label: "Tenants",
+        label: messages.routes.tenants.label,
         path: "/admin/iam/tenants",
         requiredPermissions: ["iam.tenants.read"],
       },
       {
         Component: createLazyRoute(LazyIamOrganizationRoute, dependencies),
-        description: "Organizations, departments, and memberships",
+        description: messages.routes.organizations.description,
         id: "iam.organizations",
-        label: "Organizations",
+        label: messages.routes.organizations.label,
         path: "/admin/iam/organizations",
         requiredPermissions: ["iam.organizations.read"],
       },
       {
         Component: createLazyRoute(LazyIamPermissionRoute, dependencies),
-        description: "Roles, permissions, policies, and bindings",
+        description: messages.routes.authorization.description,
         id: "iam.authorization",
-        label: "Authorization",
+        label: messages.routes.authorization.label,
         path: "/admin/iam/authorization",
         requiredPermissions: ["iam.roles.read", "iam.permissions.read"],
       },
       {
         Component: createLazyRoute(LazyIamOauthRoute, dependencies),
-        description: "OAuth providers, applications, and grants",
+        description: messages.routes.oauth.description,
         id: "iam.oauth",
-        label: "OAuth",
+        label: messages.routes.oauth.label,
         path: "/admin/iam/oauth",
         requiredPermissions: ["iam.oauth.read"],
       },
       {
         Component: createLazyRoute(LazyIamAccountBindingRoute, dependencies),
-        description: "Contact and identity binding policy",
+        description: messages.routes.accountBinding.description,
         id: "iam.account-binding",
-        label: "Account binding",
+        label: messages.routes.accountBinding.label,
         path: "/admin/iam/account-binding",
         requiredPermissions: ["iam.account_binding_policy.read"],
       },
       {
         Component: createLazyRoute(LazyIamAuditRoute, dependencies),
-        description: "Security and administrative audit events",
+        description: messages.routes.audit.description,
         id: "iam.audit",
-        label: "Audit",
+        label: messages.routes.audit.label,
         path: "/admin/iam/audit",
         requiredPermissions: ["iam.audit_events.read"],
       },
@@ -201,3 +217,5 @@ export function createSdkworkManagerIamAdminContribution(
     surface: "backend-admin",
   };
 }
+
+export * from "./i18n";

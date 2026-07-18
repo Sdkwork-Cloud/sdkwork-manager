@@ -13,7 +13,6 @@ export type AdminModuleCommercialOffer = {
 };
 
 export type AdminModuleAccessScope = {
-  entitlementKeys: readonly string[];
   permissionScope: readonly string[];
 };
 
@@ -30,7 +29,9 @@ export type AdminModuleRoute = {
   description?: string;
   id: string;
   label: string;
+  navigationVisible?: boolean;
   path: string;
+  permissionMode?: "all" | "any";
   requiredPermissions?: readonly string[];
 };
 
@@ -87,6 +88,14 @@ function normalizePath(path: string): string {
   return path.length > 1 ? path.replace(/\/+$/, "") : path;
 }
 
+function routePathMatches(routePath: string, pathname: string): boolean {
+  const routeSegments = normalizePath(routePath).split("/").filter(Boolean);
+  const pathnameSegments = normalizePath(pathname).split("/").filter(Boolean);
+  return routeSegments.length === pathnameSegments.length && routeSegments.every(
+    (segment, index) => segment.startsWith(":") || segment === pathnameSegments[index],
+  );
+}
+
 function assertModuleContribution(module: AdminModuleContribution): void {
   if (!MODULE_ID_PATTERN.test(module.id)) {
     throw new Error(`Admin module id must be lowercase and namespaced: ${module.id}`);
@@ -114,7 +123,6 @@ export function createAdminModuleAccessScope(
   input: Partial<AdminModuleAccessScope> = {},
 ): AdminModuleAccessScope {
   return {
-    entitlementKeys: input.entitlementKeys ?? [],
     permissionScope: input.permissionScope ?? [],
   };
 }
@@ -123,12 +131,6 @@ export function hasAdminModuleAccess(
   module: AdminModuleContribution,
   scope: AdminModuleAccessScope,
 ): boolean {
-  if (
-    module.commercial.tier !== "foundation"
-    && !scope.entitlementKeys.includes(module.commercial.entitlementKey)
-  ) {
-    return false;
-  }
   const requiredPermissions = module.access.requiredPermissions ?? [];
   if (!requiredPermissions.length) {
     return true;
@@ -148,7 +150,15 @@ export function hasAdminRouteAccess(
   scope: AdminModuleAccessScope,
 ): boolean {
   const requiredPermissions = route.requiredPermissions ?? [];
-  return requiredPermissions.length === 0 || requiredPermissions.some((permission) =>
+  if (!requiredPermissions.length) {
+    return true;
+  }
+  if (route.permissionMode === "all") {
+    return requiredPermissions.every((permission) =>
+      hasPermissionInScope(scope.permissionScope, permission),
+    );
+  }
+  return requiredPermissions.some((permission) =>
     hasPermissionInScope(scope.permissionScope, permission),
   );
 }
@@ -157,9 +167,10 @@ function listAccessibleModuleRoutes(
   module: AdminModuleContribution,
   scope?: AdminModuleAccessScope,
 ): readonly AdminModuleRoute[] {
-  return scope
+  const accessibleRoutes = scope
     ? module.routes.filter((route) => hasAdminRouteAccess(route, scope))
     : module.routes;
+  return accessibleRoutes.filter((route) => route.navigationVisible !== false);
 }
 
 function resolveAccessibleModuleDefaultPath(
@@ -217,7 +228,8 @@ export function createSdkworkCoreModuleRegistry(
     },
     findRouteForPath: (pathname) => {
       const normalizedPathname = normalizePath(pathname);
-      return routes.find((route) => normalizePath(route.path) === normalizedPathname);
+      return routes.find((route) => normalizePath(route.path) === normalizedPathname)
+        ?? routes.find((route) => routePathMatches(route.path, normalizedPathname));
     },
     hasModuleAccess: (module, scope) => hasAdminModuleAccess(module, scope),
     hasRouteAccess: (route, scope) => hasAdminRouteAccess(route, scope),

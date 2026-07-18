@@ -4,6 +4,22 @@
   "moduleId": "manager",
   "domain": "manager",
   "permissions": {
-    "catalog": []
+    "catalog": [
+      {
+        "code": "manager.entitlements.read",
+        "description": "Read the current tenant-application commercial entitlement snapshot.",
+        "source": "openapi"
+      },
+      {
+        "code": "manager.entitlements.manage",
+        "description": "Replace the current tenant-application commercial entitlement snapshot.",
+        "source": "openapi"
+      },
+      {
+        "code": "manager.entitlements.enforce",
+        "description": "Evaluate a commercial entitlement for a trusted server-side consumer.",
+        "source": "openapi"
+      }
+    ]
   }
 }

@@ -23,9 +23,51 @@
     "appId": "sdkwork-manager-pc",
     "accessTokenPermissionScope": [
       "iam.users.read",
+      "iam.tenants.read",
       "iam.organizations.read",
       "iam.roles.read",
-      "iam.permissions.read"
+      "iam.permissions.read",
+      "iam.oauth.read",
+      "iam.account_binding_policy.read",
+      "iam.audit_events.read",
+      "manager.entitlements.read",
+      "drive.audit.admin",
+      "drive.download_packages.admin",
+      "drive.labels.admin",
+      "drive.maintenance.admin",
+      "drive.quota.admin",
+      "drive.spaces.admin",
+      "drive.storage.admin",
+      "commerce.orders.read",
+      "commerce.orders.manage",
+      "commerce.memberships.read",
+      "commerce.memberships.manage",
+      "commerce.marketing.read",
+      "commerce.marketing.manage",
+      "commerce.payments.intents.read",
+      "commerce.payments.attempts.read",
+      "commerce.payments.methods.read",
+      "commerce.payments.methods.create",
+      "commerce.payments.methods.update",
+      "commerce.payments.provider_accounts.read",
+      "commerce.payments.provider_accounts.create",
+      "commerce.payments.provider_accounts.update",
+      "commerce.payments.provider_accounts.test",
+      "commerce.payments.provider_accounts.credentials.rotate",
+      "commerce.payments.channels.read",
+      "commerce.payments.channels.create",
+      "commerce.payments.route_rules.read",
+      "commerce.payments.route_rules.create",
+      "commerce.payments.route_rules.update",
+      "commerce.payments.route_rules.delete",
+      "commerce.payments.sub_merchants.read",
+      "commerce.payments.sub_merchants.create",
+      "commerce.payments.sub_merchants.update",
+      "commerce.payments.sub_merchants.delete",
+      "commerce.payments.webhook_events.read",
+      "commerce.payments.webhook_events.replay",
+      "commerce.payments.reconciliation_runs.read",
+      "commerce.payments.reconciliation_runs.create"
     ]
   },
   "runtime": {
@@ -66,13 +108,7 @@
         "name": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL",
         "required": true,
         "tracked": true,
-        "surface": "backend-api",
-        "sdkFamily": "sdkwork-iam-backend-sdk"
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_VITE_DEV_PROXY_ENABLED",
-        "required": false,
-        "tracked": true
+        "surface": "platform-api-gateway"
       },
       {
         "name": "VITE_SDKWORK_MANAGER_ENVIRONMENT",
@@ -83,6 +119,16 @@
         "name": "VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE",
         "required": true,
         "tracked": true
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_DEFAULT_LOCALE",
+        "required": true,
+        "tracked": true
+      },
+      {
+        "name": "VITE_SDKWORK_MANAGER_FALLBACK_LOCALE",
+        "required": true,
+        "tracked": true
       }
     ],
     "sdkBaseUrls": {
@@ -90,9 +136,27 @@
       "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
       "dependencySdkBaseUrlKeys": {
         "sdkwork-iam-app-sdk": {
-          "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+          "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"
         },
         "sdkwork-iam-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"
+        },
+        "sdkwork-drive-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-drive-admin-storage-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-payment-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-order-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-promotion-backend-sdk": {
+          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
+        },
+        "sdkwork-membership-backend-sdk": {
           "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
         }
       }
@@ -133,16 +197,6 @@
     "config": {
       "workspaceRoot": "sdkwork-manager",
       "managedBy": "sdkwork-manager-workspace"
-    }
-  },
-  "environments": {
-    "development": {
-      "accessUrl": "http://127.0.0.1:18092",
-      "deployUrl": "http://127.0.0.1:18092",
-      "deployEnv": "dev"
-    },
-    "production": {
-      "runtimeProfile": "cloud.split-services.production"
     }
   },
   "artifacts": {

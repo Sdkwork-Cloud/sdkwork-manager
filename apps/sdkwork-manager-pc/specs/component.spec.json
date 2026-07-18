@@ -22,6 +22,10 @@
       "path": "../../../sdkwork-specs/BACKEND_UI_SPEC.md"
     },
     {
+      "file": "I18N_SPEC.md",
+      "path": "../../../sdkwork-specs/I18N_SPEC.md"
+    },
+    {
       "file": "IAM_LOGIN_INTEGRATION_SPEC.md",
       "path": "../../../sdkwork-specs/IAM_LOGIN_INTEGRATION_SPEC.md"
     }
@@ -37,6 +41,36 @@
       },
       {
         "workspace": "sdkwork-iam-backend-sdk",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      },
+      {
+        "workspace": "sdkwork-drive-backend-sdk",
+        "permissionModuleId": "drive",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      },
+      {
+        "workspace": "sdkwork-drive-admin-storage-sdk",
+        "permissionModuleId": "drive",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      },
+      {
+        "workspace": "sdkwork-payment-backend-sdk",
+        "permissionModuleId": "payment",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      },
+      {
+        "workspace": "sdkwork-order-backend-sdk",
+        "permissionModuleId": "commerce",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      },
+      {
+        "workspace": "sdkwork-promotion-backend-sdk",
+        "permissionModuleId": "promotion",
         "surface": "backend-api",
         "credentialMode": "authenticated-backend-admin"
       }

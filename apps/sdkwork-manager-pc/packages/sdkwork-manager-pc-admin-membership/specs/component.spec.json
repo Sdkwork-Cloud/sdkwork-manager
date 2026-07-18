@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/manager-pc-admin-membership",
+    "displayName": "SDKWork Manager PC Membership Center",
+    "type": "react-package",
+    "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership",
+    "domain": "commerce",
+    "capability": "membership-operations",
+    "surface": "backend-admin",
+    "languages": ["typescript", "react"],
+    "generated": false
+  },
+  "canonicalSpecs": [
+    { "file": "BACKEND_UI_SPEC.md", "path": "../../../../../sdkwork-specs/BACKEND_UI_SPEC.md" },
+    { "file": "PAGINATION_SPEC.md", "path": "../../../../../sdkwork-specs/PAGINATION_SPEC.md" },
+    { "file": "I18N_SPEC.md", "path": "../../../../../sdkwork-specs/I18N_SPEC.md" }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-membership-backend-sdk",
+        "permissionModuleId": "commerce",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["pnpm --filter @sdkwork/manager-pc-admin-membership typecheck"]
+  }
+}

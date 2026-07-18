@@ -7,8 +7,9 @@ import {
   SDKWORK_APP_API_PREFIX,
   SDKWORK_BACKEND_API_PREFIX,
   VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
+  VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE,
+  VITE_SDKWORK_MANAGER_ENVIRONMENT,
   VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
-  VITE_SDKWORK_MANAGER_VITE_DEV_PROXY_ENABLED,
 } from "./topologyEnvKeys";
 
 export type ClientRuntimeEnv = Record<string, string | boolean | undefined> & {
@@ -31,30 +32,6 @@ export function readSdkBaseUrlEnvValue(
 ): string | undefined {
   const value = env[key];
   return typeof value === "string" && !isBlank(value) ? value.trim() : undefined;
-}
-
-function readNodeEnvValue(key: string): string | undefined {
-  const processLike = globalThis as {
-    process?: { env?: Record<string, string | undefined> };
-  };
-  const value = processLike.process?.env?.[key];
-  return typeof value === "string" && !isBlank(value) ? value.trim() : undefined;
-}
-
-export function isSdkRuntimeDev(
-  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
-): boolean {
-  if (env.DEV === true || env.DEV === "true") {
-    return true;
-  }
-  if (env.DEV === false || env.DEV === "false") {
-    return false;
-  }
-  const nodeEnv = readNodeEnvValue("NODE_ENV");
-  if (nodeEnv) {
-    return nodeEnv !== "production";
-  }
-  return typeof window === "undefined";
 }
 
 function stripSdkOwnedPathSuffix(pathname: string, suffixes: string[]): string {
@@ -92,39 +69,10 @@ export function normalizeHttpSdkBaseUrl(
   }
 }
 
-function parseBooleanEnv(value: string | undefined): boolean | undefined {
-  const normalized = (value ?? "").trim().toLowerCase();
-  if (!normalized) {
-    return undefined;
-  }
-  if (["1", "on", "true", "yes"].includes(normalized)) {
-    return true;
-  }
-  if (["0", "false", "no", "off"].includes(normalized)) {
-    return false;
-  }
-  return undefined;
-}
-
-export function shouldUseBrowserDevProxy(
-  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
-): boolean {
-  if (!isSdkRuntimeDev(env)) {
-    return false;
-  }
-  const explicit = parseBooleanEnv(
-    readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_VITE_DEV_PROXY_ENABLED, env),
-  );
-  return explicit ?? true;
-}
-
 export function resolveManagerApplicationBaseUrl(
   explicit?: string,
   env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
 ): string {
-  if (shouldUseBrowserDevProxy(env)) {
-    return "";
-  }
   const candidate =
     explicit ??
     readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL, env) ??
@@ -139,9 +87,6 @@ export function resolvePlatformApiGatewayBaseUrl(
   explicit?: string,
   env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
 ): string {
-  if (shouldUseBrowserDevProxy(env)) {
-    return "";
-  }
   const candidate =
     explicit ??
     readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, env) ??
@@ -152,14 +97,25 @@ export function resolvePlatformApiGatewayBaseUrl(
   return normalizeHttpSdkBaseUrl(candidate.replace(/\/+$/u, ""));
 }
 
+function resolveManagerIamBaseUrl(
+  explicit?: string,
+  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
+): string {
+  return resolveManagerApplicationBaseUrl(explicit, env);
+}
+
 export function resolveIamAppApiBaseUrl(
   explicit?: string,
   env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
 ): string {
-  if (shouldUseBrowserDevProxy(env)) {
-    return "";
-  }
-  return resolvePlatformApiGatewayBaseUrl(explicit, env);
+  return resolveManagerIamBaseUrl(explicit, env);
+}
+
+export function resolveIamBackendApiBaseUrl(
+  explicit?: string,
+  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
+): string {
+  return resolveManagerIamBaseUrl(explicit, env);
 }
 
 export function resolveManagerBackendApiBaseUrl(
@@ -184,6 +140,28 @@ export function resolveManagerApiBaseUrl(
 }
 
 export type ClientPlatform = "pc" | "h5" | "flutter-web";
+
+export type ManagerEnvironment = "development" | "test" | "staging" | "production";
+export type ManagerDeploymentProfile = "standalone" | "cloud";
+
+export function resolveManagerEnvironment(
+  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
+): ManagerEnvironment {
+  const value = readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_ENVIRONMENT, env)?.toLowerCase();
+  if (value === "test" || value === "staging" || value === "production") {
+    return value;
+  }
+  return "development";
+}
+
+export function resolveManagerDeploymentProfile(
+  env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
+): ManagerDeploymentProfile {
+  return readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE, env)?.toLowerCase()
+    === "standalone"
+    ? "standalone"
+    : "cloud";
+}
 
 export function managerAppApiPathSegment(): string {
   return MANAGER_APP_API_SEGMENT;

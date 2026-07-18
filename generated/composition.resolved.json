@@ -7,25 +7,97 @@
       "workspace": "sdkwork-iam-app-sdk",
       "surface": "app-api",
       "apiPrefix": "/app/v3/api",
-      "connectivityPlane": "platform",
-      "runtimeMode": "external-via-platform-gateway",
-      "mountStatus": null,
-      "envKey": "VITE_SDKWORK_APPBASE_APP_API_BASE_URL",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": "verified",
+      "envKey": null,
       "forbidProductSameOriginFallback": false,
       "corePackage": "@sdkwork/manager-pc-core",
       "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/specs/component.spec.json"
     },
     {
-      "workspace": "sdkwork-manager-app-sdk",
-      "surface": "app-api",
-      "apiPrefix": "/app/v3/api",
+      "workspace": "sdkwork-iam-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api/iam",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": "verified",
+      "envKey": null,
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-drive-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
       "connectivityPlane": "application",
       "runtimeMode": "same-origin-embedded",
       "mountStatus": null,
-      "envKey": "VITE_SDKWORK_MANAGER_APP_API_BASE_URL",
+      "envKey": "VITE_SDKWORK_DRIVE_BACKEND_API_BASE_URL",
       "forbidProductSameOriginFallback": false,
-      "corePackage": "@sdkwork/manager-pc-core",
-      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/specs/component.spec.json"
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-drive-admin-storage-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": null,
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-payment-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_PAYMENT_BACKEND_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-order-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_ORDER_BACKEND_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-promotion-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_PROMOTION_BACKEND_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
+    },
+    {
+      "workspace": "sdkwork-membership-backend-sdk",
+      "surface": "backend-api",
+      "apiPrefix": "/backend/v3/api",
+      "connectivityPlane": "application",
+      "runtimeMode": "same-origin-embedded",
+      "mountStatus": null,
+      "envKey": "VITE_SDKWORK_MEMBERSHIP_BACKEND_API_BASE_URL",
+      "forbidProductSameOriginFallback": false,
+      "corePackage": "@sdkwork/manager-pc-admin-core",
+      "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json"
     }
   ],
   "permissions": {
@@ -35,17 +107,801 @@
         "workspace": "sdkwork-iam-app-sdk",
         "manifestRef": "../sdkwork-iam/iam/modules/iam-kernel/iam.module.manifest.json",
         "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-iam-backend-sdk",
+        "manifestRef": "../sdkwork-iam/iam/modules/iam-kernel/iam.module.manifest.json",
+        "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-drive-backend-sdk",
+        "manifestRef": "../sdkwork-iam/iam/modules/drive/iam.module.manifest.json",
+        "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-payment-backend-sdk",
+        "manifestRef": "../sdkwork-payment/specs/iam.module.manifest.json",
+        "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-order-backend-sdk",
+        "manifestRef": "../sdkwork-order/specs/iam.module.manifest.json",
+        "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-promotion-backend-sdk",
+        "manifestRef": "../sdkwork-promotion/specs/iam.module.manifest.json",
+        "inheritPermissions": true
+      },
+      {
+        "workspace": "sdkwork-membership-backend-sdk",
+        "manifestRef": "../sdkwork-membership/specs/iam.module.manifest.json",
+        "inheritPermissions": true
       }
     ]
   },
+  "architecture": {
+    "components": [
+      {
+        "name": "@sdkwork/manager-pc-admin-core",
+        "type": "typescript-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core",
+        "domain": "platform",
+        "capability": "admin-core",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          ".",
+          "./sdk",
+          "./modules",
+          "./host",
+          "./session",
+          "./composition"
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-backend-sdk",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-drive-backend-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-drive-admin-storage-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-payment-backend-sdk",
+            "permissionModuleId": "payment",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-order-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-promotion-backend-sdk",
+            "permissionModuleId": "promotion",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-membership-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-customer",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer",
+        "domain": "platform",
+        "capability": "customer-360",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-backend-sdk",
+            "permissionModuleId": "iam-kernel",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-membership-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-drive",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive",
+        "domain": "drive",
+        "capability": "drive-integration",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-drive-backend-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-drive-admin-storage-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-iam",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam",
+        "domain": "iam",
+        "capability": "iam-integration",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-backend-sdk",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-marketing",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing",
+        "domain": "commerce",
+        "capability": "marketing-integration",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-promotion-backend-sdk",
+            "permissionModuleId": "promotion",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-membership",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership",
+        "domain": "commerce",
+        "capability": "membership-operations",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-membership-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-payment",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment",
+        "domain": "commerce",
+        "capability": "payment-integration",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-payment-backend-sdk",
+            "permissionModuleId": "payment",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-admin-trade",
+        "type": "react-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade",
+        "domain": "commerce",
+        "capability": "trade-integration",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript",
+          "react"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-order-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-core",
+        "type": "typescript-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core",
+        "domain": "manager",
+        "capability": "core",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-app-sdk",
+            "surface": "app-api",
+            "credentialMode": "authenticated-app-api"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-shell",
+        "type": "typescript-package",
+        "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell",
+        "domain": "platform",
+        "capability": "manager-admin-shell",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript"
+        ],
+        "source": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [],
+        "routeManifest": null,
+        "runtimeEntrypoints": [],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "@sdkwork/manager-pc-app",
+        "type": "typescript-package",
+        "root": "apps/sdkwork-manager-pc",
+        "domain": "platform",
+        "capability": "manager-admin-host",
+        "surface": "backend-admin",
+        "languages": [
+          "typescript"
+        ],
+        "source": "apps/sdkwork-manager-pc/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-app-sdk",
+            "surface": "app-api",
+            "credentialMode": "authenticated-app-api"
+          },
+          {
+            "workspace": "sdkwork-iam-backend-sdk",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-drive-backend-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-drive-admin-storage-sdk",
+            "permissionModuleId": "drive",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-payment-backend-sdk",
+            "permissionModuleId": "payment",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-order-backend-sdk",
+            "permissionModuleId": "commerce",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          },
+          {
+            "workspace": "sdkwork-promotion-backend-sdk",
+            "permissionModuleId": "promotion",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-admin"
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [
+          "src/main.tsx"
+        ],
+        "dependencyApiSurfaces": []
+      },
+      {
+        "name": "sdkwork-manager-standalone-gateway",
+        "type": "rust-crate",
+        "root": ".",
+        "domain": "platform",
+        "capability": "manager-standalone-gateway",
+        "surface": "backend",
+        "languages": [
+          "rust"
+        ],
+        "source": "crates/sdkwork-manager-standalone-gateway/specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [
+          {
+            "workspace": "sdkwork-iam-app-sdk",
+            "surface": "app-api",
+            "credentialMode": "authenticated-app-api",
+            "required": true
+          },
+          {
+            "workspace": "sdkwork-iam-backend-sdk",
+            "surface": "backend-api",
+            "credentialMode": "authenticated-backend-api",
+            "required": true
+          }
+        ],
+        "routeManifest": null,
+        "runtimeEntrypoints": [
+          "src/main.rs",
+          "sdkwork_manager_gateway_assembly::assemble_application_router"
+        ],
+        "dependencyApiSurfaces": [
+          {
+            "workspace": "sdkwork-iam",
+            "sdkFamily": "sdkwork-iam-app-sdk",
+            "apiAuthority": "sdkwork-iam-app-api",
+            "surface": "app-api",
+            "apiPrefix": "/app/v3/api",
+            "runtimeMode": "same-origin-mounted",
+            "cargoDependency": "sdkwork_manager_gateway_assembly",
+            "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+            "coverageEvidence": [
+              "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+            ]
+          },
+          {
+            "workspace": "sdkwork-iam",
+            "sdkFamily": "sdkwork-iam-backend-sdk",
+            "apiAuthority": "sdkwork-iam-backend-api",
+            "surface": "backend-api",
+            "apiPrefix": "/backend/v3/api/iam",
+            "runtimeMode": "same-origin-mounted",
+            "cargoDependency": "sdkwork_manager_gateway_assembly",
+            "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+            "coverageEvidence": [
+              "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "sdkwork-manager-workspace",
+        "type": "rust-crate",
+        "root": "sdkwork-manager",
+        "domain": "platform",
+        "capability": "manager",
+        "surface": null,
+        "languages": [
+          "typescript",
+          "rust"
+        ],
+        "source": "specs/component.spec.json",
+        "layerRole": null,
+        "publicExports": [
+          "."
+        ],
+        "providedPorts": [],
+        "requiredPorts": [],
+        "sdkDependencies": [],
+        "routeManifest": "sdks/_route-manifests/app-api/sdkwork-routes-manager-app-api.route-manifest.json",
+        "runtimeEntrypoints": [
+          "package.json#scripts.verify"
+        ],
+        "dependencyApiSurfaces": []
+      }
+    ],
+    "frontend": {
+      "packages": [
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-core",
+          "name": "@sdkwork/manager-pc-admin-core",
+          "role": "core"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-customer",
+          "name": "@sdkwork/manager-pc-admin-customer",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-drive",
+          "name": "@sdkwork/manager-pc-admin-drive",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-iam",
+          "name": "@sdkwork/manager-pc-admin-iam",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-marketing",
+          "name": "@sdkwork/manager-pc-admin-marketing",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-membership",
+          "name": "@sdkwork/manager-pc-admin-membership",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-payment",
+          "name": "@sdkwork/manager-pc-admin-payment",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-admin-trade",
+          "name": "@sdkwork/manager-pc-admin-trade",
+          "role": "capability"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-core",
+          "name": "@sdkwork/manager-pc-core",
+          "role": "core"
+        },
+        {
+          "appRoot": "apps/sdkwork-manager-pc",
+          "architecture": "pc",
+          "directoryName": "sdkwork-manager-pc-shell",
+          "name": "@sdkwork/manager-pc-shell",
+          "role": "shell"
+        }
+      ]
+    },
+    "rust": {
+      "crates": [
+        {
+          "packageName": "sdkwork-manager-database-host",
+          "manifest": "crates/sdkwork-manager-database-host/Cargo.toml",
+          "dependencies": [
+            "dotenvy",
+            "sdkwork-database-config",
+            "sdkwork-database-lifecycle",
+            "sdkwork-database-spi",
+            "sdkwork-database-sqlx"
+          ]
+        },
+        {
+          "packageName": "sdkwork-manager-gateway-assembly",
+          "manifest": "crates/sdkwork-manager-gateway-assembly/Cargo.toml",
+          "dependencies": [
+            "axum",
+            "tokio",
+            "sdkwork-manager-service-host",
+            "sdkwork-routes-manager-app-api",
+            "sdkwork-routes-manager-backend-api",
+            "sdkwork-iam-gateway-assembly"
+          ]
+        },
+        {
+          "packageName": "sdkwork-manager-service-host",
+          "manifest": "crates/sdkwork-manager-service-host/Cargo.toml",
+          "dependencies": [
+            "sdkwork-platform-manager-repository-sqlx",
+            "sdkwork-platform-manager-service",
+            "sdkwork-database-sqlx",
+            "sdkwork-database-spi",
+            "sdkwork-manager-database-host"
+          ]
+        },
+        {
+          "packageName": "manager-server",
+          "manifest": "crates/sdkwork-manager-standalone-gateway/Cargo.toml",
+          "dependencies": [
+            "sdkwork-manager-gateway-assembly",
+            "axum",
+            "tokio",
+            "tower-http",
+            "tracing",
+            "tracing-subscriber",
+            "serde-json",
+            "sdkwork-web-bootstrap",
+            "sdkwork-manager-service-host",
+            "sdkwork-iam-embedded-application-bootstrap",
+            "sdkwork-iam-database-host"
+          ]
+        },
+        {
+          "packageName": "sdkwork-platform-manager-repository-sqlx",
+          "manifest": "crates/sdkwork-platform-manager-repository-sqlx/Cargo.toml",
+          "dependencies": [
+            "async-trait",
+            "chrono",
+            "serde-json",
+            "sqlx",
+            "uuid",
+            "sdkwork-platform-manager-service",
+            "sdkwork-database-sqlx"
+          ]
+        },
+        {
+          "packageName": "sdkwork-platform-manager-service",
+          "manifest": "crates/sdkwork-platform-manager-service/Cargo.toml",
+          "dependencies": [
+            "serde",
+            "serde-json",
+            "uuid",
+            "thiserror",
+            "async-trait",
+            "chrono",
+            "tokio"
+          ]
+        },
+        {
+          "packageName": "sdkwork-routes-manager-app-api",
+          "manifest": "crates/sdkwork-routes-manager-app-api/Cargo.toml",
+          "dependencies": [
+            "axum",
+            "serde",
+            "serde-json",
+            "sdkwork-platform-manager-service",
+            "sdkwork-manager-service-host",
+            "sdkwork-routes-manager-common",
+            "sdkwork-web-core",
+            "sdkwork-web-axum",
+            "sdkwork-web-bootstrap",
+            "sdkwork-iam-web-adapter",
+            "uuid"
+          ]
+        },
+        {
+          "packageName": "sdkwork-routes-manager-backend-api",
+          "manifest": "crates/sdkwork-routes-manager-backend-api/Cargo.toml",
+          "dependencies": [
+            "axum",
+            "serde-json",
+            "sdkwork-platform-manager-service",
+            "sdkwork-manager-service-host",
+            "sdkwork-routes-manager-common",
+            "sdkwork-web-core",
+            "sdkwork-web-axum",
+            "sdkwork-web-bootstrap",
+            "sdkwork-iam-web-adapter",
+            "uuid"
+          ]
+        },
+        {
+          "packageName": "sdkwork-routes-manager-common",
+          "manifest": "crates/sdkwork-routes-manager-common/Cargo.toml",
+          "dependencies": [
+            "axum",
+            "serde",
+            "uuid",
+            "sdkwork-utils-rust",
+            "sdkwork-web-core",
+            "axum",
+            "serde-json",
+            "sdkwork-web-core",
+            "tokio"
+          ]
+        }
+      ]
+    },
+    "routes": {
+      "manifests": [
+        {
+          "source": "sdks/_route-manifests/app-api/sdkwork-routes-manager-app-api.route-manifest.json",
+          "packageName": "sdkwork-routes-manager-app-api",
+          "surface": "app-api",
+          "routeCount": 2
+        },
+        {
+          "source": "sdks/_route-manifests/backend-api/sdkwork-routes-manager-backend-api.route-manifest.json",
+          "packageName": "sdkwork-routes-manager-backend-api",
+          "surface": "backend-api",
+          "routeCount": 1
+        }
+      ]
+    },
+    "runtime": {
+      "dependencyApiSurfaces": [
+        {
+          "component": "sdkwork-manager-standalone-gateway",
+          "source": "crates/sdkwork-manager-standalone-gateway/specs/component.spec.json",
+          "workspace": "sdkwork-iam",
+          "sdkFamily": "sdkwork-iam-app-sdk",
+          "apiAuthority": "sdkwork-iam-app-api",
+          "surface": "app-api",
+          "apiPrefix": "/app/v3/api",
+          "runtimeMode": "same-origin-mounted",
+          "cargoDependency": "sdkwork_manager_gateway_assembly",
+          "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+          "coverageEvidence": [
+            "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+          ]
+        },
+        {
+          "component": "sdkwork-manager-standalone-gateway",
+          "source": "crates/sdkwork-manager-standalone-gateway/specs/component.spec.json",
+          "workspace": "sdkwork-iam",
+          "sdkFamily": "sdkwork-iam-backend-sdk",
+          "apiAuthority": "sdkwork-iam-backend-api",
+          "surface": "backend-api",
+          "apiPrefix": "/backend/v3/api/iam",
+          "runtimeMode": "same-origin-mounted",
+          "cargoDependency": "sdkwork_manager_gateway_assembly",
+          "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+          "coverageEvidence": [
+            "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+          ]
+        }
+      ]
+    }
+  },
   "env": {},
-  "requiresPlatformGatewayProcess": true,
+  "requiresPlatformGatewayProcess": false,
   "issues": [],
   "meta": {
     "resolver": "sdkwork-specs/tools/lib/composition-resolver.mjs",
     "credentialModes": {
       "sdkwork-iam-app-sdk": "authenticated-app-api",
-      "sdkwork-manager-app-sdk": "authenticated-app-api"
+      "sdkwork-iam-backend-sdk": "authenticated-backend-admin",
+      "sdkwork-drive-backend-sdk": "authenticated-backend-admin",
+      "sdkwork-drive-admin-storage-sdk": "authenticated-backend-admin",
+      "sdkwork-payment-backend-sdk": "authenticated-backend-admin",
+      "sdkwork-order-backend-sdk": "authenticated-backend-admin",
+      "sdkwork-promotion-backend-sdk": "authenticated-backend-admin",
+      "sdkwork-membership-backend-sdk": "authenticated-backend-admin"
     }
   }
 }

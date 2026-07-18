@@ -2,8 +2,8 @@
 
 Status: active
 Owner: SDKWork maintainers
-Updated: 2026-06-30
-Specs: `sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md`, `WEB_FRAMEWORK_SPEC.md`, `DATABASE_FRAMEWORK_SPEC.md`
+Updated: 2026-07-18
+Specs: `sdkwork-specs/ARCHITECTURE_DECISION_SPEC.md`, `APP_PC_ARCHITECTURE_SPEC.md`, `WEB_FRAMEWORK_SPEC.md`, `DATABASE_FRAMEWORK_SPEC.md`
 
 ## 1. Architecture Overview
 
@@ -45,7 +45,25 @@ Detailed PC integration and commercialization design:
 - Errors: `application/problem+json` (`ProblemDetail`)
 - Table prefix: `platform_` (schema owner: `manager-platform`)
 - Database env prefix: `MANAGER_DATABASE_*` (runtime) / topology `SDKWORK_MANAGER_*`
-- File upload: not implemented; future work must use `sdkwork-drive` per `DRIVE_SPEC.md`
+- File and storage administration: composed `sdkwork-drive` backend/admin-storage SDKs through the platform gateway
+- Commercial operations: composed Order, Promotion, Payment, and Membership backend SDKs through the platform gateway
+- Operator mutation visibility: owning Payment and Order admin workspaces expose
+  explicit capability props; Manager maps them from the IAM permission scope
+  using the same OpenAPI permission codes enforced by backend routes
+- Commercial module entitlement: Manager owns the tenant-application authority
+  in `platform_manager_entitlement_snapshot` and
+  `platform_manager_entitlement_grant`. The composed Manager Backend SDK reads
+  the versioned snapshot for PC visibility and exposes the protected
+  `/commercial_entitlements/verify` command for trusted gateway/business-service
+  enforcement. It remains separate from end-user Membership benefit accounts.
+- Commercial authorization permissions are split by responsibility:
+  `manager.entitlements.read` is available to the Manager PC session,
+  `manager.entitlements.manage` belongs only to the licensing/control-plane
+  identity, and `manager.entitlements.enforce` belongs only to trusted
+  server-side consumers. Browser visibility never replaces the verify command.
+- Customer 360: IAM user directory as the entry point, with permission-gated
+  Membership reads; no Manager-owned customer master table and no browser
+  full-list cross-domain join
 - Service discovery: deferred until RPC/cloud-split deployment exists
 
 ## 5. Deployment And Runtime Topology
@@ -53,7 +71,56 @@ Detailed PC integration and commercialization design:
 - Topology authority: `specs/topology.spec.json` (`appId: sdkwork-manager`)
 - Deploy authority: `deployments/deploy.yaml`
 - Profiles: standalone unified-process (dev) and cloud split-services (prod)
-- Gateway configs: `configs/sdkwork-api-cloud-gateway.manager.{profile}.toml`
+- Gateway configs: `etc/sdkwork-api-cloud-gateway.manager.{profile}.toml`
+- Platform ingress embeds the `manager-operations-suite` feature: Drive,
+  Membership, Order, Promotion, and Payment gateway assemblies, each with its domain-owned
+  database lifecycle and IAM request-context enforcement.
+
+## 5.1 Customer And Membership Request Flow
+
+```text
+Customer/Membership page
+  -> Manager admin-core provider
+  -> @sdkwork/iam-service or @sdkwork/membership-service
+  -> composed backend SDK
+  -> platform API gateway embedded router
+  -> domain route/service/repository
+```
+
+All clients share the Manager operator `TokenManager`. The UI does not construct
+SDK clients, URLs, authorization headers, or local DTO forks. Membership member
+detail and status updates enforce tenant and organization scope in PostgreSQL
+and SQLite repositories. The generated Membership backend SDK excludes the
+service-only purchase fulfillment operation.
+
+## 5.2 Commercial Entitlement Request Flow
+
+```text
+Manager protected shell
+  -> injected admin-core loader
+  -> @sdkwork/manager-backend-sdk
+  -> GET /backend/v3/api/manager/commercial_entitlements/current
+  -> tenant + session app snapshot
+  -> module registry visibility projection
+
+Trusted Payment/Order/Promotion/Membership/Drive service or gateway policy
+  -> generated sdkwork-manager-backend-sdk Rust transport
+  -> POST /backend/v3/api/manager/commercial_entitlements/verify
+  -> tenant-bound allowed/reason/version decision
+  -> execute or reject the paid operation
+```
+
+The platform API gateway's current policy chain is static and does not yet own
+an asynchronous external entitlement adapter. Until that adapter or equivalent
+domain-service enforcement is deployed, production paid command cutover remains
+blocked even though the authority, TypeScript/Rust SDKs, and fail-closed browser
+projection are implemented. The Rust transport is generated from the same
+Manager Backend API authority and exposes `commercial_entitlements_verify`; it
+must receive short-lived, tenant-bound service-account dual-token credentials
+from an approved IAM workload identity flow. IAM currently owns service-account
+directory and RBAC records but does not expose that client-credentials/token
+exchange flow. Super-admin bootstrap credentials, static service tokens, and
+forwarded operator tokens are forbidden substitutes.
 
 ## 6. Verification
 

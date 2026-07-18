@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-manager-backend-sdk",
+    "type": "sdk-family",
+    "root": "sdks/sdkwork-manager-backend-sdk",
+    "domain": "platform",
+    "capability": "manager-backend-sdk",
+    "surface": "backend-api",
+    "languages": ["typescript", "rust"],
+    "generated": false
+  },
+  "canonicalSpecs": [
+    {
+      "file": "SDK_WORKSPACE_GENERATION_SPEC.md",
+      "path": "../../../../sdkwork-specs/SDK_WORKSPACE_GENERATION_SPEC.md"
+    },
+    {
+      "file": "APP_SDK_INTEGRATION_SPEC.md",
+      "path": "../../../../sdkwork-specs/APP_SDK_INTEGRATION_SPEC.md"
+    }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "runtimeEntrypoints": [
+      "sdkwork-manager-backend-sdk-typescript/src/index.ts",
+      "sdkwork-manager-backend-sdk-rust/generated/server-openapi/src/lib.rs"
+    ],
+    "sdkDependencies": [],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": [
+      "node tools/manager_sdk_generate.mjs --check",
+      "cargo check --manifest-path sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-rust/generated/server-openapi/Cargo.toml"
+    ]
+  }
+}

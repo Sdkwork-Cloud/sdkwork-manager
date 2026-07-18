@@ -1,0 +1,21 @@
+export const customerWorkspaceZh = {
+  displayName: "用户中心",
+  title: "用户 360",
+  description: "基于权限聚合 IAM 身份与会员订阅的运营视图。",
+  loading: "正在加载用户数据…",
+  error: "用户数据加载失败，请检查权限与服务状态。",
+  empty: "当前检索条件下暂无用户。",
+  search: "检索用户",
+  searchPlaceholder: "姓名、用户名、邮箱、手机或用户 ID",
+  currentPage: "当前页",
+  previous: "上一页",
+  next: "下一页",
+  identity: "身份信息",
+  memberships: "会员信息",
+  details: "用户详情",
+  noMemberships: "该用户暂无关联会员记录。",
+  routes: {
+    overview: ["用户概览", "当前页用户与会员运营指标"],
+    directory: ["用户目录", "基于 IAM 服务端分页的用户目录与检索"],
+  },
+} as const;

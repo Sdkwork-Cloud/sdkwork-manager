@@ -1,6 +1,8 @@
 import { Moon, PanelsTopLeft, Sun } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
+import { useManagerShellMessages } from "../i18n";
+
 type AuthThemeMode = "dark" | "light";
 
 function isDesktopRuntime(): boolean {
@@ -8,11 +10,11 @@ function isDesktopRuntime(): boolean {
 }
 
 export function ManagerAuthShell({ children }: { children: ReactNode }) {
+  const { adminHost, auth } = useManagerShellMessages();
   const [themeMode, setThemeMode] = useState<AuthThemeMode>(() => {
     if (typeof window === "undefined") {
       return "dark";
     }
-
     return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
   });
   const isLightMode = themeMode === "light";
@@ -35,6 +37,7 @@ export function ManagerAuthShell({ children }: { children: ReactNode }) {
   const toggleTheme = () => {
     setThemeMode((current) => (current === "light" ? "dark" : "light"));
   };
+  const themeToggleLabel = isLightMode ? auth.switchToDarkMode : auth.switchToLightMode;
 
   return (
     <div className="sdkwork-manager-auth-host" data-sdk-color-mode={themeMode}>
@@ -42,20 +45,20 @@ export function ManagerAuthShell({ children }: { children: ReactNode }) {
         <header className="sdkwork-manager-auth-header drag-region">
           <div className="sdkwork-manager-auth-header-brand">
             <span className="sdkwork-manager-auth-header-mark">
-              <PanelsTopLeft size={12} />
+              <PanelsTopLeft aria-hidden="true" size={12} />
             </span>
-            <span>SDKWork Manager</span>
+            <span>{adminHost.brandLabel}</span>
           </div>
           <div className="sdkwork-manager-auth-header-center" />
           <div className="sdkwork-manager-auth-header-actions no-drag">
             <button
-              aria-label={isLightMode ? "切换至深色模式" : "切换至浅色模式"}
+              aria-label={themeToggleLabel}
               className="sdkwork-manager-auth-theme-button"
               onClick={toggleTheme}
-              title={isLightMode ? "切换至深色模式" : "切换至浅色模式"}
+              title={themeToggleLabel}
               type="button"
             >
-              {isLightMode ? <Moon size={14} /> : <Sun size={14} />}
+              {isLightMode ? <Moon aria-hidden="true" size={14} /> : <Sun aria-hidden="true" size={14} />}
             </button>
           </div>
         </header>

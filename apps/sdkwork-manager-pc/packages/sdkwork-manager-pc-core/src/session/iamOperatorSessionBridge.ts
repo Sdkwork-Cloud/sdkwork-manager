@@ -1,9 +1,12 @@
-import type { IamAppContext } from "@sdkwork/iam-contracts";
+import { hasPermissionInScope, type IamAppContext } from "@sdkwork/iam-contracts";
 
 import type { OperatorSession } from "@sdkwork/manager-client-core";
 import { normalizeOperatorSession } from "@sdkwork/manager-client-core";
 
-import { notifyOperatorSessionChanged } from "./sessionEvents";
+import {
+  notifyOperatorSessionChanged,
+  notifyOperatorSessionStorageChanged,
+} from "./sessionEvents";
 
 export const MANAGER_IAM_SESSION_STORAGE_KEY = "sdkwork-manager-pc:iam-session:v1";
 
@@ -140,8 +143,8 @@ export function getManagerPermissionScope(): readonly string[] {
   return [...(loadManagerIamSession()?.context?.permissionScope ?? [])];
 }
 
-export function getManagerCommercialEntitlementKeys(): readonly string[] {
-  return [];
+export function hasManagerPermission(permission: string): boolean {
+  return hasPermissionInScope(getManagerPermissionScope(), permission);
 }
 
 if (typeof window !== "undefined") {
@@ -157,5 +160,6 @@ if (typeof window !== "undefined") {
     storageLoaded = false;
     loadManagerIamSession();
     notifyOperatorSessionChanged();
+    notifyOperatorSessionStorageChanged();
   });
 }

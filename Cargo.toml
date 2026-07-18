@@ -8,8 +8,8 @@ members = [
   "crates/sdkwork-routes-manager-app-api",
   "crates/sdkwork-routes-manager-backend-api",
   "crates/sdkwork-manager-database-host",
-  "crates/sdkwork-manager-service-host",
-  "crates/sdkwork-manager-standalone-gateway",
+    "crates/sdkwork-manager-service-host",
+    "crates/sdkwork-manager-standalone-gateway",
 ]
 
 [workspace.package]
@@ -19,7 +19,6 @@ license = "UNLICENSED"
 publish = false
 
 [workspace.dependencies]
-sdkwork-utils-rust = { path = "../../../sdkwork-utils/packages/sdkwork-utils-rust" }
 axum = "0.8"
 tokio = { version = "1.51", features = ["macros", "rt-multi-thread", "net", "sync"] }
 serde = { version = "1", features = ["derive"] }
@@ -41,6 +40,9 @@ sdkwork-web-bootstrap = { path = "../sdkwork-web-framework/crates/sdkwork-web-bo
 sdkwork-utils-rust = { path = "../sdkwork-utils/packages/sdkwork-utils-rust" }
 sdkwork-iam-web-adapter = { path = "../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
 sdkwork-iam-context-service = { path = "../sdkwork-iam/crates/sdkwork-iam-context-service" }
+sdkwork_iam_gateway_assembly = { package = "sdkwork-iam-gateway-assembly", path = "../sdkwork-iam/crates/sdkwork-iam-gateway-assembly" }
+sdkwork_iam_embedded_application_bootstrap = { package = "sdkwork-iam-embedded-application-bootstrap", path = "../sdkwork-iam/crates/sdkwork-iam-embedded-application-bootstrap" }
+sdkwork_iam_database_host = { package = "sdkwork-iam-database-host", path = "../sdkwork-iam/crates/sdkwork-iam-database-host" }
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config" }
 sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle" }
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi" }
@@ -52,4 +54,5 @@ sdkwork_routes_manager_common = { path = "crates/sdkwork-routes-manager-common",
 sdkwork_routes_manager_app_api = { path = "crates/sdkwork-routes-manager-app-api", package = "sdkwork-routes-manager-app-api" }
 sdkwork_routes_manager_backend_api = { path = "crates/sdkwork-routes-manager-backend-api", package = "sdkwork-routes-manager-backend-api" }
 sdkwork_manager_database_host = { path = "crates/sdkwork-manager-database-host", package = "sdkwork-manager-database-host" }
+sdkwork_manager_gateway_assembly = { path = "crates/sdkwork-manager-gateway-assembly", package = "sdkwork-manager-gateway-assembly" }
 sdkwork_manager_service_host = { path = "crates/sdkwork-manager-service-host", package = "sdkwork-manager-service-host" }

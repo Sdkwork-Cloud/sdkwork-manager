@@ -1,0 +1,26 @@
+{
+  "name": "@sdkwork/manager-pc-admin-trade",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager integration adapter for Order and transaction operations.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/manager-pc-admin-core": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/order-pc-admin-orders": "workspace:*",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  }
+}

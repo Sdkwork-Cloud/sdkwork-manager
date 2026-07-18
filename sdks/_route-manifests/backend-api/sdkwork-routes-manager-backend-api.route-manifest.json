@@ -34,6 +34,72 @@
         "packageName": "sdkwork-routes-manager-backend-api",
         "file": "crates/sdkwork-routes-manager-backend-api/src/http_route_manifest.rs"
       }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/manager/commercial_entitlements/current",
+      "operationId": "manager.commercialEntitlements.current.retrieve",
+      "tags": ["manager"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "requiredPermission": "manager.entitlements.read",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "retrieve_commercial_entitlement" },
+      "schemas": { "request": null, "response": "CommercialEntitlementResponse", "problem": "ProblemDetail" },
+      "ownership": { "owner": "sdkwork-manager", "apiAuthority": "sdkwork-manager-backend-api" },
+      "source": {
+        "packageName": "sdkwork-routes-manager-backend-api",
+        "file": "crates/sdkwork-routes-manager-backend-api/src/http_route_manifest.rs"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/backend/v3/api/manager/commercial_entitlements/current",
+      "operationId": "manager.commercialEntitlements.current.update",
+      "tags": ["manager"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "requiredPermission": "manager.entitlements.manage",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "update_commercial_entitlement" },
+      "schemas": { "request": "UpdateCommercialEntitlementRequest", "response": "CommercialEntitlementResponse", "problem": "ProblemDetail" },
+      "ownership": { "owner": "sdkwork-manager", "apiAuthority": "sdkwork-manager-backend-api" },
+      "source": {
+        "packageName": "sdkwork-routes-manager-backend-api",
+        "file": "crates/sdkwork-routes-manager-backend-api/src/http_route_manifest.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/manager/commercial_entitlements/verify",
+      "operationId": "manager.commercialEntitlements.verify",
+      "tags": ["manager"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "requiredPermission": "manager.entitlements.enforce",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "decide_commercial_entitlement" },
+      "schemas": { "request": "CommercialEntitlementDecisionRequest", "response": "CommercialEntitlementDecisionResponse", "problem": "ProblemDetail" },
+      "ownership": { "owner": "sdkwork-manager", "apiAuthority": "sdkwork-manager-backend-api" },
+      "source": {
+        "packageName": "sdkwork-routes-manager-backend-api",
+        "file": "crates/sdkwork-routes-manager-backend-api/src/http_route_manifest.rs"
+      }
     }
   ]
 }

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-manager-standalone-gateway",
+    "displayName": "SDKWork Manager Standalone Gateway",
+    "version": "0.1.0",
+    "type": "rust-crate",
+    "root": ".",
+    "domain": "platform",
+    "capability": "manager-standalone-gateway",
+    "surface": "backend",
+    "languages": ["rust"],
+    "generated": false,
+    "manifests": ["Cargo.toml"]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "RUST_CODE_SPEC.md",
+      "path": "../../../sdkwork-specs/RUST_CODE_SPEC.md"
+    },
+    {
+      "file": "APP_PC_ARCHITECTURE_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_PC_ARCHITECTURE_SPEC.md"
+    },
+    {
+      "file": "IAM_APPLICATION_BOOTSTRAP_SPEC.md",
+      "path": "../../../sdkwork-specs/IAM_APPLICATION_BOOTSTRAP_SPEC.md"
+    }
+  ],
+  "contracts": {
+    "publicExports": [],
+    "runtimeEntrypoints": [
+      "src/main.rs",
+      "sdkwork_manager_gateway_assembly::assemble_application_router"
+    ],
+    "routeManifest": null,
+    "sdkClients": [],
+    "events": [],
+    "configKeys": [
+      "SDKWORK_APP_ROOT",
+      "SDKWORK_MANAGER_APP_ROOT",
+      "SDKWORK_MANAGER_BOOTSTRAP_ONLY",
+      "SDKWORK_ENVIRONMENT",
+      "SDKWORK_MANAGER_ENVIRONMENT",
+      "SDKWORK_IAM_ENVIRONMENT",
+      "SDKWORK_CORS_ALLOWED_ORIGINS",
+      "SDKWORK_IAM_CORS_ALLOWED_ORIGINS",
+      "SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS"
+    ],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-iam-app-sdk",
+        "surface": "app-api",
+        "credentialMode": "authenticated-app-api",
+        "required": true
+      },
+      {
+        "workspace": "sdkwork-iam-backend-sdk",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-api",
+        "required": true
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [
+      {
+        "workspace": "sdkwork-iam",
+        "sdkFamily": "sdkwork-iam-app-sdk",
+        "apiAuthority": "sdkwork-iam-app-api",
+        "surface": "app-api",
+        "apiPrefix": "/app/v3/api",
+        "runtimeMode": "same-origin-mounted",
+        "cargoDependency": "sdkwork_manager_gateway_assembly",
+        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+        "coverageEvidence": [
+          "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+        ]
+      },
+      {
+        "workspace": "sdkwork-iam",
+        "sdkFamily": "sdkwork-iam-backend-sdk",
+        "apiAuthority": "sdkwork-iam-backend-api",
+        "surface": "backend-api",
+        "apiPrefix": "/backend/v3/api/iam",
+        "runtimeMode": "same-origin-mounted",
+        "cargoDependency": "sdkwork_manager_gateway_assembly",
+        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+        "coverageEvidence": [
+          "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+        ]
+      }
+    ]
+  },
+  "verification": {
+    "commands": [
+      "cargo test -p sdkwork-manager-standalone-gateway",
+      "cargo check -p sdkwork-manager-standalone-gateway",
+      "node --test tests/static/manager-architecture.test.mjs"
+    ]
+  }
+}

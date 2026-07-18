@@ -5,13 +5,14 @@ export {
   resetOperatorTokenManager,
   OPERATOR_SESSION_STORAGE_KEY,
   OPERATOR_SESSION_CHANGED_EVENT,
+  OPERATOR_SESSION_STORAGE_CHANGED_EVENT,
   type OperatorSession,
 } from "./session/operatorSession";
 
 export {
   clearManagerIamSession,
   commitManagerIamSession,
-  getManagerCommercialEntitlementKeys,
+  hasManagerPermission,
   getManagerPermissionScope,
   loadManagerIamSession,
   toOperatorSession,
@@ -35,3 +36,4 @@ export {
 } from "./sdk";
 
 export * from "./composition";
+export * from "./i18n";

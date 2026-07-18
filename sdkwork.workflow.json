@@ -56,6 +56,76 @@
       "ref": "main",
       "refInput": "SDKWORK_APP_TOPOLOGY_REF",
       "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-iam",
+      "repository": "Sdkwork-Cloud/sdkwork-iam",
+      "ref": "main",
+      "refInput": "SDKWORK_IAM_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-drive",
+      "repository": "Sdkwork-Cloud/sdkwork-drive",
+      "ref": "main",
+      "refInput": "SDKWORK_DRIVE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-payment",
+      "repository": "Sdkwork-Cloud/sdkwork-payment",
+      "ref": "main",
+      "refInput": "SDKWORK_PAYMENT_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-order",
+      "repository": "Sdkwork-Cloud/sdkwork-order",
+      "ref": "main",
+      "refInput": "SDKWORK_ORDER_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-promotion",
+      "repository": "Sdkwork-Cloud/sdkwork-promotion",
+      "ref": "main",
+      "refInput": "SDKWORK_PROMOTION_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-membership",
+      "repository": "Sdkwork-Cloud/sdkwork-membership",
+      "ref": "main",
+      "refInput": "SDKWORK_MEMBERSHIP_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-core",
+      "repository": "Sdkwork-Cloud/sdkwork-core",
+      "ref": "main",
+      "refInput": "SDKWORK_CORE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-ui",
+      "repository": "Sdkwork-Cloud/sdkwork-ui",
+      "ref": "main",
+      "refInput": "SDKWORK_UI_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-sdk-commons",
+      "repository": "Sdkwork-Cloud/sdkwork-sdk-commons",
+      "ref": "main",
+      "refInput": "SDKWORK_SDK_COMMONS_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-specs",
+      "repository": "Sdkwork-Cloud/sdkwork-specs",
+      "ref": "main",
+      "refInput": "SDKWORK_SPECS_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
     }
   ],
   "toolchains": {
@@ -80,16 +150,23 @@
     ],
     "package": [
       {
-        "name": "Package Manager cloud gateway config bundle",
+        "name": "Package Manager release target",
         "shell": "pwsh",
-        "run": "$ErrorActionPreference = \"Stop\"\nswitch ($env:SDKWORK_PACKAGE_VARIANT) {\n  'config-bundle' { pnpm gateway:package:cloud }\n  default { Write-Host \"Skipping Manager package archive for profile $($env:SDKWORK_PACKAGE_VARIANT)\" }\n}"
+        "run": "$ErrorActionPreference = \"Stop\"\nif ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') {\n  pnpm gateway:package:cloud\n} elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') {\n  cargo build --release -p sdkwork-manager-standalone-gateway --bin manager-server\n  pnpm build\n  pnpm release:package\n  pnpm release:validate\n} else {\n  throw \"Unsupported Manager package target: $env:SDKWORK_PACKAGE_TARGET_ID\"\n}"
+      }
+    ],
+    "sbom": [
+      {
+        "name": "Generate or verify Manager release SBOM",
+        "shell": "pwsh",
+        "run": "if ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') { pnpm gateway:sbom:cloud } elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') { pnpm release:validate } else { throw \"Unsupported Manager SBOM target: $env:SDKWORK_PACKAGE_TARGET_ID\" }"
       }
     ],
     "validate": [
       {
-        "name": "Validate Manager cloud gateway config bundle",
+        "name": "Validate Manager release target",
         "shell": "pwsh",
-        "run": "$ErrorActionPreference = \"Stop\"\nswitch ($env:SDKWORK_PACKAGE_VARIANT) {\n  'config-bundle' { pnpm gateway:validate:cloud }\n  default { Write-Host \"Skipping Manager package validation for profile $($env:SDKWORK_PACKAGE_VARIANT)\" }\n}"
+        "run": "$ErrorActionPreference = \"Stop\"\nif ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') {\n  pnpm gateway:validate:cloud\n  pnpm gateway:sbom:cloud:validate\n} elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') {\n  pnpm release:validate\n} else {\n  throw \"Unsupported Manager package target: $env:SDKWORK_PACKAGE_TARGET_ID\"\n}"
       }
     ]
   },
@@ -112,7 +189,11 @@
       "architecture": "noarch",
       "formats": ["tar.gz"],
       "runner": "ubuntu-24.04",
-      "outputGlobs": ["dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz"],
+      "outputGlobs": [
+        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz",
+        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz.sha256",
+        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz.sbom.json"
+      ],
       "deploymentProfile": "cloud",
       "runtimeTarget": "container",
       "variant": "config-bundle"

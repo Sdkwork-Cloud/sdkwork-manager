@@ -1,10 +1,30 @@
 import { type FormEvent, type MouseEvent, useMemo, useState } from "react";
-import { Boxes, Grid2X2, LogOut, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
-import { Navigate, NavLink, useLocation } from "react-router-dom";
+import {
+  Boxes,
+  Building2,
+  ChevronRight,
+  Grid2X2,
+  KeyRound,
+  Languages,
+  Link2,
+  LogOut,
+  Network,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ScrollText,
+  Search,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
+import { Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { AdminModuleAccessScope, AdminModuleRegistry } from "@sdkwork/manager-pc-core";
+
+import { useManagerShellMessages } from "./i18n";
 
 type AdminHostShellProps = {
   accessScope: AdminModuleAccessScope;
+  locale: string;
+  onLocaleChange: (locale: string) => void;
   onSignOut: () => Promise<void>;
   registry: AdminModuleRegistry;
 };
@@ -45,15 +65,16 @@ function AdminModuleHeader({ accessScope, registry }: Pick<AdminHostShellProps, 
   );
 }
 
-function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
+export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
+  const { adminHost } = useManagerShellMessages();
   const { pathname } = useLocation();
   const module = registry.findModuleForPath(pathname);
 
   if (!module || !registry.hasModuleAccess(module, accessScope)) {
     return (
-      <aside className="manager-sidebar" aria-label="Module navigation">
-        <p className="manager-sidebar__heading">Workspace</p>
-        <p className="manager-sidebar__empty">Select a registered module to open its operational workspace.</p>
+      <aside className="manager-sidebar" aria-label={adminHost.moduleNavigation}>
+        <p className="manager-sidebar__heading">{adminHost.workspace}</p>
+        <p className="manager-sidebar__empty">{adminHost.selectModule}</p>
       </aside>
     );
   }
@@ -61,31 +82,56 @@ function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostShellPro
   const visibleRoutes = registry.listVisibleRoutes(module, accessScope);
 
   return (
-    <aside className="manager-sidebar" aria-label={`${module.displayName} navigation`}>
-      <p className="manager-sidebar__heading">{module.displayName}</p>
+    <aside className="manager-sidebar" aria-label={`${module.displayName} ${adminHost.moduleNavigation}`}>
+      <div className="manager-sidebar__header">
+        <p className="manager-sidebar__eyebrow">{adminHost.capabilityNavigation}</p>
+        <h2>{module.displayName}</h2>
+        <p>{adminHost.navigationCountTemplate.replace("{count}", String(visibleRoutes.length))}</p>
+      </div>
       <nav className="manager-sidebar__nav">
-        {visibleRoutes.map((route) => (
-          <NavLink
-            className={({ isActive }) => `manager-sidebar__link${isActive ? " is-active" : ""}`}
-            key={route.id}
-            to={route.path}
-          >
-            <span>{route.label}</span>
-            {route.description ? <small>{route.description}</small> : null}
+        {visibleRoutes.length ? visibleRoutes.map((route) => (
+          <NavLink className={({ isActive }) => `manager-sidebar__link${isActive ? " is-active" : ""}`} key={route.id} to={route.path}>
+            <span className="manager-sidebar__icon" aria-hidden="true"><AdminRouteIcon routeId={route.id} /></span>
+            <span className="manager-sidebar__label">
+              <strong>{route.label}</strong>
+              {route.description ? <small>{route.description}</small> : null}
+            </span>
+            <ChevronRight className="manager-sidebar__chevron" aria-hidden="true" size={15} />
           </NavLink>
-        ))}
+        )) : <p className="manager-sidebar__empty">{adminHost.noAvailableCapabilities}</p>}
       </nav>
-      {module.access.requiredPermissions?.length ? (
-        <p className="manager-sidebar__permission">Server authorization: {module.access.requiredPermissions.join(", ")}</p>
-      ) : null}
     </aside>
   );
 }
 
-export function AdminHostShell({ accessScope, onSignOut, registry }: AdminHostShellProps) {
+function AdminRouteIcon({ routeId }: { routeId: string }) {
+  if (routeId === "iam.users") return <Users size={17} />;
+  if (routeId === "iam.tenants") return <Building2 size={17} />;
+  if (routeId === "iam.organizations") return <Network size={17} />;
+  if (routeId === "iam.authorization") return <ShieldCheck size={17} />;
+  if (routeId === "iam.oauth") return <KeyRound size={17} />;
+  if (routeId === "iam.account-binding") return <Link2 size={17} />;
+  if (routeId === "iam.audit") return <ScrollText size={17} />;
+  return <Grid2X2 size={17} />;
+}
+
+export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut, registry }: AdminHostShellProps) {
+  const { adminHost } = useManagerShellMessages();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [moduleQuery, setModuleQuery] = useState("");
   const modules = registry.listVisibleModules(accessScope);
+  const matchingModules = useMemo(() => {
+    const query = moduleQuery.trim().toLocaleLowerCase(locale);
+    if (!query) return modules;
+    return modules.filter((module) => [
+      module.displayName,
+      module.domain,
+      module.capability,
+      ...module.routes.map((route) => `${route.label} ${route.description ?? ""}`),
+    ].some((value) => value.toLocaleLowerCase(locale).includes(query)));
+  }, [locale, moduleQuery, modules]);
   const activeModule = registry.findModuleForPath(pathname);
   const activeRoute = registry.findRouteForPath(pathname);
   const canAccessActiveRoute = Boolean(
@@ -96,22 +142,30 @@ export function AdminHostShell({ accessScope, onSignOut, registry }: AdminHostSh
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const target = matchingModules[0];
+    if (target) {
+      navigate(registry.resolveModuleDefaultPath(target, accessScope));
+      setModuleQuery("");
+    }
   };
 
   const handleSidebarToggle = (event: MouseEvent<HTMLButtonElement>) => {
     event.currentTarget.blur();
     setSidebarOpen((current) => !current);
   };
+  const sidebarToggleLabel = isSidebarOpen
+    ? adminHost.hideModuleNavigation
+    : adminHost.showModuleNavigation;
 
   return (
     <div className="manager-admin-app">
       <header className="manager-global-header">
-        <div className="manager-brand" aria-label="SDKWork Manager">
+        <div className="manager-brand" aria-label={adminHost.brandLabel}>
           <span className="manager-brand__mark" aria-hidden="true"><Boxes size={19} strokeWidth={2.25} /></span>
-          <span>SDKWork Manager</span>
-          <span className="manager-brand__badge">Admin</span>
+          <span>{adminHost.brandLabel}</span>
+          <span className="manager-brand__badge">{adminHost.adminBadge}</span>
         </div>
-        <nav className="manager-global-header__modules" aria-label="Registered modules">
+        <nav className="manager-global-header__modules" aria-label={adminHost.registeredModules}>
           {modules.map((module) => (
             <NavLink
               className={({ isActive }) => `manager-module-switcher${isActive ? " is-active" : ""}`}
@@ -125,20 +179,35 @@ export function AdminHostShell({ accessScope, onSignOut, registry }: AdminHostSh
         <div className="manager-global-header__actions">
           <form className="manager-search" onSubmit={handleSearch} role="search">
             <Search aria-hidden="true" size={16} />
-            <input aria-label="Search modules" placeholder="Search modules" type="search" />
+            <input aria-label={adminHost.searchModules} list="manager-module-search-results" onChange={(event) => setModuleQuery(event.target.value)} placeholder={adminHost.searchModules} type="search" value={moduleQuery} />
+            <datalist id="manager-module-search-results">
+              {matchingModules.map((module) => <option key={module.id} value={module.displayName}>{module.domain} / {module.capability}</option>)}
+            </datalist>
           </form>
+          <label className="manager-locale-select" title={adminHost.language}>
+            <Languages aria-hidden="true" size={16} />
+            <span className="manager-visually-hidden">{adminHost.language}</span>
+            <select
+              aria-label={adminHost.language}
+              onChange={(event) => onLocaleChange(event.target.value)}
+              value={locale}
+            >
+              <option value="zh-CN">{adminHost.simplifiedChinese}</option>
+              <option value="en-US">{adminHost.english}</option>
+            </select>
+          </label>
           <button
             className="manager-icon-button"
             onClick={handleSidebarToggle}
-            title={isSidebarOpen ? "Hide module navigation" : "Show module navigation"}
+            title={sidebarToggleLabel}
             type="button"
           >
             {isSidebarOpen ? <PanelLeftClose aria-hidden="true" size={18} /> : <PanelLeftOpen aria-hidden="true" size={18} />}
-            <span className="manager-visually-hidden">{isSidebarOpen ? "Hide module navigation" : "Show module navigation"}</span>
+            <span className="manager-visually-hidden">{sidebarToggleLabel}</span>
           </button>
-          <button className="manager-sign-out" onClick={() => void onSignOut()} title="Sign out" type="button">
+          <button className="manager-sign-out" onClick={() => void onSignOut()} title={adminHost.signOut} type="button">
             <LogOut aria-hidden="true" size={16} />
-            Sign out
+            {adminHost.signOut}
           </button>
         </div>
       </header>
@@ -163,6 +232,7 @@ export function AdminHostShell({ accessScope, onSignOut, registry }: AdminHostSh
 }
 
 export function AdminHostWelcomePage({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
+  const { adminHost } = useManagerShellMessages();
   const modules = registry.listVisibleModules(accessScope);
   const entitlementSummary = useMemo(
     () => modules.filter((module) => module.commercial.tier !== "foundation").length,
@@ -174,9 +244,9 @@ export function AdminHostWelcomePage({ accessScope, registry }: Pick<AdminHostSh
       <div className="manager-welcome__heading">
         <Grid2X2 aria-hidden="true" size={22} />
         <div>
-          <p className="manager-welcome__eyebrow">Unified admin workspace</p>
-          <h1 id="manager-welcome-title">Module assembly</h1>
-          <p>Only registered backend-admin contributions appear here. The host does not own their business pages, services, SDK clients, or permissions.</p>
+          <p className="manager-welcome__eyebrow">{adminHost.unifiedWorkspace}</p>
+          <h1 id="manager-welcome-title">{adminHost.moduleAssemblyTitle}</h1>
+          <p>{adminHost.moduleAssemblyDescription}</p>
         </div>
       </div>
       <div className="manager-module-grid">
@@ -188,40 +258,42 @@ export function AdminHostWelcomePage({ accessScope, registry }: Pick<AdminHostSh
               <p>{module.header.description}</p>
             </div>
             <dl>
-              <div><dt>Capability</dt><dd>{module.capability}</dd></div>
-              <div><dt>Commercial tier</dt><dd>{module.commercial.tier}</dd></div>
-              <div><dt>Release channel</dt><dd>{module.commercial.releaseChannel}</dd></div>
+              <div><dt>{adminHost.capability}</dt><dd>{module.capability}</dd></div>
+              <div><dt>{adminHost.commercialTier}</dt><dd>{module.commercial.tier}</dd></div>
+              <div><dt>{adminHost.releaseChannel}</dt><dd>{module.commercial.releaseChannel}</dd></div>
             </dl>
           </NavLink>
         ))}
       </div>
       {entitlementSummary ? (
-        <p className="manager-welcome__note">Commercial modules are displayed from the assembly catalog; tenant entitlement must remain server-authoritative.</p>
+        <p className="manager-welcome__note">{adminHost.commercialModulesNote}</p>
       ) : null}
     </section>
   );
 }
 
 export function AdminHostAccessDeniedPage() {
+  const { integration } = useManagerShellMessages();
   return (
     <section className="manager-integration-page" aria-labelledby="manager-access-denied-title">
-      <p className="manager-welcome__eyebrow">Access restricted</p>
-      <h2 id="manager-access-denied-title">This operator scope cannot open the requested capability</h2>
-      <p>Navigation visibility is derived from the IAM session permission scope. The owning backend remains the final authorization authority for every operation.</p>
+      <p className="manager-welcome__eyebrow">{integration.accessEyebrow}</p>
+      <h2 id="manager-access-denied-title">{integration.accessTitle}</h2>
+      <p>{integration.accessDescription}</p>
     </section>
   );
 }
 
 export function AdminHostIntegrationPage() {
+  const { integration } = useManagerShellMessages();
   return (
     <section className="manager-integration-page" aria-labelledby="manager-integration-title">
-      <p className="manager-welcome__eyebrow">Host capability</p>
-      <h2 id="manager-integration-title">Integration control plane</h2>
-      <p>This route belongs to the host only. It establishes the route namespace, header contract, navigation frame, and module lifecycle used by every product admin contribution.</p>
+      <p className="manager-welcome__eyebrow">{integration.eyebrow}</p>
+      <h2 id="manager-integration-title">{integration.title}</h2>
+      <p>{integration.description}</p>
       <ul>
-        <li>Module packages declare their own backend SDK dependencies and operator permissions.</li>
-        <li>The host composes stable package exports at build time; it does not load arbitrary remote code in an authenticated browser session.</li>
-        <li>Commercial availability is declared by module metadata and enforced by the owning backend service.</li>
+        <li>{integration.moduleOwnershipRule}</li>
+        <li>{integration.remoteCodeRule}</li>
+        <li>{integration.lifecycleRule}</li>
       </ul>
     </section>
   );

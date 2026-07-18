@@ -10,6 +10,8 @@ path = "src/lib.rs"
 
 [dependencies]
 axum = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
 sdkwork_platform_manager_service.workspace = true
 sdkwork_manager_service_host.workspace = true

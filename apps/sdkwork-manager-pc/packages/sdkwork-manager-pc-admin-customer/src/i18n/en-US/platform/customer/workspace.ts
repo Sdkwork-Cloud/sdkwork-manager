@@ -1,0 +1,21 @@
+export const customerWorkspaceEn = {
+  displayName: "Customer Center",
+  title: "Customer 360",
+  description: "A permission-aware operating view across IAM identity and membership subscriptions.",
+  loading: "Loading customer data…",
+  error: "Unable to load customer data. Check permissions and service health.",
+  empty: "No customers match the current search.",
+  search: "Search customers",
+  searchPlaceholder: "Name, username, email, phone, or user ID",
+  currentPage: "Current page",
+  previous: "Previous",
+  next: "Next",
+  identity: "Identity",
+  memberships: "Memberships",
+  details: "Customer details",
+  noMemberships: "No memberships are linked to this customer.",
+  routes: {
+    overview: ["Overview", "Current-page customer and membership operating indicators"],
+    directory: ["Customer Directory", "Server-paginated IAM customer directory and search"],
+  },
+} as const;

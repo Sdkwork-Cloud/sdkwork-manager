@@ -11,6 +11,14 @@
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-oauth/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-account-binding/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-audit/src";
+@source "../../../../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-operations/src";
+@source "../../../../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-storage-providers/src";
+@source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-channel/src";
+@source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-provider/src";
+@source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-monitor/src";
+@source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-devconfig/src";
+@source "../../../../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-orders/src";
+@source "../../../../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-service/src";
 @source "../../../../sdkwork-ui/sdkwork-ui-pc-react/src";
 
 :root {
@@ -32,7 +40,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -69,6 +78,7 @@ a {
 .manager-icon-button,
 .manager-module-switcher,
 .manager-search,
+.manager-locale-select,
 .manager-module-header__tools,
 .manager-welcome__heading {
   display: flex;
@@ -158,6 +168,30 @@ a {
   color: #99aaa2;
 }
 
+.manager-locale-select {
+  height: 32px;
+  gap: 5px;
+  padding: 0 7px;
+  color: #c2d0c9;
+  background: #24302b;
+  border: 1px solid #3a4a43;
+  border-radius: 6px;
+}
+
+.manager-locale-select select {
+  width: 92px;
+  color: #eef5f1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+}
+
+.manager-locale-select option {
+  color: #17201d;
+  background: #ffffff;
+}
+
 .manager-icon-button,
 .manager-sign-out,
 .manager-button {
@@ -207,16 +241,48 @@ a {
 }
 
 .manager-sidebar {
-  padding: 18px 12px;
-  background: #ffffff;
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  height: calc(100vh - 56px);
+  padding: 20px 14px;
+  overflow-y: auto;
+  background: #fbfcfb;
   border-right: 1px solid #d9e0dc;
 }
 
-.manager-sidebar__heading {
-  margin: 0 8px 12px;
+.manager-sidebar__header {
+  display: grid;
+  gap: 4px;
+  margin: 0 8px 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e4e9e6;
+}
+
+.manager-sidebar__header h2,
+.manager-sidebar__header p {
+  margin: 0;
+}
+
+.manager-sidebar__header h2 {
+  color: #17201d;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.manager-sidebar__header > p:last-child {
+  color: #75847c;
+  font-size: 11px;
+}
+
+.manager-sidebar__heading,
+.manager-sidebar__eyebrow {
+  margin: 0;
   color: #526159;
   font-size: 11px;
   font-weight: 750;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -226,44 +292,89 @@ a {
 }
 
 .manager-sidebar__link {
+  position: relative;
   display: grid;
-  gap: 2px;
-  padding: 9px 10px;
+  grid-template-columns: 32px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 9px;
+  min-height: 58px;
+  padding: 8px 9px;
   color: #33443a;
   font-size: 13px;
-  font-weight: 650;
   text-decoration: none;
-  border-radius: 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  outline: none;
 }
 
-.manager-sidebar__link:hover {
+.manager-sidebar__link:hover,
+.manager-sidebar__link:focus-visible {
   background: #e8f2ed;
+  border-color: #d7e5de;
 }
 
 .manager-sidebar__link.is-active {
   color: #154c3c;
-  background: #d7efe4;
+  background: #e0f2e9;
+  border-color: #b9ddcc;
+  box-shadow: inset 3px 0 0 #237356;
+}
+
+.manager-sidebar__icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #526159;
+  background: #eef3f0;
+  border-radius: 7px;
+}
+
+.manager-sidebar__link.is-active .manager-sidebar__icon {
+  color: #ffffff;
+  background: #237356;
+}
+
+.manager-sidebar__label {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.manager-sidebar__label strong {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .manager-sidebar__link small {
+  display: -webkit-box;
+  overflow: hidden;
   color: #6e7e75;
   font-size: 11px;
   font-weight: 500;
   line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
-.manager-sidebar__empty,
-.manager-sidebar__permission {
+.manager-sidebar__chevron {
+  color: #94a19a;
+  transition: transform 140ms ease;
+}
+
+.manager-sidebar__link:hover .manager-sidebar__chevron,
+.manager-sidebar__link.is-active .manager-sidebar__chevron {
+  color: #237356;
+  transform: translateX(2px);
+}
+
+.manager-sidebar__empty {
   margin: 0 8px;
   color: #6e7e75;
   font-size: 12px;
   line-height: 1.5;
-}
-
-.manager-sidebar__permission {
-  margin-top: 20px;
-  padding-top: 12px;
-  border-top: 1px solid #e4e9e6;
 }
 
 .manager-main-content {
@@ -554,7 +665,7 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-host {
   font-size: 11px;
   font-weight: 600;
   gap: 9px;
-  letter-spacing: 0;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -681,6 +792,15 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   overflow-y: auto;
 }
 
+/*
+ * The shared Input primitive contributes px-3 after the IAM form's pl-10 in
+ * this host's compiled utility order. Keep the ClawRouter auth geometry by
+ * reserving the leading icon column explicitly inside the Manager auth shell.
+ */
+.sdkwork-manager-auth-host input[data-sdk-ui="input"].pl-10 {
+  padding-left: 2.5rem;
+}
+
 .sdkwork-manager-auth-card-shell,
 .manager-auth-content {
   backdrop-filter: blur(18px);
@@ -714,6 +834,225 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 .manager-module-loading {
   min-height: 320px;
+}
+
+.manager-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.manager-kpi-grid article {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-kpi-grid span {
+  color: #68786f;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-kpi-grid strong {
+  color: #154c3c;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.manager-operations-page {
+  display: grid;
+  gap: 14px;
+  padding-top: 22px;
+}
+
+.manager-operations-note {
+  margin: 0;
+  color: #68786f;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-operations-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.manager-operations-filter-row label,
+.manager-operation-form label {
+  display: grid;
+  gap: 6px;
+  color: #526159;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-operations-filter-row input,
+.manager-operation-form input,
+.manager-operations-actions select {
+  min-height: 36px;
+  padding: 0 10px;
+  color: #17201d;
+  background: #ffffff;
+  border: 1px solid #bfcac4;
+  border-radius: 6px;
+}
+
+.manager-operations-filter-row > button,
+.manager-operation-form button {
+  min-height: 36px;
+  padding: 0 12px;
+  color: #315342;
+  font-weight: 650;
+  background: #ffffff;
+  border: 1px solid #bfcac4;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.manager-operation-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  align-items: end;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.manager-detail-grid article {
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-detail-grid h2,
+.manager-detail-grid dl {
+  margin: 0;
+}
+
+.manager-detail-grid dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.manager-detail-grid dt {
+  color: #75847c;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.manager-detail-grid dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: #17201d;
+  font-size: 13px;
+}
+
+.manager-operations-search {
+  display: grid;
+  max-width: 360px;
+  gap: 6px;
+  color: #526159;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-operations-search input {
+  min-height: 36px;
+  padding: 0 10px;
+  color: #17201d;
+  background: #ffffff;
+  border: 1px solid #bfcac4;
+  border-radius: 6px;
+}
+
+.manager-operations-table-wrap {
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-operations-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.manager-operations-table th,
+.manager-operations-table td {
+  padding: 11px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e4e9e6;
+}
+
+.manager-operations-table th {
+  color: #526159;
+  font-size: 11px;
+  font-weight: 750;
+  background: #f5f8f6;
+  text-transform: uppercase;
+}
+
+.manager-operations-table td strong,
+.manager-operations-table td small {
+  display: block;
+}
+
+.manager-operations-table td small {
+  margin-top: 3px;
+  color: #75847c;
+}
+
+.manager-operations-table button,
+.manager-operations-pagination button {
+  min-height: 30px;
+  padding: 0 9px;
+  color: #315342;
+  font-size: 12px;
+  font-weight: 650;
+  background: #ffffff;
+  border: 1px solid #bfcac4;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.manager-operations-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.manager-operations-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  color: #526159;
+  font-size: 12px;
+}
+
+.manager-operations-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .manager-session-check {
@@ -758,6 +1097,40 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   }
 
   .manager-sidebar {
+    position: static;
+    display: block;
+    height: auto;
+    padding: 12px 18px;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid #d9e0dc;
+  }
+
+  .manager-sidebar__header {
+    display: none;
+  }
+
+  .manager-sidebar__nav {
+    display: flex;
+    width: max-content;
+    min-width: 100%;
+    gap: 8px;
+  }
+
+  .manager-sidebar__link {
+    grid-template-columns: 28px auto;
+    min-width: max-content;
+    min-height: 42px;
+    padding: 6px 10px;
+  }
+
+  .manager-sidebar__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .manager-sidebar__link small,
+  .manager-sidebar__chevron {
     display: none;
   }
 
@@ -783,6 +1156,19 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   .manager-sign-out {
     width: 32px;
     padding: 0;
+  }
+
+  .manager-locale-select {
+    padding: 0 5px;
+  }
+
+  .manager-locale-select svg {
+    display: none;
+  }
+
+  .manager-locale-select select {
+    width: 76px;
+    font-size: 12px;
   }
 
   .manager-sign-out svg {

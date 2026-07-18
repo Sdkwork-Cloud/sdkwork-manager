@@ -4,15 +4,17 @@ export {
   resolveManagerAppApiBaseUrl,
   resolveManagerBackendApiBaseUrl,
   resolveIamAppApiBaseUrl,
+  resolveIamBackendApiBaseUrl,
   resolvePlatformApiGatewayBaseUrl,
-  shouldUseBrowserDevProxy,
+  resolveManagerDeploymentProfile,
+  resolveManagerEnvironment,
   readSdkBaseUrlEnvValue,
-  isSdkRuntimeDev,
   managerAppApiPathSegment,
   type ClientPlatform,
   type ClientRuntimeEnv,
+  type ManagerDeploymentProfile,
+  type ManagerEnvironment,
 } from "./config/sdkBaseUrls";
-export { buildManagerViteDevProxy } from "./dev/viteDevProxy";
 export {
   normalizeOperatorSession,
   type OperatorSession,

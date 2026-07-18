@@ -3,7 +3,7 @@
   "kind": "sdkwork.app.topology",
   "appId": "sdkwork-manager",
   "archetype": "application-http-gateway",
-  "profileRoot": "configs/topology",
+  "profileRoot": "etc/deployments",
   "profilePattern": "{deploymentProfile}.{environment}.env",
   "vocabulary": {
     "deploymentProfile": {
@@ -26,10 +26,10 @@
     "gatewayBind": "127.0.0.1:18092"
   },
   "profileFiles": {
-    "standalone.development": "configs/topology/standalone.development.env",
-    "standalone.production": "configs/topology/standalone.production.env",
-    "cloud.development": "configs/topology/cloud.development.env",
-    "cloud.production": "configs/topology/cloud.production.env"
+    "standalone.development": "etc/deployments/standalone.development.env",
+    "standalone.production": "etc/deployments/standalone.production.env",
+    "cloud.development": "etc/deployments/cloud.development.env",
+    "cloud.production": "etc/deployments/cloud.production.env"
   },
   "envKeys": {
     "deploymentProfile": "SDKWORK_MANAGER_DEPLOYMENT_PROFILE",
@@ -85,7 +85,7 @@
       "crate": "sdkwork-api-cloud-gateway",
       "binary": "sdkwork-api-cloud-gateway",
       "repository": "sdkwork-api-cloud-gateway",
-      "configGlob": "configs/sdkwork-api-cloud-gateway.manager.{profile}.toml"
+      "configGlob": "etc/sdkwork-api-cloud-gateway.manager.{profile}.toml"
     }
   },
   "orchestration": {

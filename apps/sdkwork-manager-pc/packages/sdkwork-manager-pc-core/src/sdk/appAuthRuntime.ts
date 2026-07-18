@@ -16,6 +16,7 @@ import {
   loadManagerIamSession,
   type ManagerIamSession,
 } from "../session/iamOperatorSessionBridge";
+import { getManagerLocale } from "../i18n/locale";
 import {
   clearOperatorTokenManagerTokens,
   getOperatorTokenManager,
@@ -98,7 +99,7 @@ function createManagerIamRuntimeComposition(): SdkworkAppbasePcAuthRuntimeCompos
         resetManagerAuthenticatedSdkClients();
       },
     },
-    localeProvider: () => "zh-CN",
+    localeProvider: getManagerLocale,
     sdkClients: getManagerAuthenticatedSdkClients() as SdkworkAppbasePcAuthRuntimeSdkClient[],
     sessionBridge: {
       clearSession: () => {

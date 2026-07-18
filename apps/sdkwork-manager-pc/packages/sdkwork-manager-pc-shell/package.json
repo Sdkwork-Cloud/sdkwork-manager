@@ -13,6 +13,7 @@
   "dependencies": {
     "@sdkwork/auth-pc-react": "workspace:*",
     "@sdkwork/auth-runtime-pc-react": "workspace:*",
+    "@sdkwork/i18n-pc-react": "workspace:*",
     "@sdkwork/manager-pc-core": "workspace:*",
     "react": "catalog:",
     "react-router-dom": "catalog:",

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "@sdkwork/manager-pc-admin-marketing",
+    "displayName": "SDKWork Manager PC Marketing Center",
+    "type": "react-package",
+    "root": "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing",
+    "domain": "commerce",
+    "capability": "marketing-integration",
+    "surface": "backend-admin",
+    "languages": ["typescript", "react"],
+    "generated": false
+  },
+  "contracts": {
+    "publicExports": ["."],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-promotion-backend-sdk",
+        "permissionModuleId": "promotion",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["pnpm --filter @sdkwork/manager-pc-admin-marketing typecheck"]
+  }
+}

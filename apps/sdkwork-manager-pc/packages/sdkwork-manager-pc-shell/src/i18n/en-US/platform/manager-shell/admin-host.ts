@@ -1,0 +1,27 @@
+import type { ManagerAdminHostMessages } from "../../../../types/i18n";
+
+export const managerAdminHostMessages: ManagerAdminHostMessages = {
+  adminBadge: "Admin",
+  brandLabel: "SDKWork Manager",
+  capability: "Capability",
+  capabilityNavigation: "Capability navigation",
+  commercialModulesNote: "Commercial modules come from the assembly catalog. Tenant entitlement remains server-authoritative.",
+  commercialTier: "Commercial tier",
+  english: "English",
+  hideModuleNavigation: "Hide module navigation",
+  language: "Language",
+  moduleAssemblyDescription: "Only registered backend-admin contributions appear here. Each owning package keeps control of its pages, services, SDK clients, and permissions.",
+  moduleAssemblyTitle: "Module assembly",
+  moduleNavigation: "module navigation",
+  navigationCountTemplate: "{count} available management capabilities",
+  noAvailableCapabilities: "No management capabilities are available for the current operator account.",
+  registeredModules: "Registered modules",
+  releaseChannel: "Release channel",
+  searchModules: "Search modules",
+  selectModule: "Select a registered module to open its operational workspace.",
+  showModuleNavigation: "Show module navigation",
+  signOut: "Sign out",
+  simplifiedChinese: "Simplified Chinese",
+  unifiedWorkspace: "Unified admin workspace",
+  workspace: "Workspace",
+};

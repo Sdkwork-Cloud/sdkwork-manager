@@ -172,12 +172,11 @@ composable from the same application shell. It also supports private
 installations with a smaller approved module catalog without a separate code
 line.
 
-At present, the host only obtains IAM permission scope from the authenticated
-session. Its commercial entitlement provider intentionally returns no paid
-entitlements, so `standard`, `professional`, and `enterprise` contributions are
-fail-closed. A paid module must not be enabled until an approved platform
-entitlement SDK/API contract is composed into bootstrap and its owning backend
-enforces the same entitlement.
+The host obtains IAM permission scope from the authenticated session and enters
+the administration shell without a commercial-entitlement bootstrap request.
+Commercial offer fields remain catalog and release metadata; they do not hide
+modules or block login. Owning backends continue to enforce operation permissions
+and any capability-specific commercial policy at the service boundary.
 
 ## 7. Integration Workflow
 

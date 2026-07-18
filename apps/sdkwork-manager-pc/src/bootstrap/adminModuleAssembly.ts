@@ -1,10 +1,20 @@
 import type { AdminModuleContribution } from "@sdkwork/manager-pc-core";
 import { getManagerPermissionScope } from "@sdkwork/manager-pc-core";
 import { getManagerIamAdminService } from "@sdkwork/manager-pc-admin-core";
+import { createSdkworkManagerDriveAdminContribution } from "@sdkwork/manager-pc-admin-drive";
 import { createSdkworkManagerIamAdminContribution } from "@sdkwork/manager-pc-admin-iam";
-import { AdminHostIntegrationPage } from "@sdkwork/manager-pc-shell";
+import { createSdkworkManagerPaymentAdminContribution } from "@sdkwork/manager-pc-admin-payment";
+import { createSdkworkManagerTradeAdminContribution } from "@sdkwork/manager-pc-admin-trade";
+import { createSdkworkManagerMarketingAdminContribution } from "@sdkwork/manager-pc-admin-marketing";
+import { createSdkworkManagerMembershipAdminContribution } from "@sdkwork/manager-pc-admin-membership";
+import { createSdkworkManagerCustomerAdminContribution } from "@sdkwork/manager-pc-admin-customer";
+import {
+  AdminHostIntegrationPage,
+  MANAGER_SHELL_I18N_CATALOG,
+} from "@sdkwork/manager-pc-shell";
 
-export function createManagerAdminModuleAssembly(): readonly AdminModuleContribution[] {
+export function createManagerAdminModuleAssembly(locale: string): readonly AdminModuleContribution[] {
+  const integrationMessages = MANAGER_SHELL_I18N_CATALOG.resolveMessages(locale).integration;
   return [
     {
       access: {},
@@ -15,11 +25,11 @@ export function createManagerAdminModuleAssembly(): readonly AdminModuleContribu
         tier: "foundation",
       },
       defaultPath: "/admin/integration",
-      displayName: "Integration",
+      displayName: integrationMessages.displayName,
       domain: "platform",
       header: {
-        description: "Assembly, routing, entitlement metadata, and lifecycle conventions for product admin modules.",
-        title: "Integration",
+        description: integrationMessages.headerDescription,
+        title: integrationMessages.headerTitle,
       },
       id: "platform.integration",
       packageName: "@sdkwork/manager-pc-shell",
@@ -27,9 +37,9 @@ export function createManagerAdminModuleAssembly(): readonly AdminModuleContribu
       routes: [
         {
           Component: AdminHostIntegrationPage,
-          description: "Host integration contract",
+          description: integrationMessages.routeDescription,
           id: "platform.integration.overview",
-          label: "Overview",
+          label: integrationMessages.overview,
           path: "/admin/integration",
         },
       ],
@@ -38,6 +48,13 @@ export function createManagerAdminModuleAssembly(): readonly AdminModuleContribu
     createSdkworkManagerIamAdminContribution({
       getPermissionScope: getManagerPermissionScope,
       getService: getManagerIamAdminService,
+      locale,
     }),
+    createSdkworkManagerDriveAdminContribution(locale),
+    createSdkworkManagerCustomerAdminContribution(locale),
+    createSdkworkManagerMembershipAdminContribution(locale),
+    createSdkworkManagerTradeAdminContribution(locale),
+    createSdkworkManagerMarketingAdminContribution(locale),
+    createSdkworkManagerPaymentAdminContribution(locale),
   ];
 }

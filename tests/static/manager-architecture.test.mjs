@@ -52,9 +52,16 @@ test("Manager Vite uses the IAM development credential-entry bootstrap only outs
     path.join(root, "apps/sdkwork-manager-pc/vite.config.ts"),
     "utf8",
   );
+  const devRunner = readFileSync(
+    path.join(root, "scripts/dev/manager-dev.mjs"),
+    "utf8",
+  );
 
-  assert.match(appPackage.scripts.dev, /run-pc-renderer-dev-with-bootstrap/);
-  assert.match(appPackage.scripts.dev, /sdkwork\.app\.config\.json/);
+  assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
+  assert.match(devRunner, /mergeRepoDevBootstrapAccessTokenEnv/);
+  assert.match(devRunner, /apps\/sdkwork-manager-pc\/sdkwork\.app\.config\.json/);
+  assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
+  assert.match(devRunner, /waitForGateway/);
   assert.match(viteConfig, /mode !== "development"/);
   assert.match(viteConfig, /__SDKWORK_CREDENTIAL_ENTRY_BOOTSTRAP_ACCESS_TOKEN__/);
   assert.match(viteConfig, /process\.env\.SDKWORK_ACCESS_TOKEN/);
@@ -71,22 +78,214 @@ test("Manager delegates IAM application provisioning to the shared bootstrap fra
   assert.match(pkg.scripts["admin:bootstrap:app"], /sdkwork-iam\/scripts\/bootstrap\/bootstrap-app\.mjs/);
 });
 
-test("Manager gateway bundles the IAM app API alongside Manager routes", () => {
-  for (const profile of ["development", "production"]) {
-    const config = readFileSync(
-      path.join(root, `configs/sdkwork-api-cloud-gateway.manager.${profile}.toml`),
-      "utf8",
-    );
-    assert.match(config, /serviceId = "sdkwork-iam-app-api"/);
-    assert.match(config, /apiPrefix = "\/app\/v3\/api"/);
-    assert.match(config, /sdkwork_routes_iam_app_api::build_sdkwork_iam_app_api_router/);
+test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress", () => {
+  const cargo = readFileSync(
+    path.join(root, "crates/sdkwork-manager-gateway-assembly/Cargo.toml"),
+    "utf8",
+  );
+  const assembly = readFileSync(
+    path.join(root, "crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"),
+    "utf8",
+  );
+  const iamAssembly = readFileSync(
+    path.join(root, "../sdkwork-iam/crates/sdkwork-iam-gateway-assembly/src/bootstrap.rs"),
+    "utf8",
+  );
+
+  assert.match(cargo, /sdkwork_iam_gateway_assembly\.workspace = true/);
+  assert.match(assembly, /sdkwork_iam_gateway_assembly::assemble_application_business_router/);
+  assert.match(iamAssembly, /sdkwork_routes_iam_app_api::gateway_mount/);
+  assert.match(iamAssembly, /sdkwork_routes_iam_backend_api::gateway_mount/);
+});
+
+test("Manager browser has no Vite API proxy and IAM SDKs use application ingress", () => {
+  const viteConfig = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/vite.config.ts"),
+    "utf8",
+  );
+  const manifest = JSON.parse(readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/sdkwork.app.config.json"),
+    "utf8",
+  ));
+  const bindings = manifest.envBindings.sdkBaseUrls.dependencySdkBaseUrlKeys;
+
+  assert.doesNotMatch(viteConfig, /server:\s*\{[^}]*proxy:/s);
+  assert.doesNotMatch(viteConfig, /buildManagerViteDevProxy|viteDevProxy/);
+  assert.equal(
+    bindings["sdkwork-iam-app-sdk"].appApiBaseUrlKey,
+    "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+  );
+  assert.equal(
+    bindings["sdkwork-iam-backend-sdk"].backendApiBaseUrlKey,
+    "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+  );
+});
+
+test("Manager default IAM grants exclude payment development operations", () => {
+  for (const manifestPath of [
+    "sdkwork.app.config.json",
+    "apps/sdkwork-manager-pc/sdkwork.app.config.json",
+  ]) {
+    const manifest = JSON.parse(readFileSync(path.join(root, manifestPath), "utf8"));
+    const permissions = manifest.backend.accessTokenPermissionScope;
+    assert.ok(Array.isArray(permissions));
+    assert.ok(permissions.every((permission) => !permission.startsWith("commerce.payments.dev.")));
+    assert.ok(permissions.every((permission) => !permission.startsWith("commerce.payments.certificates.")));
   }
 });
 
-test("verify pipeline includes production build and gateway validation", () => {
+test("Payment development workspace is guarded by the production build constant", () => {
+  const paymentContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx"),
+    "utf8",
+  );
+
+  assert.match(paymentContribution, /!import\.meta\.env\.PROD/);
+  assert.match(paymentContribution, /environment !== "production"/);
+  assert.match(paymentContribution, /import\("@sdkwork\/payment-pc-admin-devconfig"\)/);
+});
+
+test("Payment and Order mutation controls use exact IAM capability mappings", () => {
+  const paymentContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx"),
+    "utf8",
+  );
+  const tradeContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx"),
+    "utf8",
+  );
+  for (const permission of [
+    "commerce.payments.webhook_events.replay",
+    "commerce.payments.reconciliation_runs.create",
+    "commerce.payments.provider_accounts.create",
+    "commerce.payments.provider_accounts.update",
+    "commerce.payments.provider_accounts.test",
+    "commerce.payments.provider_accounts.credentials.rotate",
+    "commerce.payments.sub_merchants.create",
+    "commerce.payments.sub_merchants.update",
+    "commerce.payments.sub_merchants.delete",
+    "commerce.payments.methods.create",
+    "commerce.payments.methods.update",
+    "commerce.payments.channels.create",
+    "commerce.payments.route_rules.create",
+    "commerce.payments.route_rules.update",
+    "commerce.payments.route_rules.delete",
+  ]) {
+    assert.match(paymentContribution, new RegExp(permission.replaceAll(".", "\\.")));
+  }
+  assert.match(tradeContribution, /hasManagerPermission\("commerce\.orders\.manage"\)/);
+  assert.doesNotMatch(
+    tradeContribution,
+    /getManagerPermissionScope\(\)\.includes\("commerce\.orders\.manage"\)/,
+  );
+});
+
+test("Manager operation controls use wildcard-aware IAM permission checks", () => {
+  for (const relativePath of [
+    "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/src/index.tsx",
+    "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx",
+    "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/src/index.tsx",
+    "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx",
+    "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx",
+  ]) {
+    const contribution = readFileSync(path.join(root, relativePath), "utf8");
+    assert.doesNotMatch(contribution, /getManagerPermissionScope\(\)\.includes\(/);
+  }
+});
+
+test("commercial modules declare sellable metadata without blocking Manager login", () => {
+  const tierContracts = new Map([
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam/src/index.tsx", "standard"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/src/index.tsx", "standard"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx", "standard"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive/src/index.tsx", "professional"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx", "professional"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/src/index.tsx", "professional"],
+    ["apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx", "enterprise"],
+  ]);
+  for (const [relativePath, tier] of tierContracts) {
+    const contribution = readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(contribution, new RegExp(`tier: "${tier}"`));
+  }
+
+  const shell = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx"),
+    "utf8",
+  );
+  const main = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/src/main.tsx"),
+    "utf8",
+  );
+  const adminSdk = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/src/sdk/index.ts"),
+    "utf8",
+  );
+  assert.match(adminSdk, /@sdkwork\/manager-backend-sdk/);
+  assert.doesNotMatch(shell, /commercialEntitlement|entitlementState|loadCommercialEntitlementSnapshot/);
+  assert.doesNotMatch(main, /loadManagerCommercialEntitlementSnapshot/);
+  assert.doesNotMatch(adminSdk, /commercialEntitlements\.current\.retrieve/);
+});
+
+test("commercial entitlement routes bind read, manage, and enforcement permissions", () => {
+  const manifest = readFileSync(
+    path.join(root, "crates/sdkwork-routes-manager-backend-api/src/http_route_manifest.rs"),
+    "utf8",
+  );
+  for (const permission of [
+    "manager.entitlements.read",
+    "manager.entitlements.manage",
+    "manager.entitlements.enforce",
+  ]) {
+    assert.match(manifest, new RegExp(`with_required_permission\\("${permission.replaceAll(".", "\\.")}\\"`));
+  }
+});
+
+test("Manager Web Framework is the single CORS policy authority", () => {
+  const gateway = readFileSync(
+    path.join(root, "crates/sdkwork-manager-standalone-gateway/src/main.rs"),
+    "utf8",
+  );
+  assert.doesNotMatch(gateway, /application_cors_layer_from_env|CorsLayer/);
+
+  for (const relativePath of [
+    "crates/sdkwork-routes-manager-app-api/src/web_bootstrap.rs",
+    "crates/sdkwork-routes-manager-backend-api/src/web_bootstrap.rs",
+  ]) {
+    const bootstrap = readFileSync(path.join(root, relativePath), "utf8");
+    assert.match(bootstrap, /application_security_policy_from_env/);
+    assert.match(bootstrap, /with_security_policy\(security_policy\)/);
+    assert.match(bootstrap, /environment,/);
+  }
+});
+
+test("Manager Backend SDK publishes the Rust entitlement enforcement transport", () => {
+  const familyRoot = path.join(root, "sdks/sdkwork-manager-backend-sdk");
+  const manifest = JSON.parse(readFileSync(path.join(familyRoot, "sdk-manifest.json"), "utf8"));
+  const rustLanguage = manifest.languages.find((entry) => entry.language === "rust");
+  assert.equal(rustLanguage?.name, "sdkwork-manager-backend-sdk");
+  assert.equal(
+    rustLanguage?.generatedPath,
+    "sdkwork-manager-backend-sdk-rust/generated/server-openapi",
+  );
+
+  const rustRoot = path.join(familyRoot, rustLanguage.generatedPath);
+  const cargoManifest = readFileSync(path.join(rustRoot, "Cargo.toml"), "utf8");
+  const managerApi = readFileSync(path.join(rustRoot, "src/api/manager.rs"), "utf8");
+  const generator = readFileSync(path.join(root, "tools/manager_sdk_generate.mjs"), "utf8");
+  assert.match(cargoManifest, /name = "sdkwork-manager-backend-sdk-generated-rust"/);
+  assert.match(managerApi, /commercial_entitlements_verify/);
+  assert.match(generator, /languages: \["typescript", "rust"\]/);
+  assert.match(generator, /sdkgen failed for \$\{family\.familyName\} \(\$\{language\}\)/);
+});
+
+test("verify pipeline includes governance, complete frontend tests, production build, and gateway validation", () => {
   const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
+  assert.match(pkg.scripts.check, /check:governance/);
+  assert.match(pkg.scripts.verify, /test:node/);
+  assert.match(pkg.scripts.verify, /test:vitest/);
   assert.match(pkg.scripts.verify, /pnpm build/);
   assert.match(pkg.scripts.verify, /gateway:validate:cloud/);
+  assert.match(pkg.scripts["sdk:check"], /sdk:rust:check/);
 });
 
 test("launch readiness runbook documents IAM bootstrap via sdkwork-iam", () => {
@@ -149,6 +348,11 @@ test("Manager auth host keeps the ClawRouter PC geometry while using IAM-owned r
   assert.match(authStyles, /overflow-y: auto/);
   assert.match(authStyles, /#e55039/);
   assert.match(authStyles, /\.sdkwork-manager-auth-main/);
+  assert.match(authStyles, /letter-spacing: 0\.16em/);
+  assert.match(
+    authStyles,
+    /\.sdkwork-manager-auth-host input\[data-sdk-ui="input"\]\.pl-10\s*\{[^}]*padding-left: 2\.5rem;/s,
+  );
 });
 
 test("Manager Tailwind source closure includes the IAM auth layout utilities", () => {

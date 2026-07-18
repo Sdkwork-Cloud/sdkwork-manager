@@ -4,7 +4,6 @@ import { SdkworkSessionAuthBrowserRoot } from "@sdkwork/auth-pc-react";
 import {
   clearManagerIamSession,
   createAdminModuleAccessScope,
-  getManagerCommercialEntitlementKeys,
   getManagerIamRuntime,
   getManagerPermissionScope,
   resolveManagerAuthAppearance,
@@ -20,12 +19,22 @@ import { ManagerAuthenticatedAuthRouteGuard } from "./auth/ManagerAuthenticatedA
 import { RequireOperatorSession } from "./auth/RequireOperatorSession";
 import { useManagerAuthRuntimeConfig } from "./auth/useManagerAuthRuntimeConfig";
 
-function ProtectedAdminHost({ modules }: { modules: readonly AdminModuleContribution[] }) {
+type ManagerPcAppProps = {
+  locale: string;
+  modules: readonly AdminModuleContribution[];
+  onLocaleChange: (locale: string) => void;
+};
+
+function ProtectedAdminHost({
+  locale,
+  modules,
+  onLocaleChange,
+}: ManagerPcAppProps) {
   const navigate = useNavigate();
   const registry = useMemo(() => createSdkworkCoreHostRegistry(modules), [modules]);
+
   const accessScope = useMemo(
     () => createAdminModuleAccessScope({
-      entitlementKeys: getManagerCommercialEntitlementKeys(),
       permissionScope: getManagerPermissionScope(),
     }),
     [],
@@ -42,14 +51,26 @@ function ProtectedAdminHost({ modules }: { modules: readonly AdminModuleContribu
     }
   };
 
-  return <AdminHostShell accessScope={accessScope} onSignOut={signOut} registry={registry} />;
+  return (
+    <AdminHostShell
+      accessScope={accessScope}
+      locale={locale}
+      onLocaleChange={onLocaleChange}
+      onSignOut={signOut}
+      registry={registry}
+    />
+  );
 }
 
 function ProtectedAdminArea({
   modules,
+  locale,
+  onLocaleChange,
   runtimeConfig,
 }: {
+  locale: string;
   modules: readonly AdminModuleContribution[];
+  onLocaleChange: (locale: string) => void;
   runtimeConfig: Parameters<typeof SdkworkSessionAuthBrowserRoot>[0]["runtimeConfig"];
 }) {
   return (
@@ -58,17 +79,25 @@ function ProtectedAdminArea({
       authLoginPath="/auth/login"
       getRuntime={getManagerIamRuntime}
       homePath="/"
-      locale="zh-CN"
+      locale={locale}
       runtimeConfig={runtimeConfig}
     >
       <RequireOperatorSession>
-        <ProtectedAdminHost modules={modules} />
+        <ProtectedAdminHost
+          locale={locale}
+          modules={modules}
+          onLocaleChange={onLocaleChange}
+        />
       </RequireOperatorSession>
     </SdkworkSessionAuthBrowserRoot>
   );
 }
 
-export function ManagerPcApp({ modules }: { modules: readonly AdminModuleContribution[] }) {
+export function ManagerPcApp({
+  locale,
+  modules,
+  onLocaleChange,
+}: ManagerPcAppProps) {
   const runtimeConfig = useManagerAuthRuntimeConfig();
   return (
     <BrowserRouter>
@@ -76,13 +105,20 @@ export function ManagerPcApp({ modules }: { modules: readonly AdminModuleContrib
         <Route
           element={
             <ManagerAuthenticatedAuthRouteGuard>
-              <ManagerAuthRoutes authRuntime={runtimeConfig} />
+              <ManagerAuthRoutes authRuntime={runtimeConfig} locale={locale} />
             </ManagerAuthenticatedAuthRouteGuard>
           }
           path="/auth/*"
         />
         <Route
-          element={<ProtectedAdminArea modules={modules} runtimeConfig={runtimeConfig.runtimeConfig} />}
+          element={(
+            <ProtectedAdminArea
+              locale={locale}
+              modules={modules}
+              onLocaleChange={onLocaleChange}
+              runtimeConfig={runtimeConfig.runtimeConfig}
+            />
+          )}
           path="/*"
         />
       </Routes>
@@ -91,3 +127,4 @@ export function ManagerPcApp({ modules }: { modules: readonly AdminModuleContrib
 }
 
 export { AdminHostIntegrationPage } from "./admin-host-shell";
+export * from "./i18n";

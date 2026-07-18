@@ -6,6 +6,16 @@
       "name": "platform_manager_preference",
       "prefix": "platform_",
       "domain": "manager"
+    },
+    {
+      "name": "platform_manager_entitlement_snapshot",
+      "prefix": "platform_",
+      "domain": "manager"
+    },
+    {
+      "name": "platform_manager_entitlement_grant",
+      "prefix": "platform_",
+      "domain": "manager"
     }
   ]
 }

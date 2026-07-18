@@ -20,6 +20,10 @@
     {
       "file": "APP_SDK_INTEGRATION_SPEC.md",
       "path": "../../../../../sdkwork-specs/APP_SDK_INTEGRATION_SPEC.md"
+    },
+    {
+      "file": "I18N_SPEC.md",
+      "path": "../../../../../sdkwork-specs/I18N_SPEC.md"
     }
   ],
   "contracts": {

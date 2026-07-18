@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-routes-manager-backend-api",
+    "displayName": "SDKWork Manager Backend API Routes",
+    "version": "0.1.0",
+    "type": "rust-route-crate",
+    "root": "crates/sdkwork-routes-manager-backend-api",
+    "domain": "platform",
+    "capability": "manager",
+    "surface": "backend-api",
+    "languages": ["rust"],
+    "generated": false,
+    "manifests": ["Cargo.toml"]
+  },
+  "canonicalSpecs": [
+    { "file": "CODE_STYLE_SPEC.md", "path": "../../../sdkwork-specs/CODE_STYLE_SPEC.md" },
+    { "file": "NAMING_SPEC.md", "path": "../../../sdkwork-specs/NAMING_SPEC.md" },
+    { "file": "API_SPEC.md", "path": "../../../sdkwork-specs/API_SPEC.md" },
+    { "file": "WEB_FRAMEWORK_SPEC.md", "path": "../../../sdkwork-specs/WEB_FRAMEWORK_SPEC.md" },
+    { "file": "SDK_WORKSPACE_GENERATION_SPEC.md", "path": "../../../sdkwork-specs/SDK_WORKSPACE_GENERATION_SPEC.md" },
+    { "file": "RUST_CODE_SPEC.md", "path": "../../../sdkwork-specs/RUST_CODE_SPEC.md" },
+    { "file": "TEST_SPEC.md", "path": "../../../sdkwork-specs/TEST_SPEC.md" }
+  ],
+  "contracts": {
+    "publicExports": ["."],
+    "runtimeEntrypoints": ["gateway_mount", "wrap_router_with_web_framework"],
+    "routeManifest": "sdks/_route-manifests/backend-api/sdkwork-routes-manager-backend-api.route-manifest.json",
+    "authMode": "dual-token",
+    "sdkClients": [],
+    "configKeys": [
+      "SDKWORK_ENVIRONMENT",
+      "SDKWORK_MANAGER_ENVIRONMENT",
+      "SDKWORK_CORS_ALLOWED_ORIGINS",
+      "SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS"
+    ],
+    "sdkDependencies": [],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["cargo test -p sdkwork-routes-manager-backend-api"]
+  }
+}

@@ -24,8 +24,8 @@
     "runtimeEntrypoints": ["package.json#scripts.verify"],
     "routeManifest": "sdks/_route-manifests/app-api/sdkwork-routes-manager-app-api.route-manifest.json",
     "sdkClients": [
-      "@sdkwork/sdkwork-manager-app-sdk",
-      "@sdkwork/sdkwork-manager-backend-sdk"
+      "@sdkwork/manager-app-sdk",
+      "@sdkwork/manager-backend-sdk"
     ],
     "events": [],
     "configKeys": []

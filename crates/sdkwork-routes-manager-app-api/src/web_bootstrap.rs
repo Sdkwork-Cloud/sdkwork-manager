@@ -14,6 +14,14 @@ pub fn wrap_router_with_web_framework(
     router: Router,
 ) -> Router {
     let route_manifest = app_route_manifest();
+    let (environment, security_policy) =
+        sdkwork_web_bootstrap::application_security_policy_from_env(
+            &["SDKWORK_MANAGER_ENVIRONMENT", "SDKWORK_ENVIRONMENT"],
+            &[
+                "SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS",
+                "SDKWORK_CORS_ALLOWED_ORIGINS",
+            ],
+        );
     route_manifest
         .validate_public_path_prefixes(&manager_app_api_public_path_prefixes())
         .expect("manager app-api public prefixes must not cover protected manifest routes");
@@ -21,8 +29,10 @@ pub fn wrap_router_with_web_framework(
     let layer = WebFrameworkLayer::new(resolver)
         .with_profile(WebRequestContextProfile {
             public_path_prefixes: manager_app_api_public_path_prefixes(),
+            environment,
             ..WebRequestContextProfile::default()
         })
+        .with_security_policy(security_policy)
         .with_route_manifest(route_manifest);
     with_web_request_context(router, layer)
 }

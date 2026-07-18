@@ -17,9 +17,41 @@ pub struct AdminPreferenceItem {
     pub pinned_count: usize,
 }
 
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CommercialEntitlementItem {
+    pub app_id: String,
+    pub entitlement_keys: Vec<String>,
+    pub tier: String,
+    pub status: String,
+    pub valid_until: Option<chrono::DateTime<chrono::Utc>>,
+    pub version: String,
+    pub updated_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CommercialEntitlementDecisionItem {
+    pub accepted: bool,
+    pub allowed: bool,
+    pub app_id: String,
+    pub entitlement_key: String,
+    pub reason: String,
+    pub status: String,
+    pub tier: String,
+    pub snapshot_version: String,
+    pub valid_until: Option<chrono::DateTime<chrono::Utc>>,
+}
+
 pub fn preference_resource(
     item: ManagerPreferenceItem,
 ) -> SdkWorkResourceData<ManagerPreferenceItem> {
+    SdkWorkResourceData { item }
+}
+
+pub fn commercial_entitlement_resource(
+    item: CommercialEntitlementItem,
+) -> SdkWorkResourceData<CommercialEntitlementItem> {
     SdkWorkResourceData { item }
 }
 

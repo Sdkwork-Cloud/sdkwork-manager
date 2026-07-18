@@ -52,6 +52,46 @@ describe("createSdkworkCoreModuleRegistry", () => {
     expect(registry.resolveDefaultPath()).toBe("/admin/iam/users");
   });
 
+  it("resolves parameterized detail routes without exposing them in navigation", () => {
+    const detailRoute = {
+      Component: EmptyRoute,
+      id: "iam.users.detail",
+      label: "User detail",
+      navigationVisible: false,
+      path: "/admin/iam/users/:userId",
+      requiredPermissions: ["iam.users.read"],
+    };
+    const contribution = createContribution({
+      routes: [createContribution().routes[0], detailRoute],
+    });
+    const registry = createSdkworkCoreModuleRegistry([contribution]);
+    const scope = createAdminModuleAccessScope({ permissionScope: ["iam.users.read"] });
+
+    expect(registry.findRouteForPath("/admin/iam/users/42")).toBe(detailRoute);
+    expect(registry.listVisibleRoutes(contribution, scope)).toEqual([contribution.routes[0]]);
+  });
+
+  it("prefers a static route over a parameterized route", () => {
+    const staticRoute = {
+      Component: EmptyRoute,
+      id: "iam.users.new",
+      label: "New user",
+      path: "/admin/iam/users/new",
+    };
+    const detailRoute = {
+      Component: EmptyRoute,
+      id: "iam.users.detail",
+      label: "User detail",
+      path: "/admin/iam/users/:userId",
+    };
+    const contribution = createContribution({
+      routes: [createContribution().routes[0], detailRoute, staticRoute],
+    });
+    const registry = createSdkworkCoreModuleRegistry([contribution]);
+
+    expect(registry.findRouteForPath("/admin/iam/users/new")).toBe(staticRoute);
+  });
+
   it("rejects duplicate module identity before the shell can render", () => {
     const first = createContribution();
     const second = createContribution({
@@ -148,8 +188,30 @@ describe("createSdkworkCoreModuleRegistry", () => {
     expect(registry.resolveDefaultPath(createAdminModuleAccessScope())).toBe("/");
   });
 
-  it("fails closed for paid modules until the entitlement is present", () => {
+  it("requires every permission for an all-mode route", () => {
+    const route = {
+      Component: EmptyRoute,
+      id: "iam.users.composite",
+      label: "Composite users",
+      path: "/admin/iam/users/composite",
+      permissionMode: "all" as const,
+      requiredPermissions: ["iam.users.read", "iam.users.update"],
+    };
+    const registry = createSdkworkCoreModuleRegistry([
+      createContribution({ defaultPath: route.path, routes: [route] }),
+    ]);
+
+    expect(registry.hasRouteAccess(route, createAdminModuleAccessScope({
+      permissionScope: ["iam.users.read"],
+    }))).toBe(false);
+    expect(registry.hasRouteAccess(route, createAdminModuleAccessScope({
+      permissionScope: ["iam.users.read", "iam.users.update"],
+    }))).toBe(true);
+  });
+
+  it("treats commercial offers as metadata and authorizes modules by IAM permissions", () => {
     const paidContribution = createContribution({
+      access: { requiredPermissions: ["iam.users.read"] },
       commercial: {
         entitlementKey: "sdkwork.iam.advanced-admin",
         releaseChannel: "stable",
@@ -157,18 +219,13 @@ describe("createSdkworkCoreModuleRegistry", () => {
       },
     });
     const registry = createSdkworkCoreModuleRegistry([paidContribution]);
-    const permissionOnlyScope = createAdminModuleAccessScope({
-      permissionScope: ["iam.users.read"],
-    });
-    const entitledScope = createAdminModuleAccessScope({
-      entitlementKeys: ["sdkwork.iam.advanced-admin"],
-      permissionScope: ["iam.users.read"],
-    });
+    const deniedScope = createAdminModuleAccessScope();
+    const allowedScope = createAdminModuleAccessScope({ permissionScope: ["iam.users.read"] });
 
-    expect(registry.hasModuleAccess(paidContribution, permissionOnlyScope)).toBe(false);
-    expect(registry.listVisibleModules(permissionOnlyScope)).toEqual([]);
-    expect(registry.resolveDefaultPath(permissionOnlyScope)).toBe("/");
-    expect(registry.hasModuleAccess(paidContribution, entitledScope)).toBe(true);
-    expect(registry.resolveDefaultPath(entitledScope)).toBe("/admin/iam/users");
+    expect(registry.hasModuleAccess(paidContribution, deniedScope)).toBe(false);
+    expect(registry.listVisibleModules(deniedScope)).toEqual([]);
+    expect(registry.resolveDefaultPath(deniedScope)).toBe("/");
+    expect(registry.hasModuleAccess(paidContribution, allowedScope)).toBe(true);
+    expect(registry.resolveDefaultPath(allowedScope)).toBe("/admin/iam/users");
   });
 });

@@ -5,12 +5,16 @@ import {
   clearManagerIamSession,
   getManagerIamRuntime,
   loadOperatorSession,
-  OPERATOR_SESSION_CHANGED_EVENT,
+  OPERATOR_SESSION_STORAGE_CHANGED_EVENT,
   resetManagerIamRuntime,
   resetOperatorTokenManager,
 } from "@sdkwork/manager-pc-core";
 
+import { useManagerShellMessages } from "../i18n";
+import { verifyCurrentOperatorSession } from "./currentOperatorSessionVerification";
+
 export function RequireOperatorSession({ children }: { children: ReactNode }) {
+  const { session } = useManagerShellMessages();
   const location = useLocation();
   const [status, setStatus] = useState<"anonymous" | "checking" | "unavailable" | "verified">(() =>
     loadOperatorSession() ? "checking" : "anonymous",
@@ -20,9 +24,9 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
     const handleSessionChange = () => {
       setStatus(loadOperatorSession() ? "checking" : "anonymous");
     };
-    window.addEventListener(OPERATOR_SESSION_CHANGED_EVENT, handleSessionChange);
+    window.addEventListener(OPERATOR_SESSION_STORAGE_CHANGED_EVENT, handleSessionChange);
     return () => {
-      window.removeEventListener(OPERATOR_SESSION_CHANGED_EVENT, handleSessionChange);
+      window.removeEventListener(OPERATOR_SESSION_STORAGE_CHANGED_EVENT, handleSessionChange);
     };
   }, []);
 
@@ -31,7 +35,9 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
       return;
     }
     let active = true;
-    void getManagerIamRuntime().service.auth.sessions.current.retrieve()
+    void verifyCurrentOperatorSession(
+      () => getManagerIamRuntime().service.auth.sessions.current.retrieve(),
+    )
       .then(() => {
         if (active) {
           setStatus("verified");
@@ -61,11 +67,11 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
   }
 
   if (status === "checking") {
-    return <main className="manager-session-check" role="status">Validating operator session</main>;
+    return <main className="manager-session-check" role="status">{session.validating}</main>;
   }
 
   if (status === "unavailable") {
-    return <main className="manager-session-check" role="alert">IAM session validation is unavailable</main>;
+    return <main className="manager-session-check" role="alert">{session.unavailable}</main>;
   }
 
   return children;

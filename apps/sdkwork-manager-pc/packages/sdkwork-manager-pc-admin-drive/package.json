@@ -1,0 +1,28 @@
+{
+  "name": "@sdkwork/manager-pc-admin-drive",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager integration adapter for Drive backend-admin capabilities.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/manager-pc-admin-core": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "sdkwork-drive-pc-admin-operations": "workspace:*",
+    "sdkwork-drive-pc-admin-storage-providers": "workspace:*",
+    "sdkwork-drive-pc-commons": "workspace:*",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  }
+}

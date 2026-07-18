@@ -53,8 +53,9 @@ Repository-wide HTTP and database architecture: `../../../docs/architecture/tech
    migrated from legacy session storage when present, and synchronized across
    browser tabs. Logout clears the persisted session and global TokenManager.
 5. The host builds a validated module registry from the explicit assembly.
-6. IAM session permissions and commercial entitlement keys become a read-only
-   navigation scope. The owning backend remains authoritative.
+6. IAM session permissions become the read-only navigation scope. Commercial
+   offer metadata does not trigger a login-time entitlement request or block
+   access to the administration shell; backend authorization remains authoritative.
 7. The shell renders global navigation, the active module Header, the active
    module Sidebar, and the module-owned route component.
 8. The IAM adapter lazily loads the published IAM pages and creates their
@@ -68,9 +69,10 @@ pnpm --dir apps/sdkwork-manager-pc dev   # http://127.0.0.1:5190
 pnpm start                               # API gateway http://127.0.0.1:18092 (repo root)
 ```
 
-Vite dev proxy is configured through `@sdkwork/manager-client-core`
-(`buildManagerViteDevProxy`). Public browser configuration contains endpoints
-only; no access token is embedded through Vite defines. Production builds
+The browser calls the Manager application ingress directly. The Manager Rust
+gateway assembly mounts IAM app-api and backend-api routes alongside Manager
+routes; Vite does not proxy API traffic. Public browser configuration contains
+endpoints only; no access token is embedded through Vite defines. Production builds
 resolve workspace SDK packages through `apps/sdkwork-manager-pc/vite.config.ts`
 aliases aligned with `tsconfig.base.json`. The same configuration forces a
 single React/ReactDOM/i18n runtime for all sibling workspace sources. Tracked

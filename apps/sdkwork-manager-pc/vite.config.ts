@@ -2,8 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig, loadEnv, type Plugin } from "vite";
-import { buildManagerViteDevProxy } from "../sdkwork-manager-common/packages/sdkwork-manager-client-core/src/dev/viteDevProxy";
+import { defineConfig, type Plugin } from "vite";
 
 const appRoot = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(appRoot, "../..");
@@ -16,6 +15,11 @@ const i18nRuntimeNodeModulesRoot = path.resolve(
 const viteWorkspaceSourceRoots = [
   repoRoot,
   workspacePath("sdkwork-iam"),
+  workspacePath("sdkwork-drive"),
+  workspacePath("sdkwork-payment"),
+  workspacePath("sdkwork-order"),
+  workspacePath("sdkwork-promotion"),
+  workspacePath("sdkwork-membership"),
   workspacePath("sdkwork-appbase"),
   workspacePath("sdkwork-ui"),
   workspacePath("sdkwork-sdk-commons"),
@@ -78,7 +82,8 @@ function createManagerCredentialEntryBootstrapPlugin(
     apply: "serve",
     transformIndexHtml: {
       order: "pre",
-      handler: () => ({
+      handler: (html) => ({
+        html,
         tags: [
           {
             tag: "script",
@@ -94,7 +99,6 @@ function createManagerCredentialEntryBootstrapPlugin(
 }
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, appRoot, "VITE_");
   // IAM credential-entry operations receive this only during local development.
   // The canonical runner generates it from the application manifest before Vite starts.
   const credentialEntryBootstrapAccessToken = process.env.SDKWORK_ACCESS_TOKEN ?? "";
@@ -113,6 +117,9 @@ export default defineConfig(({ mode }) => {
         "react-dom": path.resolve(managerNodeModulesRoot, "react-dom"),
         i18next: path.resolve(i18nRuntimeNodeModulesRoot, "i18next"),
         "react-i18next": path.resolve(i18nRuntimeNodeModulesRoot, "react-i18next"),
+        "@sdkwork/i18n-pc-react": workspacePath(
+          "sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react/src/index.ts",
+        ),
         "@sdkwork/utils": workspacePath(
           "sdkwork-utils/packages/sdkwork-utils-typescript/src/index.ts",
         ),
@@ -137,6 +144,9 @@ export default defineConfig(({ mode }) => {
         "@sdkwork/iam-credential-entry": workspacePath(
           "sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/index.ts",
         ),
+        "@sdkwork/iam-pc-admin-user": workspacePath(
+          "sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user/src/index.ts",
+        ),
         "@sdkwork/manager-client-core": repoPath(
           "apps/sdkwork-manager-common/packages/sdkwork-manager-client-core/src/index.ts",
         ),
@@ -151,6 +161,30 @@ export default defineConfig(({ mode }) => {
         ),
         "@sdkwork/manager-pc-admin-core": repoPath(
           "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/src/index.ts",
+        ),
+        "@sdkwork/manager-pc-admin-drive": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive/src/index.tsx",
+        ),
+        "@sdkwork/manager-pc-admin-payment": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx",
+        ),
+        "@sdkwork/manager-pc-admin-trade": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx",
+        ),
+        "@sdkwork/manager-pc-admin-marketing": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx",
+        ),
+        "@sdkwork/manager-pc-admin-membership": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/src/index.tsx",
+        ),
+        "@sdkwork/manager-pc-admin-customer": repoPath(
+          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/src/index.tsx",
+        ),
+        "@sdkwork/membership-backend-sdk": workspacePath(
+          "sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript/src/index.ts",
+        ),
+        "@sdkwork/membership-service": workspacePath(
+          "sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service/src/index.ts",
         ),
         "@sdkwork/manager-pc-shell": repoPath(
           "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx",
@@ -180,7 +214,6 @@ export default defineConfig(({ mode }) => {
       port: 5190,
       strictPort: true,
       host: "127.0.0.1",
-      proxy: buildManagerViteDevProxy(env),
     },
   };
 });

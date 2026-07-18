@@ -1,0 +1,29 @@
+{
+  "name": "@sdkwork/manager-pc-admin-customer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager Customer 360 operations center.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/iam-pc-admin-user": "workspace:*",
+    "@sdkwork/iam-service": "workspace:*",
+    "@sdkwork/manager-pc-admin-core": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/membership-service": "workspace:*",
+    "react": "catalog:",
+    "react-router-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  }
+}

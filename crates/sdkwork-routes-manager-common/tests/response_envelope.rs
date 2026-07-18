@@ -25,6 +25,7 @@ fn test_context() -> WebRequestContext {
         locale: None,
         client_kind: None,
         operation: None,
+        idempotency_key: None,
         trace_id: Some("trace-manager-test".to_owned()),
     }
 }

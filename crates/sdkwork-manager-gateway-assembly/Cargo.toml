@@ -12,6 +12,7 @@ path = "src/lib.rs"
 [dependencies]
 axum.workspace = true
 tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }
-sdkwork_manager_service_host = { package = "sdkwork-manager-service-host", path = "../sdkwork-manager-service-host" }
-sdkwork_routes_manager_app_api = { package = "sdkwork-routes-manager-app-api", path = "../sdkwork-routes-manager-app-api" }
-sdkwork_routes_manager_backend_api = { package = "sdkwork-routes-manager-backend-api", path = "../sdkwork-routes-manager-backend-api" }
+sdkwork_manager_service_host.workspace = true
+sdkwork_routes_manager_app_api.workspace = true
+sdkwork_routes_manager_backend_api.workspace = true
+sdkwork_iam_gateway_assembly.workspace = true

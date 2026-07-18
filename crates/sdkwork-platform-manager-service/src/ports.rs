@@ -1,7 +1,18 @@
 use async_trait::async_trait;
 use uuid::Uuid;
 
-use crate::domain::{ManagerPreference, ManagerPreferenceSummary, UpdateManagerPreferenceCommand};
+use crate::domain::{
+    CommercialEntitlementSnapshot, ManagerPreference, ManagerPreferenceSummary,
+    UpdateCommercialEntitlementCommand, UpdateManagerPreferenceCommand,
+};
+
+#[derive(Debug, thiserror::Error, PartialEq, Eq)]
+pub enum ManagerRepositoryError {
+    #[error("commercial entitlement version conflict")]
+    VersionConflict,
+    #[error("manager repository failure: {0}")]
+    Storage(String),
+}
 
 #[async_trait]
 pub trait ManagerRepository: Send + Sync {
@@ -20,4 +31,15 @@ pub trait ManagerRepository: Send + Sync {
         &self,
         tenant_id: Uuid,
     ) -> Result<Vec<ManagerPreferenceSummary>, String>;
+
+    async fn find_commercial_entitlement(
+        &self,
+        tenant_id: Uuid,
+        app_id: &str,
+    ) -> Result<Option<CommercialEntitlementSnapshot>, ManagerRepositoryError>;
+
+    async fn replace_commercial_entitlement(
+        &self,
+        command: UpdateCommercialEntitlementCommand,
+    ) -> Result<CommercialEntitlementSnapshot, ManagerRepositoryError>;
 }

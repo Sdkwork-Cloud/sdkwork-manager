@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.deployment-index",
+  "application": "sdkwork-manager",
+  "topology": "../specs/topology.spec.json",
+  "defaultProfile": "standalone.development",
+  "profiles": {
+    "standalone.development": { "config": "deployments/standalone.development.env" },
+    "standalone.production": { "config": "deployments/standalone.production.env" },
+    "cloud.development": { "config": "deployments/cloud.development.env" },
+    "cloud.production": { "config": "deployments/cloud.production.env" }
+  }
+}

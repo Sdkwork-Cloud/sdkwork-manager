@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit -p ../../tsconfig.json"
   },
   "dependencies": {
+    "@sdkwork/i18n-pc-react": "workspace:*",
     "@sdkwork/iam-pc-admin-account-binding": "workspace:*",
     "@sdkwork/iam-pc-admin-audit": "workspace:*",
     "@sdkwork/iam-pc-admin-oauth": "workspace:*",

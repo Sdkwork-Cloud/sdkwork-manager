@@ -6,7 +6,10 @@ import {
 
 import { loadManagerIamSession, toOperatorSession } from "./iamOperatorSessionBridge";
 import { OPERATOR_SESSION_CHANGED_EVENT } from "./sessionEvents";
-export { OPERATOR_SESSION_CHANGED_EVENT } from "./sessionEvents";
+export {
+  OPERATOR_SESSION_CHANGED_EVENT,
+  OPERATOR_SESSION_STORAGE_CHANGED_EVENT,
+} from "./sessionEvents";
 
 export type OperatorSession = {
   accessToken?: string;

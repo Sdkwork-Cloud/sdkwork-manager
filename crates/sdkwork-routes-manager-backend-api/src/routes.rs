@@ -1,4 +1,4 @@
-use axum::routing::get;
+use axum::routing::{get, post};
 use axum::Router;
 use sdkwork_manager_service_host::ManagerServiceHost;
 use std::sync::Arc;
@@ -17,6 +17,15 @@ pub fn build_manager_backend_router(host: Arc<ManagerServiceHost>) -> Router {
         .route(
             "/backend/v3/api/manager/preferences",
             get(handlers::list_preferences_admin),
+        )
+        .route(
+            "/backend/v3/api/manager/commercial_entitlements/current",
+            get(handlers::retrieve_commercial_entitlement)
+                .put(handlers::update_commercial_entitlement),
+        )
+        .route(
+            "/backend/v3/api/manager/commercial_entitlements/verify",
+            post(handlers::decide_commercial_entitlement),
         )
         .with_state(state)
 }

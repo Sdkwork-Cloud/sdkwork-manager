@@ -1,0 +1,30 @@
+{
+  "name": "@sdkwork/manager-pc-admin-payment",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager integration adapter for Payment backend-admin capabilities.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/manager-client-core": "workspace:*",
+    "@sdkwork/manager-pc-admin-core": "workspace:*",
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/payment-pc-admin-channel": "workspace:*",
+    "@sdkwork/payment-pc-admin-devconfig": "workspace:*",
+    "@sdkwork/payment-pc-admin-monitor": "workspace:*",
+    "@sdkwork/payment-pc-admin-provider": "workspace:*",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  }
+}

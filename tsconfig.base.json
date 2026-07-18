@@ -19,6 +19,81 @@
       "@sdkwork/iam-backend-sdk": [
         "../sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/src/index.ts"
       ],
+      "@sdkwork/drive-backend-sdk": [
+        "../sdkwork-drive/sdks/sdkwork-drive-backend-sdk/sdkwork-drive-backend-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/drive-admin-storage-sdk": [
+        "../sdkwork-drive/sdks/sdkwork-drive-admin-storage-sdk/sdkwork-drive-admin-storage-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/payment-backend-sdk": [
+        "../sdkwork-payment/sdks/sdkwork-payment-backend-sdk/sdkwork-payment-backend-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/order-backend-sdk": [
+        "../sdkwork-order/sdks/sdkwork-order-backend-sdk/sdkwork-order-backend-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/order-service": [
+        "../sdkwork-order/apps/sdkwork-order-common/packages/sdkwork-order-service/src/index.ts"
+      ],
+      "@sdkwork/order-pc-admin-core": [
+        "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-core/src/index.ts"
+      ],
+      "@sdkwork/order-pc-admin-orders": [
+        "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-orders/src/index.ts"
+      ],
+      "@sdkwork/order-pc-admin-orders/service": [
+        "../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-orders/src/service.ts"
+      ],
+      "@sdkwork/promotion-backend-sdk": [
+        "../sdkwork-promotion/sdks/sdkwork-promotion-backend-sdk/sdkwork-promotion-backend-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/promotion-service": [
+        "../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-service/src/index.ts"
+      ],
+      "@sdkwork/membership-backend-sdk": [
+        "../sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript/src/index.ts"
+      ],
+      "@sdkwork/membership-service": [
+        "../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service/src/index.ts"
+      ],
+      "@sdkwork/payment-contracts": [
+        "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-contracts/src/index.ts"
+      ],
+      "@sdkwork/payment-sdk-ports": [
+        "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-sdk-ports/src/index.ts"
+      ],
+      "@sdkwork/payment-service": [
+        "../sdkwork-payment/apps/sdkwork-payment-common/packages/sdkwork-payment-service/src/index.ts"
+      ],
+      "@sdkwork/payment-pc-admin-core": [
+        "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-core/src/index.ts"
+      ],
+      "@sdkwork/payment-pc-admin-channel": [
+        "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-channel/src/index.tsx"
+      ],
+      "@sdkwork/payment-pc-admin-provider": [
+        "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-provider/src/index.tsx"
+      ],
+      "@sdkwork/payment-pc-admin-monitor": [
+        "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-monitor/src/index.tsx"
+      ],
+      "@sdkwork/payment-pc-admin-devconfig": [
+        "../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-devconfig/src/index.tsx"
+      ],
+      "sdkwork-drive-pc-core": [
+        "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-core/src/index.ts"
+      ],
+      "sdkwork-drive-pc-commons": [
+        "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-commons/src/index.ts"
+      ],
+      "sdkwork-drive-pc-admin-core": [
+        "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-core/src/index.ts"
+      ],
+      "sdkwork-drive-pc-admin-operations": [
+        "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-operations/src/index.ts"
+      ],
+      "sdkwork-drive-pc-admin-storage-providers": [
+        "../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-storage-providers/src/index.ts"
+      ],
       "@sdkwork/auth-pc-react": [
         "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src/index.ts"
       ],
@@ -30,6 +105,9 @@
       ],
       "@sdkwork/iam-credential-entry": [
         "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/index.ts"
+      ],
+      "@sdkwork/iam-pc-admin-user": [
+        "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user/src/index.ts"
       ],
       "@sdkwork/sdk-common": [
         "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts"
@@ -45,6 +123,27 @@
       ],
       "@sdkwork/manager-pc-core": [
         "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/src/index.ts"
+      ],
+      "@sdkwork/manager-pc-admin-core": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/src/index.ts"
+      ],
+      "@sdkwork/manager-pc-admin-drive": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive/src/index.tsx"
+      ],
+      "@sdkwork/manager-pc-admin-payment": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx"
+      ],
+      "@sdkwork/manager-pc-admin-trade": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx"
+      ],
+      "@sdkwork/manager-pc-admin-marketing": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx"
+      ],
+      "@sdkwork/manager-pc-admin-membership": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/src/index.tsx"
+      ],
+      "@sdkwork/manager-pc-admin-customer": [
+        "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/src/index.tsx"
       ],
       "@sdkwork/manager-pc-shell": [
         "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx"

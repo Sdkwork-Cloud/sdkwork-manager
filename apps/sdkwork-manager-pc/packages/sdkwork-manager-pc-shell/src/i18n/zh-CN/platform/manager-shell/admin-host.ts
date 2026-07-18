@@ -1,0 +1,27 @@
+import type { ManagerAdminHostMessages } from "../../../../types/i18n";
+
+export const managerAdminHostMessages: ManagerAdminHostMessages = {
+  adminBadge: "管理后台",
+  brandLabel: "SDKWork 管理平台",
+  capability: "能力",
+  capabilityNavigation: "功能导航",
+  commercialModulesNote: "商业模块由装配目录提供，租户权益始终以服务端判定为准。",
+  commercialTier: "商业等级",
+  english: "English",
+  hideModuleNavigation: "收起功能导航",
+  language: "语言",
+  moduleAssemblyDescription: "集中访问已注册的后台管理模块，各领域页面、服务与权限仍由所属模块独立维护。",
+  moduleAssemblyTitle: "管理工作台",
+  moduleNavigation: "功能导航",
+  navigationCountTemplate: "共 {count} 项管理功能",
+  noAvailableCapabilities: "当前管理员账号暂无可用的管理功能。",
+  registeredModules: "业务模块",
+  releaseChannel: "发布通道",
+  searchModules: "搜索模块或功能",
+  selectModule: "请选择一个业务模块进入管理工作区。",
+  showModuleNavigation: "展开功能导航",
+  signOut: "退出登录",
+  simplifiedChinese: "简体中文",
+  unifiedWorkspace: "统一管理工作区",
+  workspace: "工作区",
+};
