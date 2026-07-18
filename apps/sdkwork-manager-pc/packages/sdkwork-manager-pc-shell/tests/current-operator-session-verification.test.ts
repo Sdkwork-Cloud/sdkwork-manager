@@ -1,16 +1,30 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { verifyCurrentOperatorSession } from "../src/auth/currentOperatorSessionVerification";
+import {
+  invalidateCurrentOperatorSessionVerification,
+  isCurrentOperatorSessionVerified,
+  resolveOperatorSessionVerificationKey,
+  verifyCurrentOperatorSession,
+} from "../src/auth/currentOperatorSessionVerification";
 
 describe("current operator session verification", () => {
-  it("coalesces concurrent homepage verification requests", async () => {
+  const sessionKey = resolveOperatorSessionVerificationKey({
+    accessToken: "access-token",
+    authToken: "auth-token",
+  })!;
+
+  beforeEach(() => {
+    invalidateCurrentOperatorSessionVerification();
+  });
+
+  it("coalesces concurrent route-guard verification requests", async () => {
     let resolveRequest: (() => void) | undefined;
     const retrieveCurrentSession = vi.fn(() => new Promise<void>((resolve) => {
       resolveRequest = resolve;
     }));
 
-    const firstVerification = verifyCurrentOperatorSession(retrieveCurrentSession);
-    const secondVerification = verifyCurrentOperatorSession(retrieveCurrentSession);
+    const firstVerification = verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
+    const secondVerification = verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
 
     expect(retrieveCurrentSession).toHaveBeenCalledTimes(1);
     expect(secondVerification).toBe(firstVerification);
@@ -19,11 +33,22 @@ describe("current operator session verification", () => {
     await Promise.all([firstVerification, secondVerification]);
   });
 
-  it("allows a later verification after the active request settles", async () => {
+  it("reuses successful verification across guard remounts", async () => {
     const retrieveCurrentSession = vi.fn().mockResolvedValue(undefined);
 
-    await verifyCurrentOperatorSession(retrieveCurrentSession);
-    await verifyCurrentOperatorSession(retrieveCurrentSession);
+    await verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
+    await verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
+
+    expect(retrieveCurrentSession).toHaveBeenCalledTimes(1);
+    expect(isCurrentOperatorSessionVerified(sessionKey)).toBe(true);
+  });
+
+  it("allows verification again after the session is invalidated", async () => {
+    const retrieveCurrentSession = vi.fn().mockResolvedValue(undefined);
+
+    await verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
+    invalidateCurrentOperatorSessionVerification();
+    await verifyCurrentOperatorSession(sessionKey, retrieveCurrentSession, () => sessionKey);
 
     expect(retrieveCurrentSession).toHaveBeenCalledTimes(2);
   });

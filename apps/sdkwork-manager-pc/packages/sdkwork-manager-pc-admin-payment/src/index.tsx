@@ -5,6 +5,7 @@ import {
   type ManagerEnvironment,
 } from "@sdkwork/manager-client-core";
 import { getManagerPaymentBackendService } from "@sdkwork/manager-pc-admin-core";
+export { PAYMENT_ADMIN_I18N_CATALOG } from "@sdkwork/payment-pc-admin-core";
 
 type PaymentMessages = {
   description: string;

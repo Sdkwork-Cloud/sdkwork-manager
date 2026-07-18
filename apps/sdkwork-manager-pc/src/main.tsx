@@ -3,8 +3,10 @@ import { createRoot } from "react-dom/client";
 
 import { SdkworkI18nProvider } from "@sdkwork/i18n-pc-react";
 import { MANAGER_IAM_ADMIN_I18N_CATALOG } from "@sdkwork/manager-pc-admin-iam";
+import { PAYMENT_ADMIN_I18N_CATALOG } from "@sdkwork/manager-pc-admin-payment";
 import {
   MANAGER_SHELL_I18N_CATALOG,
+  logManagerSessionPageBoot,
   ManagerPcApp,
 } from "@sdkwork/manager-pc-shell";
 import { SdkworkThemeProvider } from "@sdkwork/ui-pc-react/theme";
@@ -17,6 +19,7 @@ import {
 import "./index.css";
 
 const initialLocale = resolveInitialManagerLocale();
+logManagerSessionPageBoot(window.location.search);
 
 function ManagerPcRoot() {
   const [locale, setLocale] = useState(initialLocale);
@@ -28,7 +31,11 @@ function ManagerPcRoot() {
 
   return (
     <SdkworkI18nProvider
-      catalogs={[MANAGER_SHELL_I18N_CATALOG, MANAGER_IAM_ADMIN_I18N_CATALOG]}
+      catalogs={[
+        MANAGER_SHELL_I18N_CATALOG,
+        MANAGER_IAM_ADMIN_I18N_CATALOG,
+        PAYMENT_ADMIN_I18N_CATALOG,
+      ]}
       locale={locale}
     >
       <SdkworkThemeProvider defaultTheme="light" locale={locale} themeColor="green-tech">

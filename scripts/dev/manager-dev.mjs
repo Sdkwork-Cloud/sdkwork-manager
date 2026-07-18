@@ -1,54 +1,17 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import { mergeRepoDevBootstrapAccessTokenEnv } from "../../../sdkwork-iam/scripts/dev/create-dev-bootstrap-access-token-env.mjs";
+import { resolveManagerProfileEnv } from "./manager-profile-env.mjs";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const appRoot = path.join(workspaceRoot, "apps", "sdkwork-manager-pc");
-const deploymentIndexPath = path.join(workspaceRoot, "etc", "sdkwork.deployment.config.json");
-
-function parseEnvFile(filePath) {
-  return Object.fromEntries(
-    readFileSync(filePath, "utf8")
-      .split(/\r?\n/u)
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith("#") && line.includes("="))
-      .map((line) => {
-        const separator = line.indexOf("=");
-        return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
-      }),
-  );
-}
-
-function resolveProfileEnv() {
-  const deploymentIndex = JSON.parse(readFileSync(deploymentIndexPath, "utf8"));
-  const inferredProfileId = [
-      process.env.SDKWORK_MANAGER_DEPLOYMENT_PROFILE,
-      process.env.SDKWORK_MANAGER_ENVIRONMENT,
-    ].filter(Boolean).join(".");
-  const profileId = process.env.SDKWORK_MANAGER_PROFILE_ID
-    || inferredProfileId
-    || deploymentIndex.defaultProfile;
-  const selectedProfileId = deploymentIndex.profiles[profileId]
-    ? profileId
-    : deploymentIndex.defaultProfile;
-  const profile = deploymentIndex.profiles[selectedProfileId];
-  if (!profile?.config) {
-    throw new Error(`Manager deployment profile is not configured: ${selectedProfileId}`);
-  }
-  const profilePath = path.resolve(path.dirname(deploymentIndexPath), profile.config);
-  if (!existsSync(profilePath)) {
-    throw new Error(`Manager deployment profile file does not exist: ${profilePath}`);
-  }
-  return parseEnvFile(profilePath);
-}
-
 function buildGateway() {
   const result = spawnSync(
     process.env.CARGO ?? "cargo",
@@ -128,7 +91,7 @@ function stopChild(child) {
 }
 
 async function main() {
-  const profileEnv = resolveProfileEnv();
+  const profileEnv = resolveManagerProfileEnv();
   const runtimeEnv = mergeRepoDevBootstrapAccessTokenEnv({
     env: { ...profileEnv, ...process.env },
     manifestPath: "apps/sdkwork-manager-pc/sdkwork.app.config.json",

@@ -14,6 +14,8 @@ export {
   commitManagerIamSession,
   hasManagerPermission,
   getManagerPermissionScope,
+  getManagerStandardRoleCodes,
+  isManagerPlatformSuperAdmin,
   loadManagerIamSession,
   toOperatorSession,
   MANAGER_IAM_SESSION_STORAGE_KEY,

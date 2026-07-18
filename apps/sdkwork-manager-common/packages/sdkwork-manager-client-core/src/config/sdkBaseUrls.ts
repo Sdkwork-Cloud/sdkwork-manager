@@ -87,6 +87,9 @@ export function resolvePlatformApiGatewayBaseUrl(
   explicit?: string,
   env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
 ): string {
+  if (resolveManagerDeploymentProfile(env) === "standalone") {
+    return resolveManagerApplicationBaseUrl(undefined, env);
+  }
   const candidate =
     explicit ??
     readSdkBaseUrlEnvValue(VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, env) ??

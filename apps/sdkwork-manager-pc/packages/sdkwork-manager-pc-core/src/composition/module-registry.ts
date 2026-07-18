@@ -1,5 +1,8 @@
 import type { ComponentType } from "react";
-import { hasPermissionInScope } from "@sdkwork/iam-contracts";
+import {
+  hasPermissionInScope,
+  SDKWORK_STANDARD_ROLE_CODES,
+} from "@sdkwork/iam-contracts";
 
 export type AdminModuleAccess = {
   requiredPermissions?: readonly string[];
@@ -14,6 +17,7 @@ export type AdminModuleCommercialOffer = {
 
 export type AdminModuleAccessScope = {
   permissionScope: readonly string[];
+  standardRoleCodes: readonly string[];
 };
 
 export type AdminModuleHeaderAction = {
@@ -24,11 +28,17 @@ export type AdminModuleHeaderAction = {
   variant?: "primary" | "secondary";
 };
 
+export type AdminModuleNavigationGroup = {
+  id: string;
+  label: string;
+};
+
 export type AdminModuleRoute = {
   Component: ComponentType;
   description?: string;
   id: string;
   label: string;
+  navigationGroups?: readonly AdminModuleNavigationGroup[];
   navigationVisible?: boolean;
   path: string;
   permissionMode?: "all" | "any";
@@ -124,7 +134,18 @@ export function createAdminModuleAccessScope(
 ): AdminModuleAccessScope {
   return {
     permissionScope: input.permissionScope ?? [],
+    standardRoleCodes: input.standardRoleCodes ?? [],
   };
+}
+
+export function hasAdminScopePermission(
+  scope: AdminModuleAccessScope,
+  permission: string,
+): boolean {
+  return scope.standardRoleCodes.some(
+    (roleCode) => typeof roleCode === "string"
+      && roleCode.toLowerCase() === SDKWORK_STANDARD_ROLE_CODES.PLATFORM_SUPER_ADMIN,
+  ) || hasPermissionInScope(scope.permissionScope, permission);
 }
 
 export function hasAdminModuleAccess(
@@ -137,12 +158,10 @@ export function hasAdminModuleAccess(
   }
   if (module.access.permissionMode === "all") {
     return requiredPermissions.every((permission) =>
-      hasPermissionInScope(scope.permissionScope, permission),
+      hasAdminScopePermission(scope, permission),
     );
   }
-  return requiredPermissions.some((permission) =>
-    hasPermissionInScope(scope.permissionScope, permission),
-  );
+  return requiredPermissions.some((permission) => hasAdminScopePermission(scope, permission));
 }
 
 export function hasAdminRouteAccess(
@@ -155,12 +174,10 @@ export function hasAdminRouteAccess(
   }
   if (route.permissionMode === "all") {
     return requiredPermissions.every((permission) =>
-      hasPermissionInScope(scope.permissionScope, permission),
+      hasAdminScopePermission(scope, permission),
     );
   }
-  return requiredPermissions.some((permission) =>
-    hasPermissionInScope(scope.permissionScope, permission),
-  );
+  return requiredPermissions.some((permission) => hasAdminScopePermission(scope, permission));
 }
 
 function listAccessibleModuleRoutes(

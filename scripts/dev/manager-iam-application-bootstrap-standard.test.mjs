@@ -4,7 +4,19 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+import { resolveManagerProfileEnv } from "./manager-profile-env.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const managerIamMenuPermissions = [
+  "iam.users.read",
+  "iam.tenants.read",
+  "iam.organizations.read",
+  "iam.roles.read",
+  "iam.permissions.read",
+  "iam.oauth.read",
+  "iam.account_binding_policy.read",
+  "iam.audit_events.read",
+];
 
 test("Manager standalone startup provisions its manifest-backed IAM runtime before routes", () => {
   const cargo = readFileSync(
@@ -21,6 +33,10 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   ));
   const devRunner = readFileSync(
     path.join(root, "scripts/dev/manager-dev.mjs"),
+    "utf8",
+  );
+  const startRunner = readFileSync(
+    path.join(root, "scripts/dev/manager-start.mjs"),
     "utf8",
   );
   const bootstrap = readFileSync(
@@ -49,10 +65,13 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   assert.doesNotMatch(bootstrap, /fetch\(|axios\.|INSERT\s+INTO/i);
   assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
   assert.match(appPackage.scripts["dev:bootstrap"], /manager-bootstrap\.mjs/);
+  const rootPackage = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
+  assert.match(rootPackage.scripts.start, /manager-start\.mjs/);
   assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
   assert.match(devRunner, /manager-server/);
-  assert.match(devRunner, /sdkwork\.deployment\.config\.json/);
-  assert.match(devRunner, /defaultProfile/);
+  assert.match(devRunner, /resolveManagerProfileEnv/);
+  assert.match(startRunner, /resolveManagerProfileEnv/);
+  assert.match(startRunner, /sdkwork-manager-standalone-gateway/);
   assert.match(devRunner, /StringComparer\]::OrdinalIgnoreCase\.Equals/);
   assert.match(devRunner, /Stop-Process -Id \$_\.Id -Force/);
   assert.ok(
@@ -62,6 +81,24 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   );
 });
 
+test("Manager standalone profile supplies the IAM and Manager CORS allowlists", () => {
+  const profileEnv = resolveManagerProfileEnv({});
+
+  assert.equal(profileEnv.SDKWORK_MANAGER_PROFILE_ID, "standalone.development");
+  assert.equal(profileEnv.SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
+  assert.equal(profileEnv.SDKWORK_IAM_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
+  assert.equal(
+    profileEnv.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
+    profileEnv.SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
+  );
+  assert.equal(
+    profileEnv.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
+    profileEnv.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
+  );
+  assert.match(profileEnv.SDKWORK_DRIVE_DATABASE_URL, /^sqlite:\/\/.runtime\//u);
+  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_MAX_CONNECTIONS, "1");
+});
+
 test("Manager manifests use the PC runtime app id required by IAM login", () => {
   for (const manifestPath of [
     "sdkwork.app.config.json",
@@ -69,6 +106,11 @@ test("Manager manifests use the PC runtime app id required by IAM login", () => 
   ]) {
     const manifest = JSON.parse(readFileSync(path.join(root, manifestPath), "utf8"));
     assert.equal(manifest.backend.appId, "sdkwork-manager-pc");
-    assert.ok(manifest.backend.accessTokenPermissionScope.length > 0);
+    for (const permission of managerIamMenuPermissions) {
+      assert.ok(
+        manifest.backend.accessTokenPermissionScope.includes(permission),
+        `${manifestPath} must request ${permission} for the registered IAM menu`,
+      );
+    }
   }
 });

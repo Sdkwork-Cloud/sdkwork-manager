@@ -3,6 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearManagerIamSession,
   commitManagerIamSession,
+  getManagerPermissionScope,
+  getManagerStandardRoleCodes,
+  hasManagerPermission,
+  isManagerPlatformSuperAdmin,
   loadManagerIamSession,
   MANAGER_IAM_SESSION_STORAGE_KEY,
   type ManagerIamSession,
@@ -68,5 +72,57 @@ describe("manager IAM session bridge", () => {
     window.dispatchEvent(new StorageEvent("storage", { key: FULL_SESSION_KEY }));
 
     expect(loadManagerIamSession()).toBeNull();
+  });
+
+  it("does not broadcast an intermediate IAM token commit with the same session identity", () => {
+    commitManagerIamSession({
+      ...session,
+      context: {
+        appId: "sdkwork-manager-pc",
+        authLevel: "password",
+        dataScope: ["tenant:tenant-1"],
+        deploymentMode: "private",
+        environment: "dev",
+        loginScope: "ORGANIZATION",
+        organizationId: "organization-1",
+        permissionScope: ["commerce.orders.read"],
+        sessionId: "session-1",
+        tenantId: "tenant-1",
+        userId: "user-1",
+      },
+    });
+    const sessionChanged = vi.fn();
+    window.addEventListener(OPERATOR_SESSION_CHANGED_EVENT, sessionChanged);
+
+    commitManagerIamSession(session);
+
+    expect(getManagerPermissionScope()).toEqual(["commerce.orders.read"]);
+    expect(loadManagerIamSession()?.context?.permissionScope).toEqual(["commerce.orders.read"]);
+    expect(sessionChanged).not.toHaveBeenCalled();
+
+    window.removeEventListener(OPERATOR_SESSION_CHANGED_EVENT, sessionChanged);
+  });
+  it("authorizes a platform super administrator without a per-permission scope", () => {
+    commitManagerIamSession({
+      ...session,
+      context: {
+        appId: "sdkwork-manager-pc",
+        authLevel: "password",
+        dataScope: ["tenant:tenant-1"],
+        deploymentMode: "private",
+        environment: "dev",
+        loginScope: "ORGANIZATION",
+        organizationId: "organization-1",
+        permissionScope: [],
+        sessionId: "session-1",
+        standardRoleCodes: ["platform_super_admin"],
+        tenantId: "tenant-1",
+        userId: "user-1",
+      },
+    });
+
+    expect(getManagerStandardRoleCodes()).toEqual(["platform_super_admin"]);
+    expect(isManagerPlatformSuperAdmin()).toBe(true);
+    expect(hasManagerPermission("commerce.payments.route_rules.delete")).toBe(true);
   });
 });

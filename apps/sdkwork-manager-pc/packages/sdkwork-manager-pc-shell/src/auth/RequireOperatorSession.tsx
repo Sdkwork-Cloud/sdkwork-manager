@@ -12,13 +12,30 @@ import {
 } from "@sdkwork/manager-pc-core";
 
 import { useManagerShellMessages } from "../i18n";
-import { verifyCurrentOperatorSession } from "./currentOperatorSessionVerification";
+import {
+  invalidateCurrentOperatorSessionVerification,
+  isCurrentOperatorSessionVerified,
+  resolveOperatorSessionVerificationKey,
+  verifyCurrentOperatorSession,
+} from "./currentOperatorSessionVerification";
 import {
   logManagerSessionDiagnostic,
   resolveManagerSessionDiagnostics,
 } from "./managerSessionDiagnostics";
 
 let nextGuardInstanceId = 1;
+
+type OperatorSessionStatus = "anonymous" | "checking" | "unavailable" | "verified";
+
+function resolveInitialStatus(pauseValidation: boolean): OperatorSessionStatus {
+  const sessionKey = resolveOperatorSessionVerificationKey(loadOperatorSession());
+  if (!sessionKey) {
+    return "anonymous";
+  }
+  return pauseValidation || isCurrentOperatorSessionVerified(sessionKey)
+    ? "verified"
+    : "checking";
+}
 
 export function RequireOperatorSession({ children }: { children: ReactNode }) {
   const { session } = useManagerShellMessages();
@@ -27,12 +44,11 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
     () => resolveManagerSessionDiagnostics(location.search),
     [location.search],
   );
-  const guardInstanceId = useRef(nextGuardInstanceId++).current;
-  const [status, setStatus] = useState<"anonymous" | "checking" | "unavailable" | "verified">(() =>
-    loadOperatorSession()
-      ? diagnostics.pauseValidation ? "verified" : "checking"
-      : "anonymous",
+  const [guardInstanceId] = useState(() => nextGuardInstanceId++);
+  const [status, setStatus] = useState<OperatorSessionStatus>(() =>
+    resolveInitialStatus(diagnostics.pauseValidation),
   );
+  const observedSessionKey = useRef(resolveOperatorSessionVerificationKey(loadOperatorSession()));
 
   useEffect(() => {
     logManagerSessionDiagnostic(diagnostics, "guard:mount", {
@@ -57,20 +73,35 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const handleLocalSessionChange = () => {
+      const sessionKey = resolveOperatorSessionVerificationKey(loadOperatorSession());
       logManagerSessionDiagnostic(diagnostics, "session:local-write", {
         guardInstanceId,
-        hasSession: Boolean(loadOperatorSession()),
+        hasSession: Boolean(sessionKey),
       });
+      if (!sessionKey) {
+        observedSessionKey.current = null;
+        invalidateCurrentOperatorSessionVerification();
+        setStatus("anonymous");
+      }
     };
     const handleSessionStorageChange = () => {
-      const hasSession = Boolean(loadOperatorSession());
+      const sessionKey = resolveOperatorSessionVerificationKey(loadOperatorSession());
+      const sessionIdentityChanged = sessionKey !== observedSessionKey.current;
+      observedSessionKey.current = sessionKey;
       logManagerSessionDiagnostic(diagnostics, "session:storage-change", {
         guardInstanceId,
-        hasSession,
+        hasSession: Boolean(sessionKey),
+        sessionIdentityChanged,
       });
-      setStatus(hasSession
-        ? diagnostics.pauseValidation ? "verified" : "checking"
-        : "anonymous");
+      if (!sessionKey) {
+        invalidateCurrentOperatorSessionVerification();
+        setStatus("anonymous");
+        return;
+      }
+      if (sessionIdentityChanged) {
+        invalidateCurrentOperatorSessionVerification();
+        setStatus(diagnostics.pauseValidation ? "verified" : "checking");
+      }
     };
     window.addEventListener(OPERATOR_SESSION_CHANGED_EVENT, handleLocalSessionChange);
     window.addEventListener(OPERATOR_SESSION_STORAGE_CHANGED_EVENT, handleSessionStorageChange);
@@ -85,15 +116,26 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
       return;
     }
     let active = true;
+    const operatorSession = loadOperatorSession();
+    const sessionKey = resolveOperatorSessionVerificationKey(operatorSession);
+    if (!sessionKey) {
+      setStatus("anonymous");
+      return;
+    }
     const startedAt = performance.now();
     logManagerSessionDiagnostic(diagnostics, "request:start", {
       guardInstanceId,
       pathname: location.pathname,
     });
     void verifyCurrentOperatorSession(
-      () => getManagerIamRuntime().service.auth.sessions.current.retrieve(),
+      sessionKey,
+      async () => {
+        await getManagerIamRuntime().service.auth.sessions.current.retrieve();
+      },
+      () => resolveOperatorSessionVerificationKey(loadOperatorSession()),
     )
       .then(() => {
+        observedSessionKey.current = resolveOperatorSessionVerificationKey(loadOperatorSession()) ?? sessionKey;
         logManagerSessionDiagnostic(diagnostics, "request:success", {
           active,
           durationMs: Math.round(performance.now() - startedAt),
@@ -112,6 +154,7 @@ export function RequireOperatorSession({ children }: { children: ReactNode }) {
           sessionAuthError: isSdkworkSdkSessionAuthError(error),
         });
         if (isSdkworkSdkSessionAuthError(error)) {
+          invalidateCurrentOperatorSessionVerification();
           clearManagerIamSession();
           resetOperatorTokenManager();
           resetManagerIamRuntime();

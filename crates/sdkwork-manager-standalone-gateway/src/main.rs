@@ -21,7 +21,9 @@ async fn main() {
     }
 
     let host = Arc::new(ManagerServiceHost::new().await);
-    let assembly = assemble_application_router(host).await;
+    let assembly = assemble_application_router(host)
+        .await
+        .expect("assemble Manager standalone dependency routes");
     let app = service_router(
         assembly.router,
         ServiceRouterConfig::default().with_always_ready(),

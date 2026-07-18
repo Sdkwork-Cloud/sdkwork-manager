@@ -209,6 +209,31 @@ describe("createSdkworkCoreModuleRegistry", () => {
     }))).toBe(true);
   });
 
+  it("grants every registered URL to the platform super administrator without enumerating permissions", () => {
+    const route = {
+      Component: EmptyRoute,
+      id: "iam.users.composite",
+      label: "Composite users",
+      path: "/admin/iam/users/composite",
+      permissionMode: "all" as const,
+      requiredPermissions: ["iam.users.read", "iam.users.update"],
+    };
+    const contribution = createContribution({
+      access: { requiredPermissions: ["iam.users.read"] },
+      defaultPath: route.path,
+      routes: [route],
+    });
+    const registry = createSdkworkCoreModuleRegistry([contribution]);
+    const superAdminScope = createAdminModuleAccessScope({
+      standardRoleCodes: ["platform_super_admin"],
+    });
+
+    expect(registry.hasModuleAccess(contribution, superAdminScope)).toBe(true);
+    expect(registry.hasRouteAccess(route, superAdminScope)).toBe(true);
+    expect(registry.listVisibleModules(superAdminScope)).toEqual([contribution]);
+    expect(registry.resolveDefaultPath(superAdminScope)).toBe(route.path);
+  });
+
   it("treats commercial offers as metadata and authorizes modules by IAM permissions", () => {
     const paidContribution = createContribution({
       access: { requiredPermissions: ["iam.users.read"] },

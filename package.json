@@ -8,7 +8,7 @@
     "stop": "node ../sdkwork-specs/tools/stop-sdkwork-workspace-processes.mjs --workspace .",
     "dev": "pnpm --dir apps/sdkwork-manager-pc dev",
     "build": "pnpm --dir apps/sdkwork-manager-pc build",
-    "start": "cargo run -p sdkwork-manager-standalone-gateway --bin manager-server",
+    "start": "node scripts/dev/manager-start.mjs",
     "test": "pnpm test:node && pnpm test:vitest && cargo test --workspace",
     "test:node": "node --test tests/static/*.test.mjs tests/contract/*.test.mjs scripts/dev/*.test.mjs scripts/release/*.test.mjs",
     "test:vitest": "vitest run --config vitest.config.ts --configLoader native --pool vmThreads",

@@ -98,6 +98,44 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
   assert.match(iamAssembly, /sdkwork_routes_iam_backend_api::gateway_mount/);
 });
 
+test("Manager standalone assembly mounts every backend-admin dependency behind its own ingress", () => {
+  const cargo = readFileSync(
+    path.join(root, "crates/sdkwork-manager-gateway-assembly/Cargo.toml"),
+    "utf8",
+  );
+  const assembly = readFileSync(
+    path.join(root, "crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"),
+    "utf8",
+  );
+  const standaloneProfile = Object.fromEntries(
+    readFileSync(path.join(root, "etc/deployments/standalone.development.env"), "utf8")
+      .split(/\r?\n/u)
+      .filter((line) => line.includes("="))
+      .map((line) => {
+        const separator = line.indexOf("=");
+        return [line.slice(0, separator), line.slice(separator + 1)];
+      }),
+  );
+
+  for (const dependency of ["drive", "order", "promotion", "payment", "membership"]) {
+    assert.match(cargo, new RegExp(`sdkwork_${dependency}_gateway_assembly\\.workspace = true`));
+    assert.match(
+      assembly,
+      new RegExp(
+        `sdkwork_${dependency}_gateway_assembly::assemble_backend_business_router_from_env`,
+      ),
+    );
+  }
+  assert.equal(
+    standaloneProfile.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
+    standaloneProfile.SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
+  );
+  assert.equal(
+    standaloneProfile.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
+    standaloneProfile.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
+  );
+});
+
 test("Manager browser has no Vite API proxy and IAM SDKs use application ingress", () => {
   const viteConfig = readFileSync(
     path.join(root, "apps/sdkwork-manager-pc/vite.config.ts"),

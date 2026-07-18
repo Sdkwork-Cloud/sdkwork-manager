@@ -1183,3 +1183,193 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.manager-navigation-group {
+  display: grid;
+  gap: 3px;
+}
+
+.manager-navigation-group__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 9px;
+  color: #526159;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.manager-navigation-group__toggle:hover,
+.manager-navigation-group__toggle:focus-visible {
+  color: #154c3c;
+  background: #eef3f0;
+  outline: none;
+}
+
+.manager-navigation-group__toggle svg {
+  transition: transform 140ms ease;
+}
+
+.manager-navigation-group__toggle svg.is-expanded {
+  transform: rotate(180deg);
+}
+
+.manager-navigation-group__children {
+  display: grid;
+  gap: 3px;
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid #d9e0dc;
+}
+
+.manager-iam-workspace {
+  display: grid;
+  gap: 16px;
+  max-width: 1280px;
+  padding-top: 22px;
+}
+
+.manager-iam-workspace__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.manager-iam-workspace__header h2,
+.manager-iam-workspace__header p,
+.manager-iam-editor h3 {
+  margin: 0;
+}
+
+.manager-iam-workspace__header h2 {
+  color: #17201d;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.manager-iam-workspace__header > div > p:last-child {
+  max-width: 700px;
+  margin-top: 6px;
+  color: #5f6f66;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.manager-iam-workspace__eyebrow {
+  margin-bottom: 5px !important;
+  color: #33745e;
+  font-size: 11px !important;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.manager-iam-workspace__count {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  color: #315342;
+  font-size: 12px;
+  font-weight: 700;
+  background: #e8f2ed;
+  border: 1px solid #d7e5de;
+  border-radius: 5px;
+}
+
+.manager-iam-workspace__notice {
+  margin: 0;
+  padding: 10px 12px;
+  color: #17664f;
+  font-size: 13px;
+  background: #e8f5ee;
+  border: 1px solid #c7e5d5;
+  border-radius: 6px;
+}
+
+.manager-iam-workspace__notice--error {
+  color: #9d2f2f;
+  background: #fff0f0;
+  border-color: #f0cbcb;
+}
+
+.manager-iam-editor {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.2fr) minmax(150px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #d9e0dc;
+  border-radius: 8px;
+}
+
+.manager-iam-editor__heading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manager-iam-editor h3 {
+  color: #17201d;
+  font-size: 14px;
+}
+
+.manager-iam-editor label {
+  display: grid;
+  gap: 6px;
+  color: #526159;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-iam-editor input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  color: #17201d;
+  background: #ffffff;
+  border: 1px solid #bfcac4;
+  border-radius: 6px;
+}
+
+.manager-iam-button {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.manager-iam-button--primary { color: #ffffff; background: #17664f; }
+.manager-iam-button--quiet { color: #315342; background: #ffffff; border-color: #bfcac4; }
+.manager-iam-button--danger { color: #9d2f2f; background: #fff4f4; border-color: #edcccc; }
+.manager-iam-button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.manager-iam-table-wrap { overflow-x: auto; background: #ffffff; border: 1px solid #d9e0dc; border-radius: 8px; }
+.manager-iam-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.manager-iam-table th, .manager-iam-table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #e4e9e6; }
+.manager-iam-table th { color: #526159; font-size: 11px; font-weight: 750; background: #f5f8f6; text-transform: uppercase; }
+.manager-iam-table tbody tr:last-child td { border-bottom: 0; }
+.manager-iam-table code { color: #315342; font-size: 12px; }
+.manager-iam-table__actions { display: flex; justify-content: flex-end; gap: 6px; }
+
+@media (max-width: 860px) {
+  .manager-navigation-group__children { margin-left: 0; padding-left: 0; border-left: 0; }
+  .manager-iam-workspace__header { flex-direction: column; gap: 10px; }
+  .manager-iam-editor { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 520px) {
+  .manager-iam-editor { grid-template-columns: 1fr; }
+}

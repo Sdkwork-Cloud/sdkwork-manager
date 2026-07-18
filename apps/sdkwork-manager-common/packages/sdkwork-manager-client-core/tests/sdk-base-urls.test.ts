@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveIamAppApiBaseUrl,
   resolveIamBackendApiBaseUrl,
+  resolvePlatformApiGatewayBaseUrl,
 } from "../src/config/sdkBaseUrls";
 
 const standaloneEnv = {
@@ -20,6 +21,9 @@ describe("manager SDK base URL topology", () => {
     expect(resolveIamBackendApiBaseUrl(undefined, standaloneEnv)).toBe(
       "http://127.0.0.1:18092",
     );
+    expect(resolvePlatformApiGatewayBaseUrl(undefined, standaloneEnv)).toBe(
+      "http://127.0.0.1:18092",
+    );
   });
 
   it("routes cloud IAM SDKs through the application assembly ingress", () => {
@@ -33,6 +37,9 @@ describe("manager SDK base URL topology", () => {
     );
     expect(resolveIamBackendApiBaseUrl(undefined, cloudEnv)).toBe(
       "http://127.0.0.1:18092",
+    );
+    expect(resolvePlatformApiGatewayBaseUrl(undefined, cloudEnv)).toBe(
+      "http://127.0.0.1:3900",
     );
   });
 });

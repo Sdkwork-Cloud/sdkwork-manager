@@ -5,7 +5,7 @@ import {
   clearManagerIamSession,
   createAdminModuleAccessScope,
   getManagerIamRuntime,
-  getManagerPermissionScope,
+  getManagerStandardRoleCodes,
   resolveManagerAuthAppearance,
   resetManagerIamRuntime,
   resetOperatorTokenManager,
@@ -17,7 +17,9 @@ import { AdminHostShell } from "./admin-host-shell";
 import { ManagerAuthRoutes } from "./auth/ManagerAuthRoutes";
 import { ManagerAuthenticatedAuthRouteGuard } from "./auth/ManagerAuthenticatedAuthRouteGuard";
 import { RequireOperatorSession } from "./auth/RequireOperatorSession";
+import { useManagerPermissionScope } from "./auth/useManagerPermissionScope";
 import { useManagerAuthRuntimeConfig } from "./auth/useManagerAuthRuntimeConfig";
+export { logManagerSessionPageBoot } from "./auth/managerSessionDiagnostics";
 
 type ManagerPcAppProps = {
   locale: string;
@@ -32,12 +34,14 @@ function ProtectedAdminHost({
 }: ManagerPcAppProps) {
   const navigate = useNavigate();
   const registry = useMemo(() => createSdkworkCoreHostRegistry(modules), [modules]);
+  const permissionScope = useManagerPermissionScope();
 
   const accessScope = useMemo(
     () => createAdminModuleAccessScope({
-      permissionScope: getManagerPermissionScope(),
+      permissionScope,
+      standardRoleCodes: getManagerStandardRoleCodes(),
     }),
-    [],
+    [permissionScope],
   );
 
   const signOut = async () => {

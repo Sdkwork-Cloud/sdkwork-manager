@@ -1,5 +1,6 @@
 const SESSION_CHECK_QUERY_PARAMETER = "managerSessionCheck";
 const SESSION_DEBUG_QUERY_PARAMETER = "managerSessionDebug";
+const SESSION_PAGE_BOOT_STORAGE_KEY = "sdkwork-manager-pc:session-debug-page-boot";
 
 export interface ManagerSessionDiagnostics {
   debug: boolean;
@@ -25,4 +26,24 @@ export function logManagerSessionDiagnostic(
     return;
   }
   console.info("[manager-session]", event, details);
+}
+
+export function logManagerSessionPageBoot(search: string): void {
+  const diagnostics = resolveManagerSessionDiagnostics(search);
+  if (!diagnostics.debug || typeof window === "undefined") {
+    return;
+  }
+
+  const previousBootId = Number.parseInt(
+    window.sessionStorage.getItem(SESSION_PAGE_BOOT_STORAGE_KEY) ?? "0",
+    10,
+  );
+  const pageBootId = Number.isFinite(previousBootId) ? previousBootId + 1 : 1;
+  window.sessionStorage.setItem(SESSION_PAGE_BOOT_STORAGE_KEY, String(pageBootId));
+  const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  logManagerSessionDiagnostic(diagnostics, "page:boot", {
+    navigationType: navigation?.type ?? "unknown",
+    pageBootId,
+    pathname: window.location.pathname,
+  });
 }

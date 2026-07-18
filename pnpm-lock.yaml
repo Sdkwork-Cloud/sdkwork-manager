@@ -773,6 +773,9 @@ importers:
       '@sdkwork/membership-sdk-ports':
         specifier: workspace:*
         version: link:../sdkwork-membership-sdk-ports
+      '@sdkwork/sdk-common':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-sdk-commons/sdkwork-sdk-common-typescript
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
@@ -914,6 +917,9 @@ importers:
 
   ../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-core:
     dependencies:
+      '@sdkwork/i18n-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react
       '@sdkwork/payment-contracts':
         specifier: workspace:*
         version: link:../../../sdkwork-payment-common/packages/sdkwork-payment-contracts
@@ -1352,9 +1358,6 @@ importers:
       '@sdkwork/manager-pc-core':
         specifier: workspace:*
         version: link:../sdkwork-manager-pc-core
-      '@sdkwork/sdk-common':
-        specifier: workspace:*
-        version: link:../../../../../sdkwork-sdk-commons/sdkwork-sdk-common-typescript
       '@sdkwork/membership-backend-sdk':
         specifier: workspace:*
         version: link:../../../../../sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript
@@ -1517,6 +1520,9 @@ importers:
       '@sdkwork/payment-pc-admin-channel':
         specifier: workspace:*
         version: link:../../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-channel
+      '@sdkwork/payment-pc-admin-core':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-core
       '@sdkwork/payment-pc-admin-devconfig':
         specifier: workspace:*
         version: link:../../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-devconfig
