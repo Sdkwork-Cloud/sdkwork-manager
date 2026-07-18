@@ -56,19 +56,34 @@ test("Manager Vite uses the IAM development credential-entry bootstrap only outs
     path.join(root, "scripts/dev/manager-dev.mjs"),
     "utf8",
   );
+  const baseEnvTemplate = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/.env.example"),
+    "utf8",
+  );
+  const developmentEnvTemplate = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/.env.development.example"),
+    "utf8",
+  );
+  const productionEnvTemplate = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/.env.production.example"),
+    "utf8",
+  );
 
   assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
   assert.match(devRunner, /mergeRepoDevBootstrapAccessTokenEnv/);
   assert.match(devRunner, /apps\/sdkwork-manager-pc\/sdkwork\.app\.config\.json/);
   assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
   assert.match(devRunner, /waitForGateway/);
-  assert.match(viteConfig, /mode !== "development"/);
-  assert.match(viteConfig, /__SDKWORK_CREDENTIAL_ENTRY_BOOTSTRAP_ACCESS_TOKEN__/);
+  assert.match(viteConfig, /sdkwork-iam-credential-entry\/src\/vite\.ts/);
+  assert.match(viteConfig, /createSdkworkCredentialEntryBootstrapVitePlugin/);
   assert.match(viteConfig, /process\.env\.SDKWORK_ACCESS_TOKEN/);
-  assert.match(viteConfig, /transformIndexHtml/);
-  assert.match(viteConfig, /apply: "serve"/);
+  assert.doesNotMatch(viteConfig, /transformIndexHtml/);
+  assert.doesNotMatch(viteConfig, /serializeCredentialEntryBootstrapForInlineScript/);
   assert.doesNotMatch(viteConfig, /globalThis\.process/);
   assert.doesNotMatch(viteConfig, /VITE_ACCESS_TOKEN/);
+  assert.match(baseEnvTemplate, /^SDKWORK_ACCESS_TOKEN=$/mu);
+  assert.match(developmentEnvTemplate, /^SDKWORK_ACCESS_TOKEN=$/mu);
+  assert.doesNotMatch(productionEnvTemplate, /^SDKWORK_ACCESS_TOKEN=/mu);
 });
 
 test("Manager delegates IAM application provisioning to the shared bootstrap framework", () => {

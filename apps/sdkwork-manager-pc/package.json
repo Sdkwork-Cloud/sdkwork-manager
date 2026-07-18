@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@sdkwork/i18n-pc-react": "workspace:*",
+    "@sdkwork/iam-credential-entry": "workspace:*",
     "@sdkwork/manager-pc-core": "workspace:*",
     "@sdkwork/manager-pc-admin-core": "workspace:*",
     "@sdkwork/manager-pc-admin-drive": "workspace:*",

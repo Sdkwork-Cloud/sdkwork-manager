@@ -1,8 +1,9 @@
 import tailwindcss from "@tailwindcss/vite";
+import { createSdkworkCredentialEntryBootstrapVitePlugin } from "../../../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/vite.ts";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig } from "vite";
 
 const appRoot = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(appRoot, "../..");
@@ -62,49 +63,16 @@ function resolveManagerManualChunk(id: string): string | undefined {
   return undefined;
 }
 
-function serializeCredentialEntryBootstrapForInlineScript(token: string): string {
-  return JSON.stringify(token)
-    .replaceAll("<", "\\u003c")
-    .replaceAll(">", "\\u003e")
-    .replaceAll("&", "\\u0026");
-}
-
-function createManagerCredentialEntryBootstrapPlugin(
-  mode: string,
-  accessToken: string,
-): Plugin | undefined {
-  if (mode !== "development" || !accessToken) {
-    return undefined;
-  }
-
-  return {
-    name: "sdkwork-manager-iam-credential-entry-bootstrap",
-    apply: "serve",
-    transformIndexHtml: {
-      order: "pre",
-      handler: (html) => ({
-        html,
-        tags: [
-          {
-            tag: "script",
-            children:
-              "globalThis.__SDKWORK_CREDENTIAL_ENTRY_BOOTSTRAP_ACCESS_TOKEN__ = "
-              + `${serializeCredentialEntryBootstrapForInlineScript(accessToken)};`,
-            injectTo: "head-prepend",
-          },
-        ],
-      }),
-    },
-  };
-}
-
 export default defineConfig(({ mode }) => {
   // IAM credential-entry operations receive this only during local development.
   // The canonical runner generates it from the application manifest before Vite starts.
   const credentialEntryBootstrapAccessToken = process.env.SDKWORK_ACCESS_TOKEN ?? "";
   return {
     plugins: [
-      createManagerCredentialEntryBootstrapPlugin(mode, credentialEntryBootstrapAccessToken),
+      createSdkworkCredentialEntryBootstrapVitePlugin({
+        accessToken: credentialEntryBootstrapAccessToken,
+        environment: mode,
+      }),
       react(),
       tailwindcss(),
     ],
@@ -113,6 +81,9 @@ export default defineConfig(({ mode }) => {
       // runtime dependencies to one copy so all pages share React's dispatcher.
       dedupe: ["react", "react-dom", "react-i18next", "i18next"],
       alias: {
+        "@sdkwork/iam-credential-entry/vite": workspacePath(
+          "sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/vite.ts",
+        ),
         react: path.resolve(managerNodeModulesRoot, "react"),
         "react-dom": path.resolve(managerNodeModulesRoot, "react-dom"),
         i18next: path.resolve(i18nRuntimeNodeModulesRoot, "i18next"),
