@@ -31,7 +31,7 @@ describe("manager IAM OAuth overview", () => {
         tenantBindings: [],
         webhookConfigs: [],
       }),
-    } as SdkworkIamOauthAdminController;
+    } as unknown as SdkworkIamOauthAdminController;
     const messages = MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("zh-CN").module.oauthOverview;
     const html = renderToStaticMarkup(<IamOauthOverview controller={controller} messages={messages} />);
 

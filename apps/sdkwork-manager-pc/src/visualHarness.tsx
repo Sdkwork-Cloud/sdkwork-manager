@@ -1,6 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { LanguageProvider, type Language } from "sdkwork-drive-pc-commons";
+import {
+  LanguageProvider,
+  type Language,
+} from "../packages/sdkwork-manager-pc-admin-drive/node_modules/sdkwork-drive-pc-commons";
 import {
   AuditAdminPage,
   DownloadPackagesAdminPage,
@@ -8,11 +11,11 @@ import {
   MaintenanceAdminPage,
   QuotaAdminPage,
   SpacesAdminPage,
-} from "sdkwork-drive-pc-admin-operations";
+} from "../packages/sdkwork-manager-pc-admin-drive/node_modules/sdkwork-drive-pc-admin-operations";
 import {
   StorageBindingsAdminPage,
   StorageProvidersAdminPage,
-} from "sdkwork-drive-pc-admin-storage-providers";
+} from "../packages/sdkwork-manager-pc-admin-drive/node_modules/sdkwork-drive-pc-admin-storage-providers";
 import "./index.css";
 
 const now = Date.now();

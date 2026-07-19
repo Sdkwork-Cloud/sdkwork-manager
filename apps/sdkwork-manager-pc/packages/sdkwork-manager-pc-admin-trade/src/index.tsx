@@ -166,7 +166,6 @@ export function createSdkworkManagerTradeAdminContribution(locale: string): Admi
     displayName: messages.displayName,
     domain: "commerce",
     header: {
-      actions: [{ id: "open-payments", label: language === "zh-CN" ? "支付管理" : "Payments", onSelect: () => { window.location.assign("/admin/payments/monitor"); }, variant: "secondary" }],
       description: messages.description,
       title: messages.title,
     },

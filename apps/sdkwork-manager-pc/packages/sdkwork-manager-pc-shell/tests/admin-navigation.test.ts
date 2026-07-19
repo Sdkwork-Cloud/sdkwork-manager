@@ -23,18 +23,20 @@ vi.mock("../src/i18n", () => ({
 import { AdminModuleNavigation } from "../src/admin-host-shell";
 
 const routeDefinitions = [
-  ["iam.users", "Users", "/admin/iam/users", "iam.users.read", "directory", "Directory"],
-  ["iam.tenants", "Tenants", "/admin/iam/tenants", "iam.tenants.read", "directory", "Directory"],
-  ["iam.roles", "Roles", "/admin/iam/roles", "iam.roles.read", "access-control", "Access control"],
-  ["iam.oauth", "OAuth", "/admin/iam/oauth", "iam.oauth.read", "federation", "Federation"],
-  ["iam.audit", "Audit", "/admin/iam/audit", "iam.audit_events.read", "security", "Security"],
+  ["iam.users", "Users", "/admin/iam/users", ["iam.users.read"], "directory", "Directory"],
+  ["iam.tenants", "Tenants", "/admin/iam/tenants", ["iam.tenants.read"], "directory", "Directory"],
+  ["iam.organizations", "Organizations", "/admin/iam/organizations", ["iam.organizations.read"], "directory", "Directory"],
+  ["iam.authorization", "Authorization", "/admin/iam/authorization", ["iam.roles.read", "iam.permissions.read"], "access-control", "Access control"],
+  ["iam.oauth", "OAuth", "/admin/iam/oauth", ["iam.oauth.read"], "federation", "Federation"],
+  ["iam.account-binding", "Account binding", "/admin/iam/account-binding", ["iam.account_binding_policy.read"], "federation", "Federation"],
+  ["iam.audit", "Audit", "/admin/iam/audit", ["iam.audit_events.read"], "security", "Security"],
 ] as const;
 
 const routes: AdminModuleRoute[] = routeDefinitions.map(([
   id,
   label,
   path,
-  permission,
+  permissions,
   groupId,
   groupLabel,
 ]) => ({
@@ -44,7 +46,7 @@ const routes: AdminModuleRoute[] = routeDefinitions.map(([
   label,
   navigationGroups: [{ id: groupId, label: groupLabel }],
   path,
-  requiredPermissions: [permission],
+  requiredPermissions: [...permissions],
 }));
 
 const contribution: AdminModuleContribution = {
@@ -86,9 +88,9 @@ function renderNavigation(permissionScope: readonly string[]) {
 
 describe("manager admin capability navigation", () => {
   it("renders only the current module menu without a sidebar header or module actions", () => {
-    const html = renderNavigation(routeDefinitions.map(([, , , permission]) => permission));
+    const html = renderNavigation(routeDefinitions.flatMap(([, , , permissions]) => permissions));
 
-    for (const label of ["Users", "Tenants", "Roles", "OAuth", "Audit"]) {
+    for (const label of ["Users", "Tenants", "Organizations", "Authorization", "OAuth", "Account binding", "Audit"]) {
       expect(html).toContain(label);
     }
     for (const groupLabel of ["Directory", "Access control", "Federation", "Security"]) {

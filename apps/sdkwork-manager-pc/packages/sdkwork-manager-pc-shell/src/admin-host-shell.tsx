@@ -83,7 +83,7 @@ export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostS
   const module = registry.findModuleForPath(pathname);
 
   useEffect(() => {
-    if (!window.matchMedia("(max-width: 860px)").matches) {
+    if (typeof window.matchMedia !== "function" || !window.matchMedia("(max-width: 860px)").matches) {
       return;
     }
     sidebarRef.current
