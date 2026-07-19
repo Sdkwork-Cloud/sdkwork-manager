@@ -47,12 +47,54 @@ export interface ManagerIamAdminModuleMessages {
     accessControl: string;
     directory: string;
     federation: string;
+    oauth: string;
     security: string;
+  };
+  oauthOverview: {
+    attention: string;
+    countTemplate: string;
+    description: string;
+    eyebrow: string;
+    inventoryDescription: string;
+    inventoryTitle: string;
+    loadError: string;
+    loading: string;
+    ready: string;
+    title: string;
+    checks: {
+      applications: { description: string; label: string };
+      governance: { description: string; label: string };
+      observability: { description: string; label: string };
+      providers: { description: string; label: string };
+    };
+    inventory: {
+      activity: { description: string; label: string };
+      authorizations: { description: string; label: string };
+      governance: { description: string; label: string };
+      loginConfiguration: { description: string; label: string };
+      providers: { description: string; label: string };
+      resources: { description: string; label: string };
+    };
+    metrics: {
+      applications: string;
+      grants: string;
+      integrations: string;
+      providers: string;
+    };
+    readinessDescription: string;
+    readinessTitle: string;
   };
   routes: {
     accountBinding: { description: string; label: string };
     audit: { description: string; label: string };
     oauth: { description: string; label: string };
+    oauthActivity: { description: string; label: string };
+    oauthApplications: { description: string; label: string };
+    oauthAuthorizations: { description: string; label: string };
+    oauthGovernance: { description: string; label: string };
+    oauthLoginConfiguration: { description: string; label: string };
+    oauthProviders: { description: string; label: string };
+    oauthResources: { description: string; label: string };
     organizations: { description: string; label: string };
     permissions: { description: string; label: string };
     policies: { description: string; label: string };

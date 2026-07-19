@@ -253,56 +253,13 @@ a {
   top: 56px;
   align-self: start;
   height: calc(100vh - 56px);
-  padding: 18px 12px 24px;
+  padding: 12px 12px 24px;
   overflow-y: auto;
   background: var(--sdk-color-surface-panel);
   border-right: 1px solid var(--sdk-color-border-default);
 }
 
-.manager-sidebar__header {
-  display: grid;
-  gap: 4px;
-  margin: 0 6px 18px;
-  padding: 0 2px 14px;
-  border-bottom: 1px solid var(--sdk-color-border-subtle);
-}
-
-.manager-sidebar__header h2,
-.manager-sidebar__header p {
-  margin: 0;
-}
-
-.manager-sidebar__header h2 {
-  color: var(--sdk-color-text-primary);
-  font-size: 15px;
-  font-weight: 750;
-  line-height: 1.35;
-}
-
-.manager-sidebar__count {
-  color: var(--sdk-color-text-muted);
-  font-size: 11px;
-}
-
-.manager-sidebar__tools {
-  display: grid;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.manager-sidebar__context {
-  display: block;
-  color: var(--sdk-color-text-muted);
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.manager-sidebar__tools .manager-button {
-  width: 100%;
-}
-
-.manager-sidebar__heading,
-.manager-sidebar__eyebrow {
+.manager-sidebar__heading {
   margin: 0;
   color: var(--sdk-color-text-secondary);
   font-size: 11px;
@@ -1125,30 +1082,6 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
     border-bottom: 1px solid var(--sdk-color-border-default);
   }
 
-  .manager-sidebar__header {
-    flex: 0 0 auto;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  .manager-sidebar__eyebrow,
-  .manager-sidebar__header h2,
-  .manager-sidebar__count,
-  .manager-sidebar__context {
-    display: none;
-  }
-
-  .manager-sidebar__tools {
-    display: flex;
-    margin: 0;
-  }
-
-  .manager-sidebar__tools .manager-button {
-    width: auto;
-    white-space: nowrap;
-  }
-
   .manager-sidebar__nav {
     display: flex;
     flex: 1 0 auto;
@@ -1450,4 +1383,269 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   .manager-iam-editor { grid-template-columns: 1fr; }
   .manager-iam-editor--permission > .manager-iam-button--primary { grid-column: auto; }
   .manager-iam-editor__heading { align-items: flex-start; gap: 10px; }
+}
+
+.manager-oauth-overview {
+  display: grid;
+  min-width: 0;
+  gap: 22px;
+  container: manager-oauth / inline-size;
+}
+
+.manager-oauth-overview__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-overview__header > div {
+  min-width: 0;
+}
+
+.manager-oauth-overview__header h1,
+.manager-oauth-overview__header p,
+.manager-oauth-overview__section-heading h2,
+.manager-oauth-overview__section-heading p,
+.manager-oauth-overview__metrics,
+.manager-oauth-overview__readiness {
+  margin: 0;
+}
+
+.manager-oauth-overview__header h1 {
+  color: var(--sdk-color-text-primary);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.manager-oauth-overview__header > div > p:last-child {
+  max-width: 760px;
+  margin-top: 7px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.manager-oauth-overview__eyebrow {
+  margin-bottom: 5px !important;
+  color: var(--sdk-color-brand-primary);
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.manager-oauth-overview__status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 30px;
+  gap: 7px;
+  padding: 0 10px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 6px;
+}
+
+.manager-oauth-overview__status > span,
+.manager-oauth-overview__check {
+  width: 8px;
+  height: 8px;
+  background: var(--sdk-color-state-warning);
+  border-radius: 50%;
+}
+
+.manager-oauth-overview__status[data-tone="success"] > span,
+.manager-oauth-overview__check[data-complete="true"] {
+  background: var(--sdk-color-state-success);
+}
+
+.manager-oauth-overview__status[data-tone="danger"] > span {
+  background: var(--sdk-color-state-danger);
+}
+
+.manager-oauth-overview__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 8px;
+}
+
+.manager-oauth-overview__metrics > div {
+  display: grid;
+  min-width: 0;
+  min-height: 86px;
+  align-content: center;
+  gap: 7px;
+  padding: 16px 18px;
+}
+
+.manager-oauth-overview__metrics > div + div {
+  border-left: 1px solid var(--sdk-color-border-subtle);
+}
+
+.manager-oauth-overview__metrics dt {
+  overflow-wrap: anywhere;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-oauth-overview__metrics dd {
+  margin: 0;
+  color: var(--sdk-color-text-primary);
+  font-size: 24px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.manager-oauth-overview__section {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.manager-oauth-overview__section-heading {
+  display: grid;
+  gap: 4px;
+}
+
+.manager-oauth-overview__section-heading h2 {
+  color: var(--sdk-color-text-primary);
+  font-size: 15px;
+}
+
+.manager-oauth-overview__section-heading p {
+  color: var(--sdk-color-text-muted);
+  font-size: 12px;
+}
+
+.manager-oauth-overview__readiness {
+  padding: 0;
+  list-style: none;
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 8px;
+}
+
+.manager-oauth-overview__readiness li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 58px;
+  gap: 12px;
+  padding: 10px 14px;
+}
+
+.manager-oauth-overview__readiness li + li {
+  border-top: 1px solid var(--sdk-color-border-subtle);
+}
+
+.manager-oauth-overview__readiness strong,
+.manager-oauth-overview__readiness small {
+  display: block;
+}
+
+.manager-oauth-overview__readiness strong {
+  color: var(--sdk-color-text-primary);
+  font-size: 13px;
+}
+
+.manager-oauth-overview__readiness small {
+  margin-top: 3px;
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.manager-oauth-overview__readiness b {
+  color: var(--sdk-color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.manager-oauth-overview__table-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 8px;
+}
+
+.manager-oauth-overview__table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.manager-oauth-overview__table th,
+.manager-oauth-overview__table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--sdk-color-border-subtle);
+}
+
+.manager-oauth-overview__table tr:last-child th,
+.manager-oauth-overview__table tr:last-child td {
+  border-bottom: 0;
+}
+
+.manager-oauth-overview__table th {
+  width: 22%;
+  color: var(--sdk-color-text-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.manager-oauth-overview__table td {
+  color: var(--sdk-color-text-secondary);
+}
+
+.manager-oauth-overview__table td:last-child {
+  width: 1%;
+  color: var(--sdk-color-text-primary);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@container manager-oauth (max-width: 680px) {
+  .manager-oauth-overview__header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .manager-oauth-overview__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .manager-oauth-overview__metrics > div + div {
+    border-left: 0;
+  }
+
+  .manager-oauth-overview__metrics > div:nth-child(even) {
+    border-left: 1px solid var(--sdk-color-border-subtle);
+  }
+
+  .manager-oauth-overview__metrics > div:nth-child(n + 3) {
+    border-top: 1px solid var(--sdk-color-border-subtle);
+  }
+}
+
+@container manager-oauth (max-width: 400px) {
+  .manager-oauth-overview__readiness li {
+    grid-template-columns: 10px minmax(0, 1fr);
+  }
+
+  .manager-oauth-overview__readiness b {
+    grid-column: 2;
+  }
 }

@@ -102,33 +102,9 @@ export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostS
 
   const visibleRoutes = registry.listVisibleRoutes(module, accessScope);
   const navigationSections = groupNavigationRoutes(visibleRoutes);
-  const activeRoute = registry.findRouteForPath(pathname);
-  const Context = module.header.Context;
-  const hasModuleTools = Boolean(Context || module.header.actions?.length);
 
   return (
     <aside className="manager-sidebar" aria-label={`${module.displayName} ${adminHost.moduleNavigation}`} ref={sidebarRef}>
-      <div className="manager-sidebar__header">
-        <p className="manager-sidebar__eyebrow">{adminHost.capabilityNavigation}</p>
-        <h2>{module.displayName}</h2>
-        <p className="manager-sidebar__count">{adminHost.navigationCountTemplate.replace("{count}", String(visibleRoutes.length))}</p>
-        {hasModuleTools ? (
-          <div className="manager-sidebar__tools">
-            {Context ? <Context activeRoute={activeRoute} module={module} pathname={pathname} /> : null}
-            {module.header.actions?.map((action) => (
-              <button
-                className={`manager-button manager-button--${action.variant ?? "secondary"}`}
-                disabled={action.disabled || !action.onSelect}
-                key={action.id}
-                onClick={action.onSelect}
-                type="button"
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
       <nav className="manager-sidebar__nav">
         {navigationSections.length ? navigationSections.map((section) => {
           const headingId = section.group
@@ -229,6 +205,14 @@ const ADMIN_ROUTE_ICONS: Readonly<Record<string, LucideIcon>> = {
   "iam.account-binding": Link2,
   "iam.audit": ShieldAlert,
   "iam.oauth": KeyRound,
+  "iam.oauth.activity": Activity,
+  "iam.oauth.applications": KeyRound,
+  "iam.oauth.authorizations": Link2,
+  "iam.oauth.governance": ShieldCheck,
+  "iam.oauth.login-configuration": Settings2,
+  "iam.oauth.overview": Gauge,
+  "iam.oauth.providers": Plug,
+  "iam.oauth.resources": Database,
   "iam.organizations": Network,
   "iam.permissions": ShieldCheck,
   "iam.policies": ScrollText,

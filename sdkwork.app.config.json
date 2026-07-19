@@ -24,6 +24,9 @@
     "accessTokenPermissionScope": [
       "iam.users.read",
       "iam.tenants.read",
+      "iam.tenant_applications.provision",
+      "iam.tenant_applications.update",
+      "iam.tenant_applications.enable",
       "iam.organizations.read",
       "iam.roles.read",
       "iam.permissions.read",

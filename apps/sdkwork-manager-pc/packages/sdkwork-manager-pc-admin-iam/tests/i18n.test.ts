@@ -13,7 +13,14 @@ describe("manager IAM adapter i18n catalog", () => {
     expect(Object.values(zhRoutes).map((route) => route.label)).toEqual([
       "账号绑定策略",
       "审计与安全",
-      "OAuth 管理",
+      "总览",
+      "运行与诊断",
+      "客户端应用",
+      "授权与关联",
+      "策略与租户",
+      "登录配置",
+      "身份提供商",
+      "资源访问",
       "组织管理",
       "权限",
       "策略",
@@ -30,9 +37,11 @@ describe("manager IAM adapter i18n catalog", () => {
       accessControl: "Access control",
       directory: "Identity directory",
       federation: "Connections & federation",
+      oauth: "OAuth",
       security: "Security & audit",
     });
     expect(MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("zh-CN").module.navigationGroups.directory).toBe("身份目录");
+    expect(MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("zh-CN").module.oauthOverview.title).toBe("OAuth 运行总览");
   });
 
   it("localizes catalog controls and state messages", () => {
