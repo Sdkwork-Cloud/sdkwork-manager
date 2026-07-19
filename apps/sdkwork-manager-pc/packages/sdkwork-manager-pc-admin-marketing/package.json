@@ -19,6 +19,7 @@
     "@sdkwork/manager-pc-core": "workspace:*",
     "@sdkwork/promotion-backend-sdk": "workspace:*",
     "@sdkwork/promotion-service": "workspace:*",
+    "@sdkwork/utils": "workspace:*",
     "react": "catalog:"
   },
   "peerDependencies": {

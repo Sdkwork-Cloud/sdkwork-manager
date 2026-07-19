@@ -37,6 +37,22 @@ const routes: AdminModuleRoute[] = [
   description: `${label}功能`,
   id: id as string,
   label: label as string,
+  navigationGroups: [{
+    id: id === "iam.audit"
+      ? "security-audit"
+      : id === "iam.oauth" || id === "iam.account-binding"
+        ? "connections-federation"
+        : id === "iam.authorization"
+          ? "access-control"
+          : "identity-directory",
+    label: id === "iam.audit"
+      ? "安全与审计"
+      : id === "iam.oauth" || id === "iam.account-binding"
+        ? "连接与联合身份"
+        : id === "iam.authorization"
+          ? "访问控制"
+          : "身份目录",
+  }],
   path: path as string,
   requiredPermissions: requiredPermissions as string[],
 }));
@@ -48,7 +64,12 @@ const contribution: AdminModuleContribution = {
   defaultPath: "/admin/iam/users",
   displayName: "身份与访问",
   domain: "iam",
-  header: { description: "身份与访问管理", title: "身份与访问" },
+  header: {
+    Context: () => createElement("span", null, "stable release"),
+    actions: [{ id: "module-action", label: "模块操作", onSelect: () => undefined }],
+    description: "身份与访问管理",
+    title: "身份与访问",
+  },
   id: "iam.identity-access",
   packageName: "@sdkwork/manager-pc-admin-iam",
   pathPrefix: "/admin/iam",
@@ -83,6 +104,13 @@ describe("manager admin capability navigation", () => {
       expect(html).toContain(label);
     }
     expect(html).toContain("共 7 项管理功能");
+    for (const groupLabel of ["身份目录", "访问控制", "连接与联合身份", "安全与审计"]) {
+      expect(html).toContain(groupLabel);
+    }
+    expect(html.indexOf("身份目录")).toBeLessThan(html.indexOf("访问控制"));
+    expect(html.indexOf("访问控制")).toBeLessThan(html.indexOf("连接与联合身份"));
+    expect(html).toContain("stable release");
+    expect(html).toContain("模块操作");
     expect(html).not.toContain("iam.users.read");
     expect(html).not.toContain("服务端授权");
   });
@@ -91,7 +119,9 @@ describe("manager admin capability navigation", () => {
     const html = renderNavigation(["iam.users.read"]);
 
     expect(html).toContain("用户管理");
+    expect(html).toContain("身份目录");
     expect(html).not.toContain("租户管理");
+    expect(html).not.toContain("访问控制");
     expect(html).toContain("共 1 项管理功能");
   });
 });

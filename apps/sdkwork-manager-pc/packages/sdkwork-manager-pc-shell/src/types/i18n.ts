@@ -20,6 +20,8 @@ export interface ManagerAdminHostMessages {
   showModuleNavigation: string;
   signOut: string;
   simplifiedChinese: string;
+  switchToDarkMode: string;
+  switchToLightMode: string;
   unifiedWorkspace: string;
   workspace: string;
 }

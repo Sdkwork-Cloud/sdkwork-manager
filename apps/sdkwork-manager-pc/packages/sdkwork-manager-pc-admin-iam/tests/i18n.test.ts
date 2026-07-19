@@ -13,12 +13,35 @@ describe("manager IAM adapter i18n catalog", () => {
     expect(Object.values(zhRoutes).map((route) => route.label)).toEqual([
       "账号绑定策略",
       "审计与安全",
-      "权限管理",
       "OAuth 管理",
       "组织管理",
+      "权限",
+      "策略",
+      "角色绑定",
+      "角色",
       "租户管理",
       "用户管理",
     ]);
     expect(MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("en-US").module.routes.users.label).toBe("User management");
+  });
+
+  it("localizes the IAM navigation information architecture", () => {
+    expect(MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("en-US").module.navigationGroups).toEqual({
+      accessControl: "Access control",
+      directory: "Identity directory",
+      federation: "Connections & federation",
+      security: "Security & audit",
+    });
+    expect(MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("zh-CN").module.navigationGroups.directory).toBe("身份目录");
+  });
+
+  it("localizes catalog controls and state messages", () => {
+    const enCatalog = MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("en-US").module.catalog;
+    const zhCatalog = MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("zh-CN").module.catalog;
+
+    expect(enCatalog.editor.createTemplate).toBe("Create {kind}");
+    expect(enCatalog.table.empty).toBe("No records have been created yet.");
+    expect(zhCatalog.labels).toEqual({ permission: "权限", policy: "策略", role: "角色" });
+    expect(zhCatalog.notices.deleteConfirmTemplate).toContain("无法撤销");
   });
 });

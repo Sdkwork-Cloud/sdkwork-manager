@@ -15,6 +15,7 @@
     "@sdkwork/auth-runtime-pc-react": "workspace:*",
     "@sdkwork/i18n-pc-react": "workspace:*",
     "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/ui-pc-react": "workspace:*",
     "react": "catalog:",
     "react-router-dom": "catalog:",
     "lucide-react": "catalog:"

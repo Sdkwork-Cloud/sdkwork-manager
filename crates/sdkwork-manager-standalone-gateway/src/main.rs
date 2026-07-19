@@ -10,6 +10,8 @@ async fn main() {
     tracing_subscriber::fmt::init();
     tracing::info!("Starting SDKWork Manager API Server...");
 
+    sdkwork_database_sqlx::enable_process_shared_database_pool();
+
     iam_application_bootstrap::ensure_manager_iam_application_bootstrap()
         .await
         .expect("bootstrap Manager IAM tenant application");

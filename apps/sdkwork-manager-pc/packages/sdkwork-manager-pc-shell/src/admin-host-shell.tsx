@@ -1,23 +1,70 @@
-import { type FormEvent, type MouseEvent, useMemo, useState } from "react";
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Activity,
+  Archive,
+  BadgeCheck,
+  BookOpenCheck,
   Boxes,
   Building2,
-  ChevronRight,
+  ChartColumn,
+  CheckCircle2,
+  Coins,
+  ContactRound,
+  CreditCard,
+  Database,
+  Download,
+  Gauge,
+  GitBranch,
   Grid2X2,
+  HardDrive,
   KeyRound,
+  Landmark,
   Languages,
+  Layers3,
   Link2,
+  ListChecks,
   LogOut,
+  Megaphone,
+  Moon,
   Network,
+  Package,
+  PackagePlus,
   PanelLeftClose,
   PanelLeftOpen,
+  Plug,
+  QrCode,
+  ReceiptText,
+  RefreshCcw,
+  Route,
   ScrollText,
   Search,
+  Send,
+  Settings2,
+  ShieldAlert,
   ShieldCheck,
+  ShoppingCart,
+  Scale,
+  Store,
+  Sun,
+  Tags,
+  TicketPercent,
+  Truck,
+  UserCheck,
+  UserRoundCog,
   Users,
+  WalletCards,
+  Webhook,
+  Wrench,
+  type LucideIcon,
 } from "lucide-react";
 import { Navigate, NavLink, useLocation, useNavigate } from "react-router-dom";
-import type { AdminModuleAccessScope, AdminModuleRegistry } from "@sdkwork/manager-pc-core";
+import type {
+  AdminModuleAccessScope,
+  AdminModuleNavigationGroup,
+  AdminModuleRegistry,
+  AdminModuleRoute,
+} from "@sdkwork/manager-pc-core";
+import { useSdkworkTheme } from "@sdkwork/ui-pc-react/theme";
 
 import { useManagerShellMessages } from "./i18n";
 
@@ -29,50 +76,24 @@ type AdminHostShellProps = {
   registry: AdminModuleRegistry;
 };
 
-function AdminModuleHeader({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
-  const { pathname } = useLocation();
-  const module = registry.findModuleForPath(pathname);
-  const activeRoute = registry.findRouteForPath(pathname);
-
-  if (!module || !registry.hasModuleAccess(module, accessScope)) {
-    return null;
-  }
-
-  const Context = module.header.Context;
-
-  return (
-    <section className="manager-module-header" aria-labelledby="manager-module-title">
-      <div className="manager-module-header__identity">
-        <p className="manager-module-header__eyebrow">{module.domain} / {module.capability}</p>
-        <h1 id="manager-module-title">{module.header.title}</h1>
-        <p>{module.header.description}</p>
-      </div>
-      <div className="manager-module-header__tools">
-        {Context ? <Context activeRoute={activeRoute} module={module} pathname={pathname} /> : null}
-        {module.header.actions?.map((action) => (
-          <button
-            className={`manager-button manager-button--${action.variant ?? "secondary"}`}
-            disabled={action.disabled || !action.onSelect}
-            key={action.id}
-            onClick={action.onSelect}
-            type="button"
-          >
-            {action.label}
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
   const { adminHost } = useManagerShellMessages();
   const { pathname } = useLocation();
+  const sidebarRef = useRef<HTMLElement>(null);
   const module = registry.findModuleForPath(pathname);
+
+  useEffect(() => {
+    if (!window.matchMedia("(max-width: 860px)").matches) {
+      return;
+    }
+    sidebarRef.current
+      ?.querySelector<HTMLElement>(".manager-sidebar__link.is-active")
+      ?.scrollIntoView({ behavior: "auto", block: "nearest", inline: "center" });
+  }, [pathname]);
 
   if (!module || !registry.hasModuleAccess(module, accessScope)) {
     return (
-      <aside className="manager-sidebar" aria-label={adminHost.moduleNavigation}>
+      <aside className="manager-sidebar" aria-label={adminHost.moduleNavigation} ref={sidebarRef}>
         <p className="manager-sidebar__heading">{adminHost.workspace}</p>
         <p className="manager-sidebar__empty">{adminHost.selectModule}</p>
       </aside>
@@ -80,43 +101,153 @@ export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostS
   }
 
   const visibleRoutes = registry.listVisibleRoutes(module, accessScope);
+  const navigationSections = groupNavigationRoutes(visibleRoutes);
+  const activeRoute = registry.findRouteForPath(pathname);
+  const Context = module.header.Context;
+  const hasModuleTools = Boolean(Context || module.header.actions?.length);
 
   return (
-    <aside className="manager-sidebar" aria-label={`${module.displayName} ${adminHost.moduleNavigation}`}>
+    <aside className="manager-sidebar" aria-label={`${module.displayName} ${adminHost.moduleNavigation}`} ref={sidebarRef}>
       <div className="manager-sidebar__header">
         <p className="manager-sidebar__eyebrow">{adminHost.capabilityNavigation}</p>
         <h2>{module.displayName}</h2>
-        <p>{adminHost.navigationCountTemplate.replace("{count}", String(visibleRoutes.length))}</p>
+        <p className="manager-sidebar__count">{adminHost.navigationCountTemplate.replace("{count}", String(visibleRoutes.length))}</p>
+        {hasModuleTools ? (
+          <div className="manager-sidebar__tools">
+            {Context ? <Context activeRoute={activeRoute} module={module} pathname={pathname} /> : null}
+            {module.header.actions?.map((action) => (
+              <button
+                className={`manager-button manager-button--${action.variant ?? "secondary"}`}
+                disabled={action.disabled || !action.onSelect}
+                key={action.id}
+                onClick={action.onSelect}
+                type="button"
+              >
+                {action.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
       <nav className="manager-sidebar__nav">
-        {visibleRoutes.length ? visibleRoutes.map((route) => (
-          <NavLink className={({ isActive }) => `manager-sidebar__link${isActive ? " is-active" : ""}`} key={route.id} to={route.path}>
-            <span className="manager-sidebar__icon" aria-hidden="true"><AdminRouteIcon routeId={route.id} /></span>
-            <span className="manager-sidebar__label">
-              <strong>{route.label}</strong>
-              {route.description ? <small>{route.description}</small> : null}
-            </span>
-            <ChevronRight className="manager-sidebar__chevron" aria-hidden="true" size={15} />
-          </NavLink>
-        )) : <p className="manager-sidebar__empty">{adminHost.noAvailableCapabilities}</p>}
+        {navigationSections.length ? navigationSections.map((section) => {
+          const headingId = section.group
+            ? `manager-sidebar-group-${module.id}-${section.group.id}`
+            : undefined;
+          return (
+            <section
+              aria-labelledby={headingId}
+              className="manager-sidebar__section"
+              key={section.group?.id ?? "ungrouped"}
+            >
+              {section.group ? (
+                <div className="manager-sidebar__group-heading">
+                  <h3 id={headingId}>{section.group.label}</h3>
+                  <span aria-hidden="true">{section.routes.length}</span>
+                </div>
+              ) : null}
+              <div className="manager-sidebar__items">
+                {section.routes.map((route) => (
+                  <NavLink
+                    className={({ isActive }) => `manager-sidebar__link${isActive ? " is-active" : ""}`}
+                    key={route.id}
+                    title={route.description}
+                    to={route.path}
+                  >
+                    <span className="manager-sidebar__icon" aria-hidden="true"><AdminRouteIcon routeId={route.id} /></span>
+                    <span className="manager-sidebar__label">{route.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            </section>
+          );
+        }) : <p className="manager-sidebar__empty">{adminHost.noAvailableCapabilities}</p>}
       </nav>
     </aside>
   );
 }
 
+type AdminNavigationSection = {
+  group?: AdminModuleNavigationGroup;
+  routes: AdminModuleRoute[];
+};
+
+function groupNavigationRoutes(routes: readonly AdminModuleRoute[]): AdminNavigationSection[] {
+  const sections = new Map<string, AdminNavigationSection>();
+  for (const route of routes) {
+    const group = route.navigationGroups?.[0];
+    const key = group?.id ?? "ungrouped";
+    const section = sections.get(key) ?? { group, routes: [] };
+    section.routes.push(route);
+    sections.set(key, section);
+  }
+  return [...sections.values()];
+}
+
+const ADMIN_ROUTE_ICONS: Readonly<Record<string, LucideIcon>> = {
+  "commerce.marketing.applications": CheckCircle2,
+  "commerce.marketing.campaigns": Megaphone,
+  "commerce.marketing.claims": UserCheck,
+  "commerce.marketing.codeBatches": QrCode,
+  "commerce.marketing.codes": TicketPercent,
+  "commerce.marketing.distributions": Send,
+  "commerce.marketing.ledger": BookOpenCheck,
+  "commerce.marketing.offers": BadgeCheck,
+  "commerce.marketing.overview": ChartColumn,
+  "commerce.marketing.stocks": Archive,
+  "commerce.memberships.entitlements": BadgeCheck,
+  "commerce.memberships.members": Users,
+  "commerce.memberships.overview": ChartColumn,
+  "commerce.memberships.packageGroups": Boxes,
+  "commerce.memberships.packages": Package,
+  "commerce.memberships.plans": Layers3,
+  "commerce.payment.attempts": Activity,
+  "commerce.payment.channels": Route,
+  "commerce.payment.integration": Plug,
+  "commerce.payment.methods": CreditCard,
+  "commerce.payment.providers": Landmark,
+  "commerce.payment.reconciliation": Scale,
+  "commerce.payment.records": ReceiptText,
+  "commerce.payment.routeRules": GitBranch,
+  "commerce.payment.subMerchants": Store,
+  "commerce.payment.webhooks": Webhook,
+  "commerce.trade.afterSales": RefreshCcw,
+  "commerce.trade.orders": ShoppingCart,
+  "commerce.trade.packages": PackagePlus,
+  "commerce.trade.refunds": ReceiptText,
+  "commerce.trade.shipments": Truck,
+  "commerce.trade.tokenBank": Coins,
+  "commerce.trade.withdrawals": WalletCards,
+  "drive.audit": ShieldAlert,
+  "drive.downloads": Download,
+  "drive.labels": Tags,
+  "drive.maintenance": Wrench,
+  "drive.quotas": Gauge,
+  "drive.spaces": HardDrive,
+  "drive.storage-bindings": GitBranch,
+  "drive.storage-providers": Database,
+  "iam.account-binding": Link2,
+  "iam.audit": ShieldAlert,
+  "iam.oauth": KeyRound,
+  "iam.organizations": Network,
+  "iam.permissions": ShieldCheck,
+  "iam.policies": ScrollText,
+  "iam.roles": UserRoundCog,
+  "iam.tenants": Building2,
+  "iam.users": Users,
+  "platform.customers.directory": ContactRound,
+  "platform.customers.overview": ChartColumn,
+  "platform.integration.overview": Settings2,
+};
+
 function AdminRouteIcon({ routeId }: { routeId: string }) {
-  if (routeId === "iam.users") return <Users size={17} />;
-  if (routeId === "iam.tenants") return <Building2 size={17} />;
-  if (routeId === "iam.organizations") return <Network size={17} />;
-  if (routeId === "iam.authorization") return <ShieldCheck size={17} />;
-  if (routeId === "iam.oauth") return <KeyRound size={17} />;
-  if (routeId === "iam.account-binding") return <Link2 size={17} />;
-  if (routeId === "iam.audit") return <ScrollText size={17} />;
-  return <Grid2X2 size={17} />;
+  const Icon = ADMIN_ROUTE_ICONS[routeId] ?? ListChecks;
+  return <Icon size={16} strokeWidth={1.9} />;
 }
 
 export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut, registry }: AdminHostShellProps) {
   const { adminHost } = useManagerShellMessages();
+  const { colorMode, setThemeSelection } = useSdkworkTheme();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -139,6 +270,7 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
       && registry.hasModuleAccess(activeModule, accessScope)
       && (!activeRoute || registry.hasRouteAccess(activeRoute, accessScope)),
   );
+  const isEdgeToEdgeRoute = canAccessActiveRoute && activeRoute?.contentLayout === "edge-to-edge";
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -156,6 +288,9 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
   const sidebarToggleLabel = isSidebarOpen
     ? adminHost.hideModuleNavigation
     : adminHost.showModuleNavigation;
+  const themeToggleLabel = colorMode === "light"
+    ? adminHost.switchToDarkMode
+    : adminHost.switchToLightMode;
 
   return (
     <div className="manager-admin-app">
@@ -168,7 +303,8 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
         <nav className="manager-global-header__modules" aria-label={adminHost.registeredModules}>
           {modules.map((module) => (
             <NavLink
-              className={({ isActive }) => `manager-module-switcher${isActive ? " is-active" : ""}`}
+              aria-current={activeModule?.id === module.id ? "page" : undefined}
+              className={`manager-module-switcher${activeModule?.id === module.id ? " is-active" : ""}`}
               key={module.id}
               to={registry.resolveModuleDefaultPath(module, accessScope)}
             >
@@ -184,6 +320,15 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
               {matchingModules.map((module) => <option key={module.id} value={module.displayName}>{module.domain} / {module.capability}</option>)}
             </datalist>
           </form>
+          <button
+            aria-label={themeToggleLabel}
+            className="manager-icon-button manager-theme-toggle"
+            onClick={() => setThemeSelection(colorMode === "light" ? "dark" : "light")}
+            title={themeToggleLabel}
+            type="button"
+          >
+            {colorMode === "light" ? <Moon aria-hidden="true" size={18} /> : <Sun aria-hidden="true" size={18} />}
+          </button>
           <label className="manager-locale-select" title={adminHost.language}>
             <Languages aria-hidden="true" size={16} />
             <span className="manager-visually-hidden">{adminHost.language}</span>
@@ -214,8 +359,7 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
 
       <div className={`manager-admin-workspace${isSidebarOpen ? "" : " manager-admin-workspace--collapsed"}`}>
         {isSidebarOpen ? <AdminModuleNavigation accessScope={accessScope} registry={registry} /> : null}
-        <main className="manager-main-content">
-          <AdminModuleHeader accessScope={accessScope} registry={registry} />
+        <main className={`manager-main-content${isEdgeToEdgeRoute ? " manager-main-content--edge-to-edge" : ""}`}>
           {activeRoute && canAccessActiveRoute ? (
             <activeRoute.Component />
           ) : pathname === "/" ? (

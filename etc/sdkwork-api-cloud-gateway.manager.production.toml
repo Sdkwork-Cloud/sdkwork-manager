@@ -23,6 +23,20 @@ coverage = "appbase-iam-routes"
 requiredBaseUrlKey = "SDKWORK_APPBASE_APP_API_BASE_URL"
 
 [[dependencySurfaces]]
+serviceId = "sdkwork-iam-backend-api"
+workspace = "sdkwork-iam"
+sdkFamily = "sdkwork-iam-backend-sdk"
+apiAuthority = "sdkwork-iam-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/iam"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_routes_iam_backend_api::build_sdkwork_iam_backend_api_router_from_env"
+cargoFeature = "foundation-appbase"
+cargoDependency = "sdkwork_routes_iam_backend_api"
+coverage = "sdkwork-iam-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
 serviceId = "sdkwork-manager-app-api"
 workspace = "sdkwork-manager"
 sdkFamily = "sdkwork-manager-app-sdk"
@@ -47,6 +61,148 @@ executableExport = "sdkwork_drive_gateway_assembly::assemble_application_busines
 cargoFeature = "foundation-drive"
 cargoDependency = "sdkwork-drive-gateway-assembly"
 coverage = "sdkwork-drive-backend-api-embedded-assembly-routes"
+
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/orders"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/after_sales"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/shipments"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/account_value_packages"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/token_bank_plans"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/refund_requests"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-order-backend-api"
+workspace = "sdkwork-order"
+sdkFamily = "sdkwork-order-backend-sdk"
+apiAuthority = "sdkwork-order-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/withdrawal_requests"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_order_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-order"
+cargoDependency = "sdkwork-order-gateway-assembly"
+coverage = "sdkwork-order-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-promotion-backend-api"
+workspace = "sdkwork-promotion"
+sdkFamily = "sdkwork-promotion-backend-sdk"
+apiAuthority = "sdkwork-promotion-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/promotions"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_promotion_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-promotion"
+cargoDependency = "sdkwork-promotion-gateway-assembly"
+coverage = "sdkwork-promotion-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-payment-backend-api"
+workspace = "sdkwork-payment"
+sdkFamily = "sdkwork-payment-backend-sdk"
+apiAuthority = "sdkwork-payment-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/payments"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_payment_gateway_assembly::assemble_application_router_from_env"
+cargoFeature = "foundation-payment"
+cargoDependency = "sdkwork-payment-gateway-assembly"
+coverage = "sdkwork-payment-backend-api-embedded-assembly-routes"
+
+[[dependencySurfaces]]
+serviceId = "sdkwork-membership-backend-api"
+workspace = "sdkwork-membership"
+sdkFamily = "sdkwork-membership-backend-sdk"
+apiAuthority = "sdkwork-membership-backend-api"
+surface = "backend"
+apiPrefix = "/backend/v3/api/memberships"
+runtimeMode = "embedded"
+sameOriginAllowed = true
+executableExport = "sdkwork_membership_gateway_assembly::assemble_application_business_router_from_env"
+cargoFeature = "foundation-membership"
+cargoDependency = "sdkwork-membership-gateway-assembly"
+coverage = "sdkwork-membership-backend-api-embedded-assembly-routes"
+
 
 [[upstreams]]
 serviceId = "sdkwork-manager-app-api"

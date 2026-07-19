@@ -22,7 +22,7 @@ type Language = "en-US" | "zh-CN";
 
 const COPY = {
   "zh-CN": {
-    description: "集中处理订单、售后、发货、充值方案、退款与提现，并与支付中心协同运营。",
+    description: "集中处理订单、售后、发货、充值方案、退款与提现，并与支付管理协同运营。",
     displayName: "交易中心",
     loading: "正在加载交易运营数据…",
     error: "数据加载失败，请检查交易权限与服务状态。",
@@ -35,6 +35,11 @@ const COPY = {
     previous: "上一页",
     next: "下一页",
     title: "交易中心",
+    navigationGroups: {
+      financialReview: "资金审核",
+      orderLifecycle: "订单履约",
+      valueProducts: "储值产品",
+    },
     routes: {
       orders: ["订单管理", "检索订单、查看详情，并执行取消或关闭"],
       afterSales: ["售后管理", "查询退款、退货与换货申请"],
@@ -46,7 +51,7 @@ const COPY = {
     },
   },
   "en-US": {
-    description: "Operate orders, after-sales, fulfillment, value plans, refunds, and withdrawals with Payment Center coordination.",
+    description: "Operate orders, after-sales, fulfillment, value plans, refunds, and withdrawals with Payments coordination.",
     displayName: "Trade Center",
     loading: "Loading trade operations…",
     error: "Unable to load trade data. Check permissions and service health.",
@@ -59,6 +64,11 @@ const COPY = {
     previous: "Previous",
     next: "Next",
     title: "Trade Center",
+    navigationGroups: {
+      financialReview: "Financial review",
+      orderLifecycle: "Order lifecycle",
+      valueProducts: "Stored-value products",
+    },
     routes: {
       orders: ["Orders", "Search orders, inspect details, and cancel or close orders"],
       afterSales: ["After-sales", "Review refund, return, and exchange requests"],
@@ -138,7 +148,16 @@ export function createSdkworkManagerTradeAdminContribution(locale: string): Admi
   const language: Language = locale.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
   const messages = COPY[language];
   const service = getManagerTradeOperationsService();
-  const operationRoute = (key: keyof typeof messages.routes, Component: (props: TradePageProps) => ReactNode) => ({ Component: () => <Component language={language} service={service} />, description: messages.routes[key][1], id: `commerce.trade.${key}`, label: messages.routes[key][0], path: `/admin/trade/${key}`, requiredPermissions: ["commerce.orders.read"] });
+  const routeGroups = {
+    afterSales: { id: "order-lifecycle", label: messages.navigationGroups.orderLifecycle },
+    orders: { id: "order-lifecycle", label: messages.navigationGroups.orderLifecycle },
+    packages: { id: "value-products", label: messages.navigationGroups.valueProducts },
+    refunds: { id: "financial-review", label: messages.navigationGroups.financialReview },
+    shipments: { id: "order-lifecycle", label: messages.navigationGroups.orderLifecycle },
+    tokenBank: { id: "value-products", label: messages.navigationGroups.valueProducts },
+    withdrawals: { id: "financial-review", label: messages.navigationGroups.financialReview },
+  } satisfies Record<keyof typeof messages.routes, { id: string; label: string }>;
+  const operationRoute = (key: keyof typeof messages.routes, Component: (props: TradePageProps) => ReactNode) => ({ Component: () => <Component language={language} service={service} />, description: messages.routes[key][1], id: `commerce.trade.${key}`, label: messages.routes[key][0], navigationGroups: [routeGroups[key]], path: `/admin/trade/${key}`, requiredPermissions: ["commerce.orders.read"] });
   return {
     access: { permissionMode: "any", requiredPermissions: ["commerce.orders.read", "commerce.orders.manage"] },
     capability: "trade-admin",
@@ -147,7 +166,7 @@ export function createSdkworkManagerTradeAdminContribution(locale: string): Admi
     displayName: messages.displayName,
     domain: "commerce",
     header: {
-      actions: [{ id: "open-payment-center", label: language === "zh-CN" ? "支付中心" : "Payment Center", onSelect: () => { window.location.assign("/admin/payments/monitor"); }, variant: "secondary" }],
+      actions: [{ id: "open-payments", label: language === "zh-CN" ? "支付管理" : "Payments", onSelect: () => { window.location.assign("/admin/payments/monitor"); }, variant: "secondary" }],
       description: messages.description,
       title: messages.title,
     },
@@ -155,7 +174,7 @@ export function createSdkworkManagerTradeAdminContribution(locale: string): Admi
     packageName: "@sdkwork/manager-pc-admin-trade",
     pathPrefix: "/admin/trade",
     routes: [
-      { Component: () => <Suspense fallback={<div className="manager-module-loading">{messages.loading}</div>}><LazyOrdersPage /></Suspense>, description: messages.routes.orders[1], id: "commerce.trade.orders", label: messages.routes.orders[0], path: "/admin/trade/orders", requiredPermissions: ["commerce.orders.read"] },
+      { Component: () => <Suspense fallback={<div className="manager-module-loading">{messages.loading}</div>}><LazyOrdersPage /></Suspense>, description: messages.routes.orders[1], id: "commerce.trade.orders", label: messages.routes.orders[0], navigationGroups: [routeGroups.orders], path: "/admin/trade/orders", requiredPermissions: ["commerce.orders.read"] },
       operationRoute("afterSales", AfterSalesPage), operationRoute("shipments", ShipmentsPage), operationRoute("packages", PackagesPage), operationRoute("tokenBank", TokenBankPage),
       operationRoute("refunds", (props) => <RequestPage {...props} kind="refund" />), operationRoute("withdrawals", (props) => <RequestPage {...props} kind="withdrawal" />),
     ],

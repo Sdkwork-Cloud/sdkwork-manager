@@ -105,7 +105,7 @@ const LazyIamAuditRoute = lazy(async () => {
 function IamModuleHeaderContext({ module }: AdminModuleHeaderSlotProps) {
   const messages = useManagerIamAdminMessages().module;
   return (
-    <span className="manager-module-header__context">
+    <span className="manager-sidebar__context">
       {messages.channelTemplate.replace("{channel}", module.commercial.releaseChannel)}
     </span>
   );
@@ -124,9 +124,11 @@ function createLazyRoute(
   };
 }
 
-function IamCatalogRoute({ dependencies, kind, title, description }: { dependencies: IamRouteDependencies; kind: "role" | "permission" | "policy"; title: string; description: string }) {
+function IamCatalogRoute({ dependencies, kind }: { dependencies: IamRouteDependencies; kind: "role" | "permission" | "policy" }) {
+  const { module } = useManagerIamAdminMessages();
   const controller = useMemo(() => createSdkworkIamPermissionController({ permissionScope: dependencies.getPermissionScope(), service: dependencies.getService() }), [dependencies]);
-  return <IamCatalogWorkspace controller={controller} description={description} kind={kind} title={title} />;
+  const routeMessages = kind === "role" ? module.routes.roles : kind === "permission" ? module.routes.permissions : module.routes.policies;
+  return <IamCatalogWorkspace controller={controller} description={routeMessages.description} kind={kind} messages={module.catalog} title={routeMessages.label} />;
 }
 
 export function createSdkworkManagerIamAdminContribution(
@@ -169,6 +171,7 @@ export function createSdkworkManagerIamAdminContribution(
         description: messages.routes.users.description,
         id: "iam.users",
         label: messages.routes.users.label,
+        navigationGroups: [{ id: "identity-directory", label: messages.navigationGroups.directory }],
         path: "/admin/iam/users",
         requiredPermissions: ["iam.users.read"],
       },
@@ -177,6 +180,7 @@ export function createSdkworkManagerIamAdminContribution(
         description: messages.routes.tenants.description,
         id: "iam.tenants",
         label: messages.routes.tenants.label,
+        navigationGroups: [{ id: "identity-directory", label: messages.navigationGroups.directory }],
         path: "/admin/iam/tenants",
         requiredPermissions: ["iam.tenants.read"],
       },
@@ -185,17 +189,19 @@ export function createSdkworkManagerIamAdminContribution(
         description: messages.routes.organizations.description,
         id: "iam.organizations",
         label: messages.routes.organizations.label,
+        navigationGroups: [{ id: "identity-directory", label: messages.navigationGroups.directory }],
         path: "/admin/iam/organizations",
         requiredPermissions: ["iam.organizations.read"],
       },
-      { Component: () => <IamCatalogRoute dependencies={dependencies} description={messages.routes.roles.description} kind="role" title={messages.routes.roles.label} />, description: messages.routes.roles.description, id: "iam.roles", label: messages.routes.roles.label, navigationGroups: [{ id: "access-control", label: "Access control" }], path: "/admin/iam/roles", requiredPermissions: ["iam.roles.read"] },
-      { Component: () => <IamCatalogRoute dependencies={dependencies} description={messages.routes.permissions.description} kind="permission" title={messages.routes.permissions.label} />, description: messages.routes.permissions.description, id: "iam.permissions", label: messages.routes.permissions.label, navigationGroups: [{ id: "access-control", label: "Access control" }], path: "/admin/iam/permissions", requiredPermissions: ["iam.permissions.read"] },
-      { Component: () => <IamCatalogRoute dependencies={dependencies} description={messages.routes.policies.description} kind="policy" title={messages.routes.policies.label} />, description: messages.routes.policies.description, id: "iam.policies", label: messages.routes.policies.label, navigationGroups: [{ id: "access-control", label: "Access control" }], path: "/admin/iam/policies", requiredPermissions: ["iam.permissions.read"] },
+      { Component: () => <IamCatalogRoute dependencies={dependencies} kind="role" />, description: messages.routes.roles.description, id: "iam.roles", label: messages.routes.roles.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/roles", requiredPermissions: ["iam.roles.read"] },
+      { Component: () => <IamCatalogRoute dependencies={dependencies} kind="permission" />, description: messages.routes.permissions.description, id: "iam.permissions", label: messages.routes.permissions.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/permissions", requiredPermissions: ["iam.permissions.read"] },
+      { Component: () => <IamCatalogRoute dependencies={dependencies} kind="policy" />, description: messages.routes.policies.description, id: "iam.policies", label: messages.routes.policies.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/policies", requiredPermissions: ["iam.permissions.read"] },
       {
         Component: createLazyRoute(LazyIamOauthRoute, dependencies),
         description: messages.routes.oauth.description,
         id: "iam.oauth",
         label: messages.routes.oauth.label,
+        navigationGroups: [{ id: "connections-federation", label: messages.navigationGroups.federation }],
         path: "/admin/iam/oauth",
         requiredPermissions: ["iam.oauth.read"],
       },
@@ -204,6 +210,7 @@ export function createSdkworkManagerIamAdminContribution(
         description: messages.routes.accountBinding.description,
         id: "iam.account-binding",
         label: messages.routes.accountBinding.label,
+        navigationGroups: [{ id: "connections-federation", label: messages.navigationGroups.federation }],
         path: "/admin/iam/account-binding",
         requiredPermissions: ["iam.account_binding_policy.read"],
       },
@@ -212,6 +219,7 @@ export function createSdkworkManagerIamAdminContribution(
         description: messages.routes.audit.description,
         id: "iam.audit",
         label: messages.routes.audit.label,
+        navigationGroups: [{ id: "security-audit", label: messages.navigationGroups.security }],
         path: "/admin/iam/audit",
         requiredPermissions: ["iam.audit_events.read"],
       },

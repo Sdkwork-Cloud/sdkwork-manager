@@ -21,6 +21,7 @@ export default defineConfig({
     environment: "jsdom",
     include: [
       "apps/sdkwork-manager-common/packages/**/*.test.ts",
+      "apps/sdkwork-manager-pc/tests/**/*.test.ts",
       "apps/sdkwork-manager-pc/packages/**/*.test.ts",
     ],
   },

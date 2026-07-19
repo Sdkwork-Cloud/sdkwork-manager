@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const deploymentIndexPath = path.join(workspaceRoot, "etc", "sdkwork.deployment.config.json");
+const localPostgresEnvPath = path.join(workspaceRoot, ".env.postgres");
 
 function parseEnvFile(filePath) {
   return Object.fromEntries(
@@ -39,4 +40,15 @@ export function resolveManagerProfileEnv(environment = process.env) {
     throw new Error(`Manager deployment profile file does not exist: ${profilePath}`);
   }
   return parseEnvFile(profilePath);
+}
+
+export function resolveManagerRuntimeEnv(environment = process.env) {
+  const localPostgresEnv = existsSync(localPostgresEnvPath)
+    ? parseEnvFile(localPostgresEnvPath)
+    : {};
+  return {
+    ...resolveManagerProfileEnv(environment),
+    ...localPostgresEnv,
+    ...environment,
+  };
 }

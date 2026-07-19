@@ -52,6 +52,24 @@ describe("createSdkworkCoreModuleRegistry", () => {
     expect(registry.resolveDefaultPath()).toBe("/admin/iam/users");
   });
 
+  it("supports module-owned routes outside the legacy admin URL namespace", () => {
+    const contribution = createContribution({
+      defaultPath: "/workspace/identity/users",
+      pathPrefix: "/workspace/identity",
+      routes: [{
+        Component: EmptyRoute,
+        id: "iam.users.list",
+        label: "Users",
+        path: "/workspace/identity/users",
+      }],
+    });
+    const registry = createSdkworkCoreModuleRegistry([contribution]);
+
+    expect(registry.findModuleForPath("/workspace/identity/users")).toBe(contribution);
+    expect(registry.findRouteForPath("/workspace/identity/users")).toBe(contribution.routes[0]);
+    expect(registry.resolveDefaultPath()).toBe("/workspace/identity/users");
+  });
+
   it("resolves parameterized detail routes without exposing them in navigation", () => {
     const detailRoute = {
       Component: EmptyRoute,

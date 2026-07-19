@@ -35,6 +35,7 @@ export type AdminModuleNavigationGroup = {
 
 export type AdminModuleRoute = {
   Component: ComponentType;
+  contentLayout?: "contained" | "edge-to-edge";
   description?: string;
   id: string;
   label: string;
@@ -113,8 +114,8 @@ function assertModuleContribution(module: AdminModuleContribution): void {
   if (module.surface !== "backend-admin") {
     throw new Error(`Admin module ${module.id} must use the backend-admin surface.`);
   }
-  if (!module.pathPrefix.startsWith("/admin/")) {
-    throw new Error(`Admin module ${module.id} must reserve an /admin/ path prefix.`);
+  if (!module.pathPrefix.startsWith("/")) {
+    throw new Error(`Admin module ${module.id} must reserve an absolute path prefix.`);
   }
   if (!module.routes.length) {
     throw new Error(`Admin module ${module.id} must contribute at least one route.`);
@@ -234,9 +235,26 @@ export function createSdkworkCoreModuleRegistry(
     return module;
   });
   const routes = modules.flatMap((module) => module.routes);
+  const routeOwners = new Map<AdminModuleRoute, AdminModuleContribution>();
+  for (const module of modules) {
+    for (const route of module.routes) {
+      routeOwners.set(route, module);
+    }
+  }
+
+  const findRegisteredRoute = (pathname: string): AdminModuleRoute | undefined => {
+    const normalizedPathname = normalizePath(pathname);
+    return routes.find((route) => normalizePath(route.path) === normalizedPathname)
+      ?? routes.find((route) => routePathMatches(route.path, normalizedPathname));
+  };
 
   return {
     findModuleForPath: (pathname) => {
+      const registeredRoute = findRegisteredRoute(pathname);
+      if (registeredRoute) {
+        return routeOwners.get(registeredRoute);
+      }
+
       const normalizedPathname = normalizePath(pathname);
       return modules.find((module) => {
         const prefix = normalizePath(module.pathPrefix);
@@ -244,9 +262,7 @@ export function createSdkworkCoreModuleRegistry(
       });
     },
     findRouteForPath: (pathname) => {
-      const normalizedPathname = normalizePath(pathname);
-      return routes.find((route) => normalizePath(route.path) === normalizedPathname)
-        ?? routes.find((route) => routePathMatches(route.path, normalizedPathname));
+      return findRegisteredRoute(pathname);
     },
     hasModuleAccess: (module, scope) => hasAdminModuleAccess(module, scope),
     hasRouteAccess: (route, scope) => hasAdminRouteAccess(route, scope),

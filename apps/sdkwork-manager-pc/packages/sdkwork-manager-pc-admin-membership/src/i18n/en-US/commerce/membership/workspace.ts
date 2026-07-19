@@ -21,6 +21,11 @@ export const membershipWorkspaceEn = {
   mutationError: "The action failed or its latest status could not be verified. Refresh and try again.",
   mutationSuccess: "The action succeeded and the latest data is shown.",
   processing: "Processing…",
+  navigationGroups: {
+    catalog: "Membership catalog",
+    entitlements: "Entitlements & quota",
+    operations: "Member operations",
+  },
   routes: {
     overview: ["Overview", "Current-page operational indicators backed by live membership APIs"],
     members: ["Members", "Search subscriptions and manage lifecycle status"],

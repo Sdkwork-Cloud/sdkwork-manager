@@ -1,9 +1,8 @@
 import { Moon, PanelsTopLeft, Sun } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useSdkworkTheme } from "@sdkwork/ui-pc-react/theme";
 
 import { useManagerShellMessages } from "../i18n";
-
-type AuthThemeMode = "dark" | "light";
 
 function isDesktopRuntime(): boolean {
   return typeof window !== "undefined" && !!(globalThis as Record<string, unknown>).__TAURI__;
@@ -11,36 +10,29 @@ function isDesktopRuntime(): boolean {
 
 export function ManagerAuthShell({ children }: { children: ReactNode }) {
   const { adminHost, auth } = useManagerShellMessages();
-  const [themeMode, setThemeMode] = useState<AuthThemeMode>(() => {
-    if (typeof window === "undefined") {
-      return "dark";
-    }
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  });
-  const isLightMode = themeMode === "light";
+  const { colorMode, setThemeSelection } = useSdkworkTheme();
+  const isLightMode = colorMode === "light";
   const shouldRenderDesktopHeader = isDesktopRuntime();
 
   useEffect(() => {
     document.documentElement.classList.toggle("sdkwork-manager-auth-light-mode", isLightMode);
     document.documentElement.classList.add("sdkwork-manager-auth-active");
-    document.documentElement.style.colorScheme = themeMode;
     document.body.classList.add("sdkwork-manager-auth-active");
 
     return () => {
       document.documentElement.classList.remove("sdkwork-manager-auth-light-mode");
       document.documentElement.classList.remove("sdkwork-manager-auth-active");
-      document.documentElement.style.removeProperty("color-scheme");
       document.body.classList.remove("sdkwork-manager-auth-active");
     };
-  }, [isLightMode, themeMode]);
+  }, [isLightMode]);
 
   const toggleTheme = () => {
-    setThemeMode((current) => (current === "light" ? "dark" : "light"));
+    setThemeSelection(isLightMode ? "dark" : "light");
   };
   const themeToggleLabel = isLightMode ? auth.switchToDarkMode : auth.switchToLightMode;
 
   return (
-    <div className="sdkwork-manager-auth-host" data-sdk-color-mode={themeMode}>
+    <div className="sdkwork-manager-auth-host" data-sdk-color-mode={colorMode}>
       {shouldRenderDesktopHeader ? (
         <header className="sdkwork-manager-auth-header drag-region">
           <div className="sdkwork-manager-auth-header-brand">

@@ -122,6 +122,13 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
     path.join(root, "crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"),
     "utf8",
   );
+  const promotionWebBootstrap = readFileSync(
+    path.join(
+      root,
+      "../sdkwork-promotion/crates/sdkwork-routes-promotion-backend-api/src/web_bootstrap.rs",
+    ),
+    "utf8",
+  );
   const standaloneProfile = Object.fromEntries(
     readFileSync(path.join(root, "etc/deployments/standalone.development.env"), "utf8")
       .split(/\r?\n/u)
@@ -141,6 +148,8 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
       ),
     );
   }
+  assert.match(promotionWebBootstrap, /sdkwork_iam_web_adapter::build_web_framework_layer/);
+  assert.match(promotionWebBootstrap, /backend_route_manifest\(\)/);
   assert.equal(
     standaloneProfile.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
     standaloneProfile.SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
@@ -159,7 +168,7 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
   );
 });
 
-test("Manager cloud gateway exposes Drive backend and storage SDK paths", () => {
+test("Manager cloud gateway exposes backend-admin dependency SDK paths", () => {
   for (const profile of ["development", "production"]) {
     const gatewayConfig = readFileSync(
       path.join(root, `etc/sdkwork-api-cloud-gateway.manager.${profile}.toml`),
@@ -172,6 +181,33 @@ test("Manager cloud gateway exposes Drive backend and storage SDK paths", () => 
       gatewayConfig,
       /sdkwork_drive_gateway_assembly::assemble_application_business_router_from_env/,
     );
+    for (const serviceId of [
+      "sdkwork-iam-backend-api",
+      "sdkwork-order-backend-api",
+      "sdkwork-promotion-backend-api",
+      "sdkwork-payment-backend-api",
+      "sdkwork-membership-backend-api",
+    ]) {
+      assert.match(gatewayConfig, new RegExp(`serviceId = "${serviceId}"`));
+    }
+    for (const apiPrefix of [
+      "/backend/v3/api/iam",
+      "/backend/v3/api/orders",
+      "/backend/v3/api/after_sales",
+      "/backend/v3/api/shipments",
+      "/backend/v3/api/account_value_packages",
+      "/backend/v3/api/token_bank_plans",
+      "/backend/v3/api/refund_requests",
+      "/backend/v3/api/withdrawal_requests",
+      "/backend/v3/api/promotions",
+      "/backend/v3/api/payments",
+      "/backend/v3/api/memberships",
+    ]) {
+      assert.match(
+        gatewayConfig,
+        new RegExp(`apiPrefix = "${apiPrefix.replaceAll("/", "\\/")}"`),
+      );
+    }
   }
 });
 

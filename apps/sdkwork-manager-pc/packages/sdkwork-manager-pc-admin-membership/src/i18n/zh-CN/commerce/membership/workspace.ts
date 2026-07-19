@@ -21,6 +21,11 @@ export const membershipWorkspaceZh = {
   mutationError: "操作失败或无法确认最新状态，请检查输入并刷新后重试。",
   mutationSuccess: "操作成功，最新数据已刷新。",
   processing: "处理中…",
+  navigationGroups: {
+    catalog: "会员商品目录",
+    entitlements: "权益与配额",
+    operations: "会员运营",
+  },
   routes: {
     overview: ["经营概览", "基于实时会员 API 的当前页运营指标"],
     members: ["会员管理", "检索订阅并管理会员生命周期状态"],

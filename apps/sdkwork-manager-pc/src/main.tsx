@@ -10,23 +10,35 @@ import {
   ManagerPcApp,
 } from "@sdkwork/manager-pc-shell";
 import { SdkworkThemeProvider } from "@sdkwork/ui-pc-react/theme";
+import type { SdkworkThemeSelection } from "@sdkwork/ui-pc-react/theme";
 
 import { createManagerAdminModuleAssembly } from "./bootstrap/adminModuleAssembly";
 import {
   commitManagerLocale,
   resolveInitialManagerLocale,
 } from "./bootstrap/i18n";
+import {
+  commitManagerTheme,
+  MANAGER_THEME_COLOR,
+  resolveInitialManagerTheme,
+} from "./bootstrap/theme";
 import "./index.css";
 
 const initialLocale = resolveInitialManagerLocale();
+const initialTheme = resolveInitialManagerTheme();
 logManagerSessionPageBoot(window.location.search);
 
 function ManagerPcRoot() {
   const [locale, setLocale] = useState(initialLocale);
+  const [themeSelection, setThemeSelection] = useState(initialTheme);
   const modules = useMemo(() => createManagerAdminModuleAssembly(locale), [locale]);
 
   const handleLocaleChange = (nextLocale: string) => {
     setLocale(commitManagerLocale(nextLocale));
+  };
+
+  const handleThemeSelectionChange = (nextTheme: SdkworkThemeSelection) => {
+    setThemeSelection(commitManagerTheme(nextTheme));
   };
 
   return (
@@ -38,7 +50,12 @@ function ManagerPcRoot() {
       ]}
       locale={locale}
     >
-      <SdkworkThemeProvider defaultTheme="light" locale={locale} themeColor="green-tech">
+      <SdkworkThemeProvider
+        locale={locale}
+        onThemeSelectionChange={handleThemeSelectionChange}
+        themeColor={MANAGER_THEME_COLOR}
+        themeSelection={themeSelection}
+      >
         <ManagerPcApp
           locale={locale}
           modules={modules}

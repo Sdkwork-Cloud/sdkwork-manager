@@ -22,6 +22,8 @@ export const managerAdminHostMessages: ManagerAdminHostMessages = {
   showModuleNavigation: "Show module navigation",
   signOut: "Sign out",
   simplifiedChinese: "Simplified Chinese",
+  switchToDarkMode: "Switch to dark mode",
+  switchToLightMode: "Switch to light mode",
   unifiedWorkspace: "Unified admin workspace",
   workspace: "Workspace",
 };

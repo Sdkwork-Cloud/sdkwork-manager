@@ -261,7 +261,15 @@ function toPackageMutation(input: Record<string, string>): AdminMembershipPackag
 export function createSdkworkManagerMembershipAdminContribution(locale: string): AdminModuleContribution {
   const messages = resolveMembershipMessages(locale);
   const service = getManagerMembershipBackendService();
-  const route = (key: keyof typeof messages.routes, Component: () => ReactNode) => ({ Component, description: messages.routes[key][1], id: `commerce.memberships.${key}`, label: messages.routes[key][0], path: `/admin/memberships/${key === "packageGroups" ? "package-groups" : key}`, requiredPermissions: ["commerce.memberships.read"] });
+  const routeGroups = {
+    entitlements: { id: "entitlements", label: messages.navigationGroups.entitlements },
+    members: { id: "member-operations", label: messages.navigationGroups.operations },
+    overview: { id: "member-operations", label: messages.navigationGroups.operations },
+    packageGroups: { id: "membership-catalog", label: messages.navigationGroups.catalog },
+    packages: { id: "membership-catalog", label: messages.navigationGroups.catalog },
+    plans: { id: "membership-catalog", label: messages.navigationGroups.catalog },
+  } satisfies Record<keyof typeof messages.routes, { id: string; label: string }>;
+  const route = (key: keyof typeof messages.routes, Component: () => ReactNode) => ({ Component, description: messages.routes[key][1], id: `commerce.memberships.${key}`, label: messages.routes[key][0], navigationGroups: [routeGroups[key]], path: `/admin/memberships/${key === "packageGroups" ? "package-groups" : key}`, requiredPermissions: ["commerce.memberships.read"] });
   const planFields = [{ key: "code", label: "Code" }, { key: "name", label: "Name" }, { key: "rank", label: "Rank" }, { key: "status", label: "Status" }];
   const groupFields = [{ key: "code", label: "Code" }, { key: "name", label: "Name" }, { key: "billingCycle", label: "Billing cycle" }, { key: "durationDays", label: "Days" }, { key: "sortWeight", label: "Weight" }, { key: "status", label: "Status" }];
   const packageFields = [{ key: "code", label: "Code" }, { key: "name", label: "Name" }, { key: "packageGroupId", label: "Group" }, { key: "planId", label: "Plan" }, { key: "priceAmount", label: "Price" }, { key: "currencyCode", label: "Currency" }, { key: "durationDays", label: "Days" }, { key: "status", label: "Status" }];

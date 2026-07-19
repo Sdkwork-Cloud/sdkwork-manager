@@ -18,6 +18,15 @@ describe("createSdkworkManagerTradeAdminContribution", () => {
       "/admin/trade/withdrawals",
     ]);
     expect(contribution.routes[0]?.requiredPermissions).toContain("commerce.orders.read");
+    expect(contribution.routes.map((route) => route.navigationGroups?.[0]?.id)).toEqual([
+      "order-lifecycle",
+      "order-lifecycle",
+      "order-lifecycle",
+      "value-products",
+      "value-products",
+      "financial-review",
+      "financial-review",
+    ]);
   });
 
   it("provides Chinese operations copy", () => {

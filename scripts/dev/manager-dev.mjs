@@ -8,7 +8,8 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import { mergeRepoDevBootstrapAccessTokenEnv } from "../../../sdkwork-iam/scripts/dev/create-dev-bootstrap-access-token-env.mjs";
-import { resolveManagerProfileEnv } from "./manager-profile-env.mjs";
+import { resolveManagerRuntimeEnv } from "./manager-profile-env.mjs";
+import { refreshManagerWslPostgresPortProxy } from "./manager-wsl-postgres-portproxy.mjs";
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const appRoot = path.join(workspaceRoot, "apps", "sdkwork-manager-pc");
@@ -91,12 +92,13 @@ function stopChild(child) {
 }
 
 async function main() {
-  const profileEnv = resolveManagerProfileEnv();
+  const profileEnv = resolveManagerRuntimeEnv();
   const runtimeEnv = mergeRepoDevBootstrapAccessTokenEnv({
-    env: { ...profileEnv, ...process.env },
+    env: profileEnv,
     manifestPath: "apps/sdkwork-manager-pc/sdkwork.app.config.json",
     repoRoot: workspaceRoot,
   });
+  refreshManagerWslPostgresPortProxy(runtimeEnv);
 
   const executable = path.join(
     workspaceRoot,

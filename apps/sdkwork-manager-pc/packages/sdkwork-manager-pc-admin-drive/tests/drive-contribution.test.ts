@@ -19,5 +19,18 @@ describe("createSdkworkManagerDriveAdminContribution", () => {
     ]);
     expect(contribution.routes[0]?.requiredPermissions).toEqual(["drive.storage.admin"]);
     expect(contribution.routes[6]?.requiredPermissions).toEqual(["drive.maintenance.admin"]);
+    expect(contribution.routes.map((route) => route.contentLayout)).toEqual(
+      Array.from({ length: 8 }, () => "edge-to-edge"),
+    );
+    expect(contribution.routes.map((route) => route.navigationGroups?.[0]?.id)).toEqual([
+      "infrastructure",
+      "infrastructure",
+      "governance",
+      "governance",
+      "governance",
+      "operations",
+      "operations",
+      "operations",
+    ]);
   });
 });

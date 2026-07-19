@@ -4,7 +4,11 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { resolveManagerProfileEnv } from "./manager-profile-env.mjs";
+import {
+  resolveManagerProfileEnv,
+  resolveManagerRuntimeEnv,
+} from "./manager-profile-env.mjs";
+import { refreshManagerWslPostgresPortProxy } from "./manager-wsl-postgres-portproxy.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const managerIamMenuPermissions = [
@@ -69,8 +73,10 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   assert.match(rootPackage.scripts.start, /manager-start\.mjs/);
   assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
   assert.match(devRunner, /manager-server/);
-  assert.match(devRunner, /resolveManagerProfileEnv/);
-  assert.match(startRunner, /resolveManagerProfileEnv/);
+  assert.match(devRunner, /resolveManagerRuntimeEnv/);
+  assert.match(startRunner, /resolveManagerRuntimeEnv/);
+  assert.match(devRunner, /refreshManagerWslPostgresPortProxy/);
+  assert.match(startRunner, /refreshManagerWslPostgresPortProxy/);
   assert.match(startRunner, /sdkwork-manager-standalone-gateway/);
   assert.match(devRunner, /StringComparer\]::OrdinalIgnoreCase\.Equals/);
   assert.match(devRunner, /Stop-Process -Id \$_\.Id -Force/);
@@ -97,8 +103,45 @@ test("Manager standalone profile supplies the IAM and Manager CORS allowlists", 
     profileEnv.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
     profileEnv.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
   );
-  assert.match(profileEnv.SDKWORK_DRIVE_DATABASE_URL, /^sqlite:\/\/.runtime\//u);
-  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_MAX_CONNECTIONS, "1");
+  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_URL, undefined);
+  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_MAX_CONNECTIONS, undefined);
+  assert.equal(profileEnv.SDKWORK_DATABASE_TEMPORARY_ANY_POOL_EXCEPTION, "true");
+  assert.equal(profileEnv.SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED, "true");
+});
+
+test("Manager runtime environment preserves process overrides", () => {
+  const runtimeEnv = resolveManagerRuntimeEnv({
+    SDKWORK_CLAW_DATABASE_HOST: "database.internal",
+    SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "false",
+  });
+
+  assert.equal(runtimeEnv.SDKWORK_CLAW_DATABASE_HOST, "database.internal");
+  assert.equal(runtimeEnv.SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED, "false");
+});
+
+test("WSL PostgreSQL proxy refresh is Windows-only and explicitly enabled", () => {
+  let calls = 0;
+  const run = () => {
+    calls += 1;
+    return { status: 0 };
+  };
+
+  assert.equal(refreshManagerWslPostgresPortProxy({}, { platform: "win32", run }), false);
+  assert.equal(
+    refreshManagerWslPostgresPortProxy(
+      { SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "true" },
+      { platform: "linux", run },
+    ),
+    false,
+  );
+  assert.equal(
+    refreshManagerWslPostgresPortProxy(
+      { SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "true" },
+      { platform: "win32", run },
+    ),
+    true,
+  );
+  assert.equal(calls, 1);
 });
 
 test("Manager manifests use the PC runtime app id required by IAM login", () => {

@@ -22,8 +22,8 @@ business rules.
 
 The supported operating loop is:
 
-1. Configure offers, coupon inventory, and promotion codes in Marketing Center.
-2. Observe discount applications and switch campaigns on or off by tenant.
+1. Configure campaigns, versioned coupon benefits, inventory, and code batches in Marketing Center.
+2. Issue coupons to selected users and audit claim, stock-ledger, and discount-application records.
 3. Monitor order conversion, after-sales requests, shipments, refunds, and
    withdrawals in Trade Center.
 4. Configure payment providers, channels, routing rules, webhooks, and
@@ -60,18 +60,24 @@ server-side state transition, tenant, permission, and idempotency enforcement.
 
 ### 3.2 Marketing Center
 
-Marketing Center provides five production routes:
+Marketing Center provides ten production routes:
 
 | Route | Operator outcome |
 | --- | --- |
 | `/admin/marketing/overview` | Review offer, stock, code, and application KPIs |
-| `/admin/marketing/offers` | Search offers and enable or disable campaigns |
-| `/admin/marketing/stocks` | Review coupon stock and availability |
-| `/admin/marketing/codes` | Review promotion-code inventory and status |
+| `/admin/marketing/campaigns` | Create, update, delete drafts, and manage campaign lifecycle |
+| `/admin/marketing/offers` | Create and version coupon benefits and manage status |
+| `/admin/marketing/stocks` | Create coupon stock batches and review availability |
+| `/admin/marketing/codeBatches` | Generate bounded single-use code batches with idempotency |
+| `/admin/marketing/distributions` | Issue account coupons to bounded user lists |
+| `/admin/marketing/claims` | Review user coupon claim and distribution records |
+| `/admin/marketing/codes` | Review masked promotion-code inventory and status |
+| `/admin/marketing/ledger` | Audit tenant- and organization-scoped stock ledger entries |
 | `/admin/marketing/applications` | Review discount application and redemption records |
 
-Read access requires `commerce.marketing.read`; campaign status changes require
-`commerce.marketing.manage`. Every list is server-paginated and tenant scoped.
+Read access requires `commerce.marketing.read`; campaign, benefit, stock, code,
+and distribution mutations require `commerce.marketing.manage`. Every list is
+server-paginated and tenant/organization scoped.
 
 ### 3.3 Payment Center
 

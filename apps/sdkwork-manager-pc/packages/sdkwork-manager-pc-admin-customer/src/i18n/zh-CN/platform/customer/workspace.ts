@@ -14,6 +14,10 @@ export const customerWorkspaceZh = {
   memberships: "会员信息",
   details: "用户详情",
   noMemberships: "该用户暂无关联会员记录。",
+  navigationGroups: {
+    directory: "用户档案",
+    insights: "用户洞察",
+  },
   routes: {
     overview: ["用户概览", "当前页用户与会员运营指标"],
     directory: ["用户目录", "基于 IAM 服务端分页的用户目录与检索"],

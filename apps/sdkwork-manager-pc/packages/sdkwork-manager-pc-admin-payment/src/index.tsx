@@ -11,106 +11,82 @@ type PaymentMessages = {
   description: string;
   displayName: string;
   loading: string;
-  routes: Record<string, { description: string; label: string }>;
+  navigationGroups: Record<
+    "configuration" | "developerTools" | "institutions" | "operations",
+    string
+  >;
+  routes: Record<PaymentRouteKey, PaymentRouteMessage>;
   title: string;
+};
+
+type PaymentRouteKey =
+  | "attempts"
+  | "channels"
+  | "integration"
+  | "methods"
+  | "providerAccounts"
+  | "reconciliation"
+  | "records"
+  | "routeRules"
+  | "subMerchants"
+  | "webhooks";
+
+type PaymentRouteMessage = {
+  description: string;
+  label: string;
 };
 
 const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
   "zh-CN": {
-    description: "管理支付机构、通道、路由、监控、Webhook、对账和集成配置。",
-    displayName: "支付中心",
+    description: "覆盖支付交易、机构执行、回调通知、资金对账和支付路由的全链路运营。",
+    displayName: "支付管理",
     loading: "正在加载支付管理模块…",
-    title: "支付中心",
+    navigationGroups: {
+      configuration: "支付配置",
+      developerTools: "开发与联调",
+      institutions: "机构管理",
+      operations: "支付运营",
+    },
+    title: "支付管理",
     routes: {
-      monitor: { label: "支付监控", description: "查看支付意图、尝试、Webhook 与对账" },
-      providers: { label: "支付机构", description: "管理支付机构账户和子商户" },
-      channels: { label: "通道与路由", description: "管理支付方式、通道及路由规则" },
+      attempts: { label: "支付尝试", description: "追踪每次机构请求、通道选择和执行结果" },
+      channels: { label: "支付通道", description: "配置支付方式与机构账户之间的可用通道" },
       integration: { label: "集成配置", description: "管理证书、凭据测试和沙箱工具" },
+      methods: { label: "支付方式", description: "维护面向业务开放的支付方式及启停状态" },
+      providerAccounts: { label: "支付机构", description: "管理支付服务商账户、环境和凭据状态" },
+      reconciliation: { label: "对账中心", description: "创建并跟踪渠道账单与平台交易的核对批次" },
+      records: { label: "支付记录", description: "查询支付意图、金额、订单归属和生命周期状态" },
+      routeRules: { label: "路由规则", description: "按场景、优先级和可用性编排支付通道路由" },
+      subMerchants: { label: "子商户", description: "管理服务商模式下的子商户进件与绑定关系" },
+      webhooks: { label: "Webhook 事件", description: "审计回调验签、处理结果并重放失败事件" },
     },
   },
   "en-US": {
-    description: "Manage providers, channels, routing, monitoring, webhooks, reconciliation, and integration configuration.",
-    displayName: "Payment Center",
+    description: "Operate the complete payment lifecycle across transactions, provider execution, webhooks, reconciliation, and routing.",
+    displayName: "Payments",
     loading: "Loading Payment administration…",
-    title: "Payment Center",
+    navigationGroups: {
+      configuration: "Payment configuration",
+      developerTools: "Developer tools",
+      institutions: "Provider management",
+      operations: "Payment operations",
+    },
+    title: "Payment administration",
     routes: {
-      monitor: { label: "Payment Monitor", description: "Review intents, attempts, webhooks, and reconciliation" },
-      providers: { label: "Providers", description: "Manage provider accounts and sub-merchants" },
-      channels: { label: "Channels & Routing", description: "Manage methods, channels, and route rules" },
+      attempts: { label: "Payment attempts", description: "Trace provider requests, channel selection, and execution outcomes" },
+      channels: { label: "Payment channels", description: "Configure available links between payment methods and provider accounts" },
       integration: { label: "Integration", description: "Manage certificates, credential tests, and sandbox tools" },
+      methods: { label: "Payment methods", description: "Maintain customer-facing payment methods and availability" },
+      providerAccounts: { label: "Providers", description: "Manage provider accounts, environments, and credential health" },
+      reconciliation: { label: "Reconciliation", description: "Create and track matching runs across provider statements and platform payments" },
+      records: { label: "Payment records", description: "Search payment intents, amounts, order ownership, and lifecycle status" },
+      routeRules: { label: "Routing rules", description: "Orchestrate payment channels by scenario, priority, and availability" },
+      subMerchants: { label: "Sub-merchants", description: "Manage onboarding and account links for partner-mode merchants" },
+      webhooks: { label: "Webhook events", description: "Audit signature checks, processing outcomes, and replay failed events" },
     },
   },
 };
 
-const LazyMonitorWorkspace = lazy(async () => {
-  const module = await import("@sdkwork/payment-pc-admin-monitor");
-  return {
-    default: function PaymentMonitorRoute() {
-      const controller = useMemo(
-        () => module.createPaymentMonitorAdminController({ service: getManagerPaymentBackendService() }),
-        [],
-      );
-      return (
-        <module.PaymentMonitorAdminWorkspace
-          capabilities={{
-            canCreateReconciliationRun: hasManagerPermission("commerce.payments.reconciliation_runs.create"),
-            canReplayWebhookEvent: hasManagerPermission("commerce.payments.webhook_events.replay"),
-          }}
-          controller={controller}
-        />
-      );
-    },
-  };
-});
-const LazyProviderWorkspace = lazy(async () => {
-  const module = await import("@sdkwork/payment-pc-admin-provider");
-  return {
-    default: function PaymentProviderRoute() {
-      const controller = useMemo(
-        () => module.createPaymentProviderAdminController({ service: getManagerPaymentBackendService() }),
-        [],
-      );
-      return (
-        <module.PaymentProviderAdminWorkspace
-          capabilities={{
-            canCreateProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.create"),
-            canUpdateProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.update"),
-            canTestProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.test"),
-            canRotateProviderCredentials: hasManagerPermission("commerce.payments.provider_accounts.credentials.rotate"),
-            canCreateSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.create"),
-            canUpdateSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.update"),
-            canDeleteSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.delete"),
-          }}
-          controller={controller}
-        />
-      );
-    },
-  };
-});
-const LazyChannelWorkspace = lazy(async () => {
-  const module = await import("@sdkwork/payment-pc-admin-channel");
-  return {
-    default: function PaymentChannelRoute() {
-      const controller = useMemo(
-        () => module.createPaymentChannelAdminController({ service: getManagerPaymentBackendService() }),
-        [],
-      );
-      return (
-        <module.PaymentChannelAdminWorkspace
-          capabilities={{
-            canCreateMethod: hasManagerPermission("commerce.payments.methods.create"),
-            canUpdateMethod: hasManagerPermission("commerce.payments.methods.update"),
-            canCreateChannel: hasManagerPermission("commerce.payments.channels.create"),
-            canCreateRouteRule: hasManagerPermission("commerce.payments.route_rules.create"),
-            canUpdateRouteRule: hasManagerPermission("commerce.payments.route_rules.update"),
-            canDeleteRouteRule: hasManagerPermission("commerce.payments.route_rules.delete"),
-          }}
-          controller={controller}
-        />
-      );
-    },
-  };
-});
 function createPaymentRoute(Component: ComponentType, loading: string) {
   return function ManagerPaymentRoute() {
     return (
@@ -119,6 +95,108 @@ function createPaymentRoute(Component: ComponentType, loading: string) {
       </Suspense>
     );
   };
+}
+
+function createPaymentMonitorRoute(
+  section: "attempts" | "intents" | "reconciliation" | "webhooks",
+  message: PaymentRouteMessage,
+  loading: string,
+) {
+  const LazyWorkspace = lazy(async () => {
+    const module = await import("@sdkwork/payment-pc-admin-monitor");
+    return {
+      default: function PaymentMonitorRoute() {
+        const controller = useMemo(
+          () => module.createPaymentMonitorAdminController({ service: getManagerPaymentBackendService() }),
+          [],
+        );
+        return (
+          <module.PaymentMonitorAdminWorkspace
+            capabilities={{
+              canCreateReconciliationRun: hasManagerPermission("commerce.payments.reconciliation_runs.create"),
+              canReplayWebhookEvent: hasManagerPermission("commerce.payments.webhook_events.replay"),
+            }}
+            controller={controller}
+            description={message.description}
+            section={section}
+            title={message.label}
+          />
+        );
+      },
+    };
+  });
+  return createPaymentRoute(LazyWorkspace, loading);
+}
+
+function createPaymentProviderRoute(
+  section: "accounts" | "submerchants",
+  message: PaymentRouteMessage,
+  loading: string,
+) {
+  const LazyWorkspace = lazy(async () => {
+    const module = await import("@sdkwork/payment-pc-admin-provider");
+    return {
+      default: function PaymentProviderRoute() {
+        const controller = useMemo(
+          () => module.createPaymentProviderAdminController({ service: getManagerPaymentBackendService() }),
+          [],
+        );
+        return (
+          <module.PaymentProviderAdminWorkspace
+            capabilities={{
+              canCreateProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.create"),
+              canUpdateProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.update"),
+              canTestProviderAccount: hasManagerPermission("commerce.payments.provider_accounts.test"),
+              canRotateProviderCredentials: hasManagerPermission("commerce.payments.provider_accounts.credentials.rotate"),
+              canCreateSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.create"),
+              canUpdateSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.update"),
+              canDeleteSubMerchant: hasManagerPermission("commerce.payments.sub_merchants.delete"),
+            }}
+            controller={controller}
+            description={message.description}
+            section={section}
+            title={message.label}
+          />
+        );
+      },
+    };
+  });
+  return createPaymentRoute(LazyWorkspace, loading);
+}
+
+function createPaymentChannelRoute(
+  section: "channels" | "methods" | "rules",
+  message: PaymentRouteMessage,
+  loading: string,
+) {
+  const LazyWorkspace = lazy(async () => {
+    const module = await import("@sdkwork/payment-pc-admin-channel");
+    return {
+      default: function PaymentChannelRoute() {
+        const controller = useMemo(
+          () => module.createPaymentChannelAdminController({ service: getManagerPaymentBackendService() }),
+          [],
+        );
+        return (
+          <module.PaymentChannelAdminWorkspace
+            capabilities={{
+              canCreateMethod: hasManagerPermission("commerce.payments.methods.create"),
+              canUpdateMethod: hasManagerPermission("commerce.payments.methods.update"),
+              canCreateChannel: hasManagerPermission("commerce.payments.channels.create"),
+              canCreateRouteRule: hasManagerPermission("commerce.payments.route_rules.create"),
+              canUpdateRouteRule: hasManagerPermission("commerce.payments.route_rules.update"),
+              canDeleteRouteRule: hasManagerPermission("commerce.payments.route_rules.delete"),
+            }}
+            controller={controller}
+            description={message.description}
+            section={section}
+            title={message.label}
+          />
+        );
+      },
+    };
+  });
+  return createPaymentRoute(LazyWorkspace, loading);
 }
 
 function createPaymentIntegrationRoute(loading: string) {
@@ -143,27 +221,67 @@ export function createSdkworkManagerPaymentAdminContribution(
 ): AdminModuleContribution {
   const language = locale.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
   const messages = PAYMENT_MESSAGES[language];
+  const operationsGroup = [{ id: "operations", label: messages.navigationGroups.operations }];
+  const institutionsGroup = [{ id: "institutions", label: messages.navigationGroups.institutions }];
+  const configurationGroup = [{ id: "configuration", label: messages.navigationGroups.configuration }];
   const routes: Array<AdminModuleContribution["routes"][number]> = [
     {
-      Component: createPaymentRoute(LazyMonitorWorkspace, messages.loading),
-      description: messages.routes.monitor.description,
-      id: "commerce.payment.monitor",
-      label: messages.routes.monitor.label,
+      Component: createPaymentMonitorRoute("intents", messages.routes.records, messages.loading),
+      description: messages.routes.records.description,
+      id: "commerce.payment.records",
+      label: messages.routes.records.label,
+      navigationGroups: operationsGroup,
       path: "/admin/payments/monitor",
       permissionMode: "all",
-      requiredPermissions: [
-        "commerce.payments.intents.read",
-        "commerce.payments.attempts.read",
-        "commerce.payments.webhook_events.read",
-        "commerce.payments.reconciliation_runs.read",
-      ],
+      requiredPermissions: ["commerce.payments.intents.read"],
     },
     {
-      Component: createPaymentRoute(LazyProviderWorkspace, messages.loading),
-      description: messages.routes.providers.description,
+      Component: createPaymentMonitorRoute("attempts", messages.routes.attempts, messages.loading),
+      description: messages.routes.attempts.description,
+      id: "commerce.payment.attempts",
+      label: messages.routes.attempts.label,
+      navigationGroups: operationsGroup,
+      path: "/admin/payments/attempts",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.attempts.read"],
+    },
+    {
+      Component: createPaymentMonitorRoute("webhooks", messages.routes.webhooks, messages.loading),
+      description: messages.routes.webhooks.description,
+      id: "commerce.payment.webhooks",
+      label: messages.routes.webhooks.label,
+      navigationGroups: operationsGroup,
+      path: "/admin/payments/webhooks",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.webhook_events.read"],
+    },
+    {
+      Component: createPaymentMonitorRoute("reconciliation", messages.routes.reconciliation, messages.loading),
+      description: messages.routes.reconciliation.description,
+      id: "commerce.payment.reconciliation",
+      label: messages.routes.reconciliation.label,
+      navigationGroups: operationsGroup,
+      path: "/admin/payments/reconciliation",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.reconciliation_runs.read"],
+    },
+    {
+      Component: createPaymentProviderRoute("accounts", messages.routes.providerAccounts, messages.loading),
+      description: messages.routes.providerAccounts.description,
       id: "commerce.payment.providers",
-      label: messages.routes.providers.label,
+      label: messages.routes.providerAccounts.label,
+      navigationGroups: institutionsGroup,
       path: "/admin/payments/providers",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.provider_accounts.read"],
+    },
+    {
+      Component: createPaymentProviderRoute("submerchants", messages.routes.subMerchants, messages.loading),
+      description: messages.routes.subMerchants.description,
+      id: "commerce.payment.subMerchants",
+      label: messages.routes.subMerchants.label,
+      navigationGroups: institutionsGroup,
+      path: "/admin/payments/sub-merchants",
       permissionMode: "all",
       requiredPermissions: [
         "commerce.payments.provider_accounts.read",
@@ -171,17 +289,40 @@ export function createSdkworkManagerPaymentAdminContribution(
       ],
     },
     {
-      Component: createPaymentRoute(LazyChannelWorkspace, messages.loading),
+      Component: createPaymentChannelRoute("methods", messages.routes.methods, messages.loading),
+      description: messages.routes.methods.description,
+      id: "commerce.payment.methods",
+      label: messages.routes.methods.label,
+      navigationGroups: configurationGroup,
+      path: "/admin/payments/methods",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.methods.read"],
+    },
+    {
+      Component: createPaymentChannelRoute("channels", messages.routes.channels, messages.loading),
       description: messages.routes.channels.description,
       id: "commerce.payment.channels",
       label: messages.routes.channels.label,
+      navigationGroups: configurationGroup,
       path: "/admin/payments/channels",
       permissionMode: "all",
       requiredPermissions: [
         "commerce.payments.channels.read",
         "commerce.payments.methods.read",
-        "commerce.payments.route_rules.read",
         "commerce.payments.provider_accounts.read",
+      ],
+    },
+    {
+      Component: createPaymentChannelRoute("rules", messages.routes.routeRules, messages.loading),
+      description: messages.routes.routeRules.description,
+      id: "commerce.payment.routeRules",
+      label: messages.routes.routeRules.label,
+      navigationGroups: configurationGroup,
+      path: "/admin/payments/route-rules",
+      permissionMode: "all",
+      requiredPermissions: [
+        "commerce.payments.channels.read",
+        "commerce.payments.route_rules.read",
       ],
     },
   ];
@@ -192,6 +333,7 @@ export function createSdkworkManagerPaymentAdminContribution(
       description: messages.routes.integration.description,
       id: "commerce.payment.integration",
       label: messages.routes.integration.label,
+      navigationGroups: [{ id: "developer-tools", label: messages.navigationGroups.developerTools }],
       path: "/admin/payments/integration",
       permissionMode: "all",
       requiredPermissions: [

@@ -1,8 +1,54 @@
 export interface ManagerIamAdminModuleMessages {
   channelTemplate: string;
+  catalog: {
+    accessControlTemplate: string;
+    countTemplate: string;
+    labels: {
+      permission: string;
+      policy: string;
+      role: string;
+    };
+    loadingTemplate: string;
+    editor: {
+      action: string;
+      cancel: string;
+      code: string;
+      createTemplate: string;
+      editTemplate: string;
+      name: string;
+      resource: string;
+      save: string;
+      status: string;
+    };
+    table: {
+      action: string;
+      actions: string;
+      code: string;
+      delete: string;
+      edit: string;
+      empty: string;
+      name: string;
+      resource: string;
+      status: string;
+    };
+    notices: {
+      deleteConfirmTemplate: string;
+      deleteError: string;
+      deleteSuccess: string;
+      loadError: string;
+      saveError: string;
+      saveSuccess: string;
+    };
+  };
   description: string;
   displayName: string;
   loading: string;
+  navigationGroups: {
+    accessControl: string;
+    directory: string;
+    federation: string;
+    security: string;
+  };
   routes: {
     accountBinding: { description: string; label: string };
     audit: { description: string; label: string };

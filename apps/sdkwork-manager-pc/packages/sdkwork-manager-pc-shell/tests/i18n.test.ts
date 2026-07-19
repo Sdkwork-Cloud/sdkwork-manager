@@ -11,5 +11,7 @@ describe("manager shell i18n catalog", () => {
   it("resolves localized critical operator states", () => {
     expect(MANAGER_SHELL_I18N_CATALOG.resolveMessages("zh-CN").session.validating).toContain("校验");
     expect(MANAGER_SHELL_I18N_CATALOG.resolveMessages("en-US").adminHost.signOut).toBe("Sign out");
+    expect(MANAGER_SHELL_I18N_CATALOG.resolveMessages("zh-CN").adminHost.switchToDarkMode).toBe("切换到深色模式");
+    expect(MANAGER_SHELL_I18N_CATALOG.resolveMessages("en-US").adminHost.switchToLightMode).toBe("Switch to light mode");
   });
 });

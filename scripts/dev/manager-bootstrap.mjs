@@ -5,15 +5,20 @@ import process from "node:process";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+import { resolveManagerRuntimeEnv } from "./manager-profile-env.mjs";
+import { refreshManagerWslPostgresPortProxy } from "./manager-wsl-postgres-portproxy.mjs";
+
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const appRoot = path.join(workspaceRoot, "apps", "sdkwork-manager-pc");
+const runtimeEnv = resolveManagerRuntimeEnv();
+refreshManagerWslPostgresPortProxy(runtimeEnv);
 const result = spawnSync(
   process.env.CARGO ?? "cargo",
   ["run", "-p", "sdkwork-manager-standalone-gateway", "--bin", "manager-server"],
   {
     cwd: workspaceRoot,
     env: {
-      ...process.env,
+      ...runtimeEnv,
       SDKWORK_MANAGER_APP_ROOT: appRoot,
       SDKWORK_MANAGER_BOOTSTRAP_ONLY: "true",
       SDKWORK_MANAGER_ENVIRONMENT: process.env.SDKWORK_MANAGER_ENVIRONMENT ?? "development",

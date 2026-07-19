@@ -22,6 +22,8 @@ export const managerAdminHostMessages: ManagerAdminHostMessages = {
   showModuleNavigation: "展开功能导航",
   signOut: "退出登录",
   simplifiedChinese: "简体中文",
+  switchToDarkMode: "切换到深色模式",
+  switchToLightMode: "切换到浅色模式",
   unifiedWorkspace: "统一管理工作区",
   workspace: "工作区",
 };

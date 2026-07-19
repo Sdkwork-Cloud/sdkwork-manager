@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.process-database-pool",
+  "profile": {
+    "exampleFile": ".env.postgres.example",
+    "database": "sdkwork_ai_dev",
+    "schema": "sdkwork_ai_dev"
+  },
+  "processes": [
+    {
+      "id": "manager-server",
+      "entrypoint": "crates/sdkwork-manager-standalone-gateway/src/main.rs",
+      "poolOwner": "crates/sdkwork-manager-standalone-gateway/src/main.rs",
+      "driver": "sqlx::PgPool",
+      "poolCount": 1,
+      "databaseUrlEnv": "SDKWORK_CLAW_DATABASE_*",
+      "schemaEnv": "SDKWORK_CLAW_DATABASE_SCHEMA",
+      "maxConnectionsEnv": "SDKWORK_CLAW_DATABASE_MAX_CONNECTIONS",
+      "productionSourceRoots": [
+        "crates/sdkwork-manager-standalone-gateway/src",
+        "crates/sdkwork-manager-gateway-assembly/src",
+        "crates/sdkwork-manager-database-host/src",
+        "crates/sdkwork-manager-service-host/src"
+      ],
+      "consumers": [
+        {
+          "module": "sdkwork-iam",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-standalone-gateway/src/iam_application_bootstrap.rs"]
+        },
+        {
+          "module": "sdkwork-manager",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-service-host/src/lib.rs"]
+        },
+        {
+          "module": "sdkwork-order",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"]
+        },
+        {
+          "module": "sdkwork-promotion",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"]
+        },
+        {
+          "module": "sdkwork-payment",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"]
+        },
+        {
+          "module": "sdkwork-membership",
+          "poolMode": "installed-process-pool",
+          "evidence": ["crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"]
+        },
+        {
+          "module": "sdkwork-drive",
+          "poolMode": "injected",
+          "evidence": ["crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"]
+        }
+      ],
+      "temporaryDriverExceptions": [
+        {
+          "driver": "sqlx::AnyPool",
+          "owner": "sdkwork-drive maintainers",
+          "removalMilestone": "Migrate Drive production repositories to sqlx::PgPool before the next Manager production release",
+          "combinedConnectionBudget": 10,
+          "adr": "docs/architecture/decisions/ADR-20260719-manager-drive-pool-driver-migration.md",
+          "evidence": [
+            "../sdkwork-drive/crates/sdkwork-drive-workspace-service/src/infrastructure/sql/installer.rs"
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": [
+    "pnpm db:pool:validate",
+    "node ../sdkwork-specs/tools/check-process-shared-database-pool.mjs --root .",
+    "cargo test -p sdkwork-manager-standalone-gateway",
+    "live PostgreSQL connection count before readiness and after shutdown"
+  ]
+}

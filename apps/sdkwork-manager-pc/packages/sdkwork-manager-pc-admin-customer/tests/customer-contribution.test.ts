@@ -21,6 +21,10 @@ describe("customer admin contribution", () => {
     ]);
     expect(contribution.routes[2]?.navigationVisible).toBe(false);
     expect(contribution.routes.every((route) => route.requiredPermissions?.includes("iam.users.read"))).toBe(true);
+    expect(contribution.routes.slice(0, 2).map((route) => route.navigationGroups?.[0]?.id)).toEqual([
+      "customer-insights",
+      "customer-records",
+    ]);
   });
 
   it("resolves Chinese module copy", () => {

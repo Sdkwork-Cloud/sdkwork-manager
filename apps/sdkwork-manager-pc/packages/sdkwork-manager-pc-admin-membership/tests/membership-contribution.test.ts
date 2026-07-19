@@ -21,6 +21,14 @@ describe("membership admin contribution", () => {
     ]);
     expect(contribution.routes[2]?.navigationVisible).toBe(false);
     expect(contribution.routes.every((route) => route.requiredPermissions?.includes("commerce.memberships.read"))).toBe(true);
+    expect(contribution.routes.filter((route) => route.navigationVisible !== false).map((route) => route.navigationGroups?.[0]?.id)).toEqual([
+      "member-operations",
+      "member-operations",
+      "membership-catalog",
+      "membership-catalog",
+      "membership-catalog",
+      "entitlements",
+    ]);
   });
 
   it("resolves Chinese module copy", () => {

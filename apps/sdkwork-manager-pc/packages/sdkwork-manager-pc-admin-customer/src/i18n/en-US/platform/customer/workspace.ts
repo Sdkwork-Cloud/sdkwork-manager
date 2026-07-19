@@ -14,6 +14,10 @@ export const customerWorkspaceEn = {
   memberships: "Memberships",
   details: "Customer details",
   noMemberships: "No memberships are linked to this customer.",
+  navigationGroups: {
+    directory: "Customer records",
+    insights: "Customer insights",
+  },
   routes: {
     overview: ["Overview", "Current-page customer and membership operating indicators"],
     directory: ["Customer Directory", "Server-paginated IAM customer directory and search"],
