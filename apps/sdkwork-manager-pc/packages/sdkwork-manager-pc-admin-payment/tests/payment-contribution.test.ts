@@ -18,7 +18,10 @@ describe("createSdkworkManagerPaymentAdminContribution", () => {
       "/admin/payments/methods",
       "/admin/payments/channels",
       "/admin/payments/route-rules",
-      "/admin/payments/integration",
+      "/admin/payments/integration/environments",
+      "/admin/payments/integration/webhook-debugger",
+      "/admin/payments/integration/certificates",
+      "/admin/payments/integration/logs",
     ]);
     expect(contribution.routes.map((route) => route.label)).toEqual([
       "Payment records",
@@ -30,7 +33,10 @@ describe("createSdkworkManagerPaymentAdminContribution", () => {
       "Payment methods",
       "Payment channels",
       "Routing rules",
-      "Integration",
+      "Environment & credential tests",
+      "Webhook debugger",
+      "Certificates",
+      "Integration logs",
     ]);
     expect(contribution.routes.map((route) => route.navigationGroups?.[0]?.id)).toEqual([
       "operations",
@@ -42,6 +48,9 @@ describe("createSdkworkManagerPaymentAdminContribution", () => {
       "configuration",
       "configuration",
       "configuration",
+      "developer-tools",
+      "developer-tools",
+      "developer-tools",
       "developer-tools",
     ]);
   });

@@ -36,6 +36,50 @@ type PaymentRouteMessage = {
   label: string;
 };
 
+type PaymentIntegrationSection = "environment" | "webhook" | "certificates" | "logs";
+
+const PAYMENT_INTEGRATION_MESSAGES: Record<
+  "en-US" | "zh-CN",
+  Record<PaymentIntegrationSection, PaymentRouteMessage>
+> = {
+  "zh-CN": {
+    environment: {
+      label: "环境与凭据测试",
+      description: "管理支付机构运行环境，执行凭据与连通性验证",
+    },
+    webhook: {
+      label: "Webhook 调试器",
+      description: "触发沙箱事件并验证回调签名与原始载荷",
+    },
+    certificates: {
+      label: "证书管理",
+      description: "管理支付证书、有效期、指纹和轮换状态",
+    },
+    logs: {
+      label: "集成日志",
+      description: "查询联调事件、处理结果并重放失败回调",
+    },
+  },
+  "en-US": {
+    environment: {
+      label: "Environment & credential tests",
+      description: "Manage provider environments and validate credentials and connectivity",
+    },
+    webhook: {
+      label: "Webhook debugger",
+      description: "Trigger sandbox events and verify callback signatures and raw payloads",
+    },
+    certificates: {
+      label: "Certificates",
+      description: "Manage payment certificates, expiry, fingerprints, and rotation state",
+    },
+    logs: {
+      label: "Integration logs",
+      description: "Inspect integration events, processing results, and replay failed callbacks",
+    },
+  },
+};
+
 const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
   "zh-CN": {
     description: "覆盖支付交易、机构执行、回调通知、资金对账和支付路由的全链路运营。",
@@ -199,7 +243,11 @@ function createPaymentChannelRoute(
   return createPaymentRoute(LazyWorkspace, loading);
 }
 
-function createPaymentIntegrationRoute(loading: string) {
+function createPaymentIntegrationRoute(
+  section: PaymentIntegrationSection,
+  message: PaymentRouteMessage,
+  loading: string,
+) {
   const LazyIntegrationWorkspace = lazy(async () => {
     const module = await import("@sdkwork/payment-pc-admin-devconfig");
     return {
@@ -208,7 +256,14 @@ function createPaymentIntegrationRoute(loading: string) {
           () => module.createPaymentDevConfigAdminController({ service: getManagerPaymentBackendService() }),
           [],
         );
-        return <module.PaymentDevConfigAdminWorkspace controller={controller} />;
+        return (
+          <module.PaymentDevConfigAdminWorkspace
+            controller={controller}
+            description={message.description}
+            section={section}
+            title={message.label}
+          />
+        );
       },
     };
   });
@@ -221,6 +276,7 @@ export function createSdkworkManagerPaymentAdminContribution(
 ): AdminModuleContribution {
   const language = locale.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
   const messages = PAYMENT_MESSAGES[language];
+  const integrationMessages = PAYMENT_INTEGRATION_MESSAGES[language];
   const operationsGroup = [{ id: "operations", label: messages.navigationGroups.operations }];
   const institutionsGroup = [{ id: "institutions", label: messages.navigationGroups.institutions }];
   const configurationGroup = [{ id: "configuration", label: messages.navigationGroups.configuration }];
@@ -327,23 +383,66 @@ export function createSdkworkManagerPaymentAdminContribution(
     },
   ];
 
-  if (!import.meta.env.PROD && environment !== "production") {
-    routes.push({
-      Component: createPaymentIntegrationRoute(messages.loading),
-      description: messages.routes.integration.description,
-      id: "commerce.payment.integration",
-      label: messages.routes.integration.label,
-      navigationGroups: [{ id: "developer-tools", label: messages.navigationGroups.developerTools }],
-      path: "/admin/payments/integration",
-      permissionMode: "all",
-      requiredPermissions: [
-        "commerce.payments.certificates.read",
-        "commerce.payments.provider_accounts.read",
-        "commerce.payments.webhook_events.read",
-        "commerce.payments.dev.sandbox_trigger",
-        "commerce.payments.dev.webhook_signature_test",
-      ],
-    });
+  if (environment !== "production") {
+    const developerToolsGroup = [{ id: "developer-tools", label: messages.navigationGroups.developerTools }];
+    routes.push(
+      {
+        Component: createPaymentIntegrationRoute("environment", integrationMessages.environment, messages.loading),
+        description: integrationMessages.environment.description,
+        id: "commerce.payment.integration.environments",
+        label: integrationMessages.environment.label,
+        navigationGroups: developerToolsGroup,
+        path: "/admin/payments/integration/environments",
+        permissionMode: "all",
+        requiredPermissions: [
+          "commerce.payments.provider_accounts.read",
+          "commerce.payments.provider_accounts.update",
+          "commerce.payments.provider_accounts.test",
+        ],
+      },
+      {
+        Component: createPaymentIntegrationRoute("webhook", integrationMessages.webhook, messages.loading),
+        description: integrationMessages.webhook.description,
+        id: "commerce.payment.integration.webhookDebugger",
+        label: integrationMessages.webhook.label,
+        navigationGroups: developerToolsGroup,
+        path: "/admin/payments/integration/webhook-debugger",
+        permissionMode: "all",
+        requiredPermissions: [
+          "commerce.payments.provider_accounts.read",
+          "commerce.payments.webhook_events.read",
+          "commerce.payments.dev.sandbox_trigger",
+          "commerce.payments.dev.webhook_signature_test",
+        ],
+      },
+      {
+        Component: createPaymentIntegrationRoute("certificates", integrationMessages.certificates, messages.loading),
+        description: integrationMessages.certificates.description,
+        id: "commerce.payment.integration.certificates",
+        label: integrationMessages.certificates.label,
+        navigationGroups: developerToolsGroup,
+        path: "/admin/payments/integration/certificates",
+        permissionMode: "all",
+        requiredPermissions: [
+          "commerce.payments.certificates.read",
+          "commerce.payments.certificates.create",
+          "commerce.payments.certificates.delete",
+        ],
+      },
+      {
+        Component: createPaymentIntegrationRoute("logs", integrationMessages.logs, messages.loading),
+        description: integrationMessages.logs.description,
+        id: "commerce.payment.integration.logs",
+        label: integrationMessages.logs.label,
+        navigationGroups: developerToolsGroup,
+        path: "/admin/payments/integration/logs",
+        permissionMode: "all",
+        requiredPermissions: [
+          "commerce.payments.webhook_events.read",
+          "commerce.payments.webhook_events.replay",
+        ],
+      },
+    );
   }
 
   return {

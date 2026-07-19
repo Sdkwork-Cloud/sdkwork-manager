@@ -102,7 +102,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     policies: { description: "维护可复用的授权策略定义", label: "策略" },
     roleBindings: { description: "在受控范围内为主体分配角色", label: "角色绑定" },
     roles: { description: "创建角色并管理权限分配", label: "角色" },
-    tenants: { description: "管理租户边界、状态与成员", label: "租户管理" },
+    tenants: { description: "管理租户边界、成员与已注册应用", label: "租户管理" },
     users: { description: "管理用户目录与账号生命周期", label: "用户管理" },
   },
   title: "身份与访问",

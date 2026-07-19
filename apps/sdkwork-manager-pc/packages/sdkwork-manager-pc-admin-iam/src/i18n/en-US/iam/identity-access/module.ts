@@ -102,7 +102,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     policies: { description: "Maintain reusable authorization policy definitions", label: "Policies" },
     roleBindings: { description: "Assign roles to principals within a controlled scope", label: "Role bindings" },
     roles: { description: "Create roles and manage their permission assignments", label: "Roles" },
-    tenants: { description: "Manage tenant boundaries, status, and members", label: "Tenant management" },
+    tenants: { description: "Manage tenant boundaries, members, and registered applications", label: "Tenant management" },
     users: { description: "Manage the user directory and account lifecycle", label: "User management" },
   },
   title: "Identity & Access",

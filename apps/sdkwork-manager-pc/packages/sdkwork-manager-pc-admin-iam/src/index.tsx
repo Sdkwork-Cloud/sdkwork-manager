@@ -41,8 +41,14 @@ const LazyIamUserRoute = lazy(async () => {
 const LazyIamTenantRoute = lazy(async () => {
   const { createSdkworkIamTenantController, SdkworkIamTenantAdminWorkspace } = await import("@sdkwork/iam-pc-admin-tenant");
   return {
-    default: function IamTenantRoute({ getService }: IamRouteDependencies) {
-      const controller = useMemo(() => createSdkworkIamTenantController(getService()), [getService]);
+    default: function IamTenantRoute({ getPermissionScope, getService }: IamRouteDependencies) {
+      const controller = useMemo(
+        () => createSdkworkIamTenantController({
+          permissionScope: getPermissionScope(),
+          service: getService(),
+        }),
+        [getPermissionScope, getService],
+      );
       return <SdkworkIamTenantAdminWorkspace controller={controller} />;
     },
   };
