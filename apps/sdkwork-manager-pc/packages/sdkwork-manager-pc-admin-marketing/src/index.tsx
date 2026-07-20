@@ -210,6 +210,7 @@ function OperationsTable<T>({
   loader,
   refreshKey = 0,
   renderRow,
+  tableClassName,
   toolbar,
   feedback,
 }: {
@@ -218,6 +219,7 @@ function OperationsTable<T>({
   loader: (query: PromotionAdminListQuery) => Promise<PromotionAdminPage<T>>;
   refreshKey?: number;
   renderRow: (item: T, reload: () => Promise<boolean>) => ReactNode;
+  tableClassName?: string;
   toolbar?: ReactNode;
   feedback?: Feedback;
 }) {
@@ -262,7 +264,9 @@ function OperationsTable<T>({
         </p>
       ) : (
         <div aria-label={columns.join(", ")} className="manager-operations-table-wrap" role="region" tabIndex={0}>
-          <table className="manager-operations-table">
+          <table
+            className={`manager-operations-table${tableClassName ? ` ${tableClassName}` : ""}`}
+          >
             <caption className="sr-only">{columns.join(" / ")}</caption>
             <thead>
               <tr>
@@ -321,6 +325,7 @@ function FeedbackForm({
   title,
   description,
   feedback,
+  submitLabel,
 }: {
   children: ReactNode;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -330,6 +335,7 @@ function FeedbackForm({
   title: string;
   description?: string;
   feedback?: Feedback;
+  submitLabel?: string;
 }) {
   const copy = COPY[language];
   return (
@@ -365,7 +371,7 @@ function FeedbackForm({
             </button>
             <button disabled={pending} type="submit">
               <Check aria-hidden="true" size={16} />
-              {pending ? copy.processing : copy.save}
+              {pending ? copy.processing : submitLabel || copy.save}
             </button>
           </DrawerFooter>
         </form>
@@ -375,6 +381,7 @@ function FeedbackForm({
 }
 
 function EntityPicker({
+  autoSelectFirst = false,
   emptyText,
   label,
   language,
@@ -384,6 +391,7 @@ function EntityPicker({
   required = false,
   value,
 }: {
+  autoSelectFirst?: boolean;
   emptyText: string;
   label: string;
   language: Language;
@@ -404,6 +412,9 @@ function EntityPicker({
       void loader(query)
         .then((items) => {
           if (!active) return;
+          if (autoSelectFirst && !value && items[0]) {
+            onValueChange(items[0].value);
+          }
           setOptions((current) => {
             const selected = current.find((option) => option.value === value);
             return selected && !items.some((option) => option.value === value)
@@ -422,7 +433,7 @@ function EntityPicker({
       active = false;
       window.clearTimeout(timer);
     };
-  }, [loader, query, value]);
+  }, [autoSelectFirst, loader, query, value]);
 
   const resolvedOptions =
     value && !options.some((option) => option.value === value)
@@ -872,6 +883,341 @@ const emptyOffer = (): PromotionOfferRequest => ({
   maximumDiscountAmount: null,
   currencyCode: "CNY",
 });
+
+function couponWorkflowStart(item: PromotionOffer) {
+  const offerStart = toLocalDate(item.startsAt);
+  const current = nowLocal();
+  return offerStart > current ? offerStart : current;
+}
+
+function couponCodePrefix(item: PromotionOffer) {
+  const prefix = (item.offerCode || item.displayName)
+    .replace(/[^a-z0-9]/gi, "")
+    .slice(0, 4)
+    .toUpperCase();
+  return prefix || "CP";
+}
+
+function emptyCouponStock(item: PromotionOffer): CouponStockRequest {
+  return {
+    offerId: item.id,
+    stockType: "LIMITED",
+    totalQuantity: "1000",
+    perUserLimit: 1,
+    claimStartsAt: couponWorkflowStart(item),
+    claimEndsAt: toLocalDate(item.endsAt) || null,
+    status: 1,
+  };
+}
+
+function emptyCodeBatch(item: PromotionOffer): PromotionCodeBatchRequest {
+  return {
+    stockId: "",
+    codeType: "SINGLE_USE",
+    quantity: "100",
+    codeLength: 16,
+    codePrefix: couponCodePrefix(item),
+    startsAt: couponWorkflowStart(item),
+    expiresAt: toLocalDate(item.endsAt) || null,
+    idempotencyKey: uuid(),
+  };
+}
+
+function CouponWorkflowContext({
+  item,
+  language,
+}: {
+  item: PromotionOffer;
+  language: Language;
+}) {
+  return (
+    <div className="manager-coupon-workflow-context">
+      <div>
+        <span>{language === "zh-CN" ? "当前优惠券" : "Selected coupon"}</span>
+        <strong>{item.displayName}</strong>
+        <small>{item.offerCode || item.offerNo}</small>
+      </div>
+      <strong>{formatDiscount(item, language)}</strong>
+    </div>
+  );
+}
+
+function CouponStockDrawer({
+  draft,
+  feedback,
+  item,
+  language,
+  onCancel,
+  onChange,
+  onSubmit,
+  pending,
+}: {
+  draft: CouponStockRequest;
+  feedback: Feedback;
+  item: PromotionOffer;
+  language: Language;
+  onCancel: () => void;
+  onChange: (value: CouponStockRequest) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  pending: boolean;
+}) {
+  return (
+    <FeedbackForm
+      description={
+        language === "zh-CN"
+          ? "为当前优惠券新增可发放库存与领取规则。"
+          : "Add distributable stock and claim rules for this coupon."
+      }
+      feedback={feedback}
+      language={language}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+      pending={pending}
+      submitLabel={language === "zh-CN" ? "保存库存" : "Save stock"}
+      title={language === "zh-CN" ? "库存设置" : "Stock settings"}
+    >
+      <CouponWorkflowContext item={item} language={language} />
+      <div className="manager-inline-fields">
+        <label>
+          {language === "zh-CN" ? "库存数量" : "Stock quantity"}
+          <input
+            inputMode="numeric"
+            min="1"
+            required
+            step="1"
+            type="number"
+            value={draft.totalQuantity}
+            onChange={(event) =>
+              onChange({ ...draft, totalQuantity: event.target.value })
+            }
+          />
+        </label>
+        <label>
+          {language === "zh-CN" ? "每人限领" : "Per-user limit"}
+          <input
+            inputMode="numeric"
+            min="1"
+            required
+            step="1"
+            type="number"
+            value={draft.perUserLimit}
+            onChange={(event) =>
+              onChange({ ...draft, perUserLimit: Number(event.target.value) })
+            }
+          />
+        </label>
+      </div>
+      <div className="manager-drawer-field">
+        <span>{language === "zh-CN" ? "库存模式" : "Stock mode"}</span>
+        <div
+          aria-label={language === "zh-CN" ? "库存模式" : "Stock mode"}
+          className="manager-segmented-control"
+          role="group"
+        >
+          {(["LIMITED", "UNLIMITED"] as const).map((stockType) => (
+            <button
+              aria-pressed={draft.stockType === stockType}
+              key={stockType}
+              onClick={() => onChange({ ...draft, stockType })}
+              type="button"
+            >
+              {stockType === "LIMITED"
+                ? language === "zh-CN"
+                  ? "限量"
+                  : "Limited"
+                : language === "zh-CN"
+                  ? "不限量"
+                  : "Unlimited"}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="manager-inline-fields">
+        <label>
+          {language === "zh-CN" ? "领取开始时间" : "Claim starts"}
+          <input
+            type="datetime-local"
+            value={draft.claimStartsAt ?? ""}
+            onChange={(event) =>
+              onChange({
+                ...draft,
+                claimStartsAt: event.target.value || null,
+              })
+            }
+          />
+        </label>
+        <label>
+          {language === "zh-CN" ? "领取结束时间" : "Claim ends"}
+          <input
+            min={draft.claimStartsAt ?? undefined}
+            type="datetime-local"
+            value={draft.claimEndsAt ?? ""}
+            onChange={(event) =>
+              onChange({ ...draft, claimEndsAt: event.target.value || null })
+            }
+          />
+        </label>
+      </div>
+      <label className="manager-toggle-field">
+        <span>
+          <strong>{language === "zh-CN" ? "立即启用" : "Activate now"}</strong>
+          <small>
+            {language === "zh-CN"
+              ? "保存后可用于发放与批次生成"
+              : "Available for distribution and batches after saving"}
+          </small>
+        </span>
+        <input
+          checked={draft.status === 1}
+          onChange={(event) =>
+            onChange({ ...draft, status: event.target.checked ? 1 : 0 })
+          }
+          role="switch"
+          type="checkbox"
+        />
+      </label>
+    </FeedbackForm>
+  );
+}
+
+function CouponBatchDrawer({
+  draft,
+  feedback,
+  item,
+  language,
+  loadStockOptions,
+  onCancel,
+  onChange,
+  onSubmit,
+  pending,
+  selectedStock,
+}: {
+  draft: PromotionCodeBatchRequest;
+  feedback: Feedback;
+  item: PromotionOffer;
+  language: Language;
+  loadStockOptions: EntityOptionLoader;
+  onCancel: () => void;
+  onChange: (value: PromotionCodeBatchRequest) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  pending: boolean;
+  selectedStock?: CouponStock;
+}) {
+  return (
+    <FeedbackForm
+      description={
+        language === "zh-CN"
+          ? "从当前优惠券的可用库存生成单次使用券码。"
+          : "Generate single-use codes from this coupon's available stock."
+      }
+      feedback={feedback}
+      language={language}
+      onCancel={onCancel}
+      onSubmit={onSubmit}
+      pending={pending}
+      submitLabel={language === "zh-CN" ? "创建批次" : "Create batch"}
+      title={language === "zh-CN" ? "创建券码批次" : "Create code batch"}
+    >
+      <CouponWorkflowContext item={item} language={language} />
+      <EntityPicker
+        autoSelectFirst
+        emptyText={
+          language === "zh-CN"
+            ? "暂无可用库存，请先完成库存设置"
+            : "No available stock. Configure stock first."
+        }
+        label={language === "zh-CN" ? "扣减库存" : "Source stock"}
+        language={language}
+        loader={loadStockOptions}
+        onValueChange={(stockId) => onChange({ ...draft, stockId })}
+        placeholder={
+          language === "zh-CN" ? "选择可用库存" : "Select available stock"
+        }
+        required
+        value={draft.stockId}
+      />
+      {selectedStock ? (
+        <div className="manager-stock-availability" role="status">
+          <span>{language === "zh-CN" ? "当前可用" : "Available"}</span>
+          <strong>{selectedStock.availableQuantity}</strong>
+          <small>
+            {language === "zh-CN"
+              ? `库存总量 ${selectedStock.totalQuantity}`
+              : `${selectedStock.totalQuantity} total`}
+          </small>
+        </div>
+      ) : null}
+      <label>
+        {language === "zh-CN" ? "生成数量" : "Quantity"}
+        <input
+          inputMode="numeric"
+          max={selectedStock?.availableQuantity}
+          min="1"
+          required
+          step="1"
+          type="number"
+          value={draft.quantity}
+          onChange={(event) =>
+            onChange({ ...draft, quantity: event.target.value })
+          }
+        />
+      </label>
+      <div className="manager-inline-fields">
+        <label>
+          {language === "zh-CN" ? "生效时间" : "Starts"}
+          <input
+            type="datetime-local"
+            value={draft.startsAt ?? ""}
+            onChange={(event) =>
+              onChange({ ...draft, startsAt: event.target.value || null })
+            }
+          />
+        </label>
+        <label>
+          {language === "zh-CN" ? "失效时间" : "Expires"}
+          <input
+            min={draft.startsAt ?? undefined}
+            type="datetime-local"
+            value={draft.expiresAt ?? ""}
+            onChange={(event) =>
+              onChange({ ...draft, expiresAt: event.target.value || null })
+            }
+          />
+        </label>
+      </div>
+      <div className="manager-inline-fields">
+        <label>
+          {language === "zh-CN" ? "券码前缀" : "Prefix"}
+          <input
+            maxLength={8}
+            value={draft.codePrefix}
+            onChange={(event) =>
+              onChange({
+                ...draft,
+                codePrefix: event.target.value
+                  .replace(/[^a-z0-9]/gi, "")
+                  .toUpperCase(),
+              })
+            }
+          />
+        </label>
+        <label>
+          {language === "zh-CN" ? "券码长度" : "Code length"}
+          <input
+            max={32}
+            min={12}
+            type="number"
+            value={draft.codeLength}
+            onChange={(event) =>
+              onChange({ ...draft, codeLength: Number(event.target.value) })
+            }
+          />
+        </label>
+      </div>
+    </FeedbackForm>
+  );
+}
+
 function MarketingOffers({ service, language }: PageProps) {
   const copy = COPY[language];
   const canManage = hasManagerPermission("commerce.marketing.manage");
@@ -882,6 +1228,18 @@ function MarketingOffers({ service, language }: PageProps) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState<PromotionOffer | null>(null);
   const [statusPendingId, setStatusPendingId] = useState<string | null>(null);
+  const [stockOffer, setStockOffer] = useState<PromotionOffer | null>(null);
+  const [stockDraft, setStockDraft] = useState<CouponStockRequest | null>(null);
+  const [stockPending, setStockPending] = useState(false);
+  const [stockFeedback, setStockFeedback] = useState<Feedback>(null);
+  const [batchOffer, setBatchOffer] = useState<PromotionOffer | null>(null);
+  const [batchDraft, setBatchDraft] =
+    useState<PromotionCodeBatchRequest | null>(null);
+  const [batchPending, setBatchPending] = useState(false);
+  const [batchFeedback, setBatchFeedback] = useState<Feedback>(null);
+  const [batchStocks, setBatchStocks] = useState<Record<string, CouponStock>>(
+    {},
+  );
   const loader = useCallback(
     (q: PromotionAdminListQuery) => service.listOffers(q),
     [service],
@@ -902,6 +1260,38 @@ function MarketingOffers({ service, language }: PageProps) {
     },
     [service],
   );
+  const loadBatchStockOptions = useCallback<EntityOptionLoader>(
+    async (query) => {
+      if (!batchOffer) return [];
+      const page = await service.listCouponStocks({
+        page: 1,
+        pageSize: 20,
+        q: query.trim() || undefined,
+        status: 1,
+      });
+      const stocks = page.items.filter(
+        (item) =>
+          item.offerId === batchOffer.id && Number(item.availableQuantity) > 0,
+      );
+      setBatchStocks((current) => ({
+        ...current,
+        ...Object.fromEntries(stocks.map((item) => [item.id, item])),
+      }));
+      return stocks.map((item) => ({
+        value: item.id,
+        label: item.stockNo,
+        description:
+          language === "zh-CN"
+            ? `可用 ${item.availableQuantity} / 总量 ${item.totalQuantity}`
+            : `${item.availableQuantity} available / ${item.totalQuantity} total`,
+        keywords: [item.stockNo],
+      }));
+    },
+    [batchOffer, language, service],
+  );
+  const selectedBatchStock = batchDraft?.stockId
+    ? batchStocks[batchDraft.stockId]
+    : undefined;
   const begin = (item?: PromotionOffer) => {
     setFeedback(null);
     setEditingId(item?.id ?? null);
@@ -929,6 +1319,134 @@ function MarketingOffers({ service, language }: PageProps) {
           }
         : emptyOffer(),
     );
+  };
+  const beginStockSetup = (item: PromotionOffer) => {
+    setFeedback(null);
+    setStockFeedback(null);
+    setStockOffer(item);
+    setStockDraft(emptyCouponStock(item));
+  };
+  const beginCodeBatch = (item: PromotionOffer) => {
+    setFeedback(null);
+    setBatchFeedback(null);
+    setBatchStocks({});
+    setBatchOffer(item);
+    setBatchDraft(emptyCodeBatch(item));
+  };
+  const submitStock = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!stockDraft || !stockOffer) return;
+    if (
+      !Number.isInteger(Number(stockDraft.totalQuantity)) ||
+      Number(stockDraft.totalQuantity) <= 0 ||
+      !Number.isInteger(stockDraft.perUserLimit) ||
+      stockDraft.perUserLimit <= 0
+    ) {
+      setStockFeedback({
+        kind: "error",
+        message:
+          language === "zh-CN"
+            ? "库存数量和每人限领数量必须为正整数。"
+            : "Stock quantity and per-user limit must be positive integers.",
+      });
+      return;
+    }
+    if (
+      !validDateRange(
+        stockDraft.claimStartsAt || nowLocal(),
+        stockDraft.claimEndsAt,
+      )
+    ) {
+      setStockFeedback({
+        kind: "error",
+        message:
+          language === "zh-CN"
+            ? "领取结束时间必须晚于领取开始时间。"
+            : "Claim end time must be later than claim start time.",
+      });
+      return;
+    }
+    setStockPending(true);
+    setStockFeedback(null);
+    try {
+      const created = await service.createCouponStock(stockDraft);
+      setBatchStocks((current) => ({ ...current, [created.id]: created }));
+      setStockDraft(null);
+      setStockOffer(null);
+      setFeedback({
+        kind: "success",
+        message:
+          language === "zh-CN"
+            ? `${stockOffer.displayName} 的库存已设置，可继续创建券码批次。`
+            : `Stock is ready for ${stockOffer.displayName}. You can now create a code batch.`,
+      });
+    } catch (error) {
+      setStockFeedback({
+        kind: "error",
+        message: failureMessage(error, copy.error),
+      });
+    } finally {
+      setStockPending(false);
+    }
+  };
+  const submitBatch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!batchDraft || !batchOffer) return;
+    const quantity = Number(batchDraft.quantity);
+    if (!batchDraft.stockId || !Number.isInteger(quantity) || quantity <= 0) {
+      setBatchFeedback({
+        kind: "error",
+        message:
+          language === "zh-CN"
+            ? "请选择可用库存，生成数量必须为正整数。"
+            : "Select available stock and enter a positive whole quantity.",
+      });
+      return;
+    }
+    if (
+      selectedBatchStock &&
+      quantity > Number(selectedBatchStock.availableQuantity)
+    ) {
+      setBatchFeedback({
+        kind: "error",
+        message:
+          language === "zh-CN"
+            ? `生成数量不能超过当前可用库存 ${selectedBatchStock.availableQuantity}。`
+            : `Quantity cannot exceed the available stock of ${selectedBatchStock.availableQuantity}.`,
+      });
+      return;
+    }
+    if (!validDateRange(batchDraft.startsAt || nowLocal(), batchDraft.expiresAt)) {
+      setBatchFeedback({
+        kind: "error",
+        message:
+          language === "zh-CN"
+            ? "券码失效时间必须晚于生效时间。"
+            : "Code expiry must be later than its start time.",
+      });
+      return;
+    }
+    setBatchPending(true);
+    setBatchFeedback(null);
+    try {
+      await service.createCodeBatch(batchDraft);
+      setBatchDraft(null);
+      setBatchOffer(null);
+      setFeedback({
+        kind: "success",
+        message:
+          language === "zh-CN"
+            ? `${batchOffer.displayName} 的券码批次已提交生成。`
+            : `The code batch for ${batchOffer.displayName} has been submitted.`,
+      });
+    } catch (error) {
+      setBatchFeedback({
+        kind: "error",
+        message: failureMessage(error, copy.error),
+      });
+    } finally {
+      setBatchPending(false);
+    }
   };
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -1197,6 +1715,40 @@ function MarketingOffers({ service, language }: PageProps) {
           </label>
         </FeedbackForm>
       ) : null}
+      {stockDraft && stockOffer ? (
+        <CouponStockDrawer
+          draft={stockDraft}
+          feedback={stockFeedback}
+          item={stockOffer}
+          language={language}
+          onCancel={() => {
+            setStockDraft(null);
+            setStockOffer(null);
+            setStockFeedback(null);
+          }}
+          onChange={setStockDraft}
+          onSubmit={(event) => void submitStock(event)}
+          pending={stockPending}
+        />
+      ) : null}
+      {batchDraft && batchOffer ? (
+        <CouponBatchDrawer
+          draft={batchDraft}
+          feedback={batchFeedback}
+          item={batchOffer}
+          language={language}
+          loadStockOptions={loadBatchStockOptions}
+          onCancel={() => {
+            setBatchDraft(null);
+            setBatchOffer(null);
+            setBatchFeedback(null);
+          }}
+          onChange={setBatchDraft}
+          onSubmit={(event) => void submitBatch(event)}
+          pending={batchPending}
+          selectedStock={selectedBatchStock}
+        />
+      ) : null}
       <OperationsTable
         feedback={feedback}
         columns={
@@ -1207,6 +1759,7 @@ function MarketingOffers({ service, language }: PageProps) {
         language={language}
         loader={loader}
         refreshKey={refreshKey}
+        tableClassName="manager-coupon-table"
         toolbar={
           canManage ? (
             <button onClick={() => begin()} type="button">
@@ -1233,15 +1786,58 @@ function MarketingOffers({ service, language }: PageProps) {
               <small>{item.endsAt || (language === "zh-CN" ? "长期有效" : "No end date")}</small>
             </td>
             <td><MarketingStatus language={language} status={item.status} /></td>
-            <td className="manager-operations-actions">
+            <td className="manager-coupon-actions">
               {canManage ? (
-                <>
-                  <button onClick={() => begin(item)} type="button">
+                <div className="manager-operations-actions">
+                  <button
+                    aria-label={`${language === "zh-CN" ? "创建批次" : "Create batch"}: ${item.displayName}`}
+                    className="manager-coupon-primary-action"
+                    disabled={item.status !== 1}
+                    onClick={() => beginCodeBatch(item)}
+                    title={
+                      item.status === 1
+                        ? language === "zh-CN"
+                          ? "创建券码批次"
+                          : "Create code batch"
+                        : language === "zh-CN"
+                          ? "请先启用优惠券"
+                          : "Activate the coupon first"
+                    }
+                    type="button"
+                  >
+                    <QrCode aria-hidden="true" size={15} />
+                    {language === "zh-CN" ? "创建批次" : "Create batch"}
+                  </button>
+                  <button
+                    aria-label={`${language === "zh-CN" ? "库存设置" : "Stock settings"}: ${item.displayName}`}
+                    disabled={item.status !== 1}
+                    onClick={() => beginStockSetup(item)}
+                    title={
+                      item.status === 1
+                        ? language === "zh-CN"
+                          ? "库存设置"
+                          : "Stock settings"
+                        : language === "zh-CN"
+                          ? "请先启用优惠券"
+                          : "Activate the coupon first"
+                    }
+                    type="button"
+                  >
+                    <PackagePlus aria-hidden="true" size={15} />
+                    {language === "zh-CN" ? "库存设置" : "Stock settings"}
+                  </button>
+                  <button
+                    aria-label={`${copy.edit}: ${item.displayName}`}
+                    className="manager-icon-action"
+                    onClick={() => begin(item)}
+                    title={copy.edit}
+                    type="button"
+                  >
                     <Pencil aria-hidden="true" size={15} />
-                    {copy.edit}
                   </button>
                   <button
                     aria-label={`${item.status === 1 ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}: ${item.displayName}`}
+                    className="manager-icon-action"
                     disabled={statusPendingId === item.id}
                     onClick={() => void toggleStatus(item, reload)}
                     title={item.status === 1 ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}
@@ -1250,15 +1846,22 @@ function MarketingOffers({ service, language }: PageProps) {
                     {item.status === 1 ? <PowerOff aria-hidden="true" size={15} /> : <Power aria-hidden="true" size={15} />}
                   </button>
                   <button
-                    className="manager-action-danger"
+                    aria-label={`${copy.remove}: ${item.displayName}`}
+                    className="manager-action-danger manager-icon-action"
                     disabled={item.status !== 0}
                     onClick={() => setDeleteTarget(item)}
+                    title={
+                      item.status === 0
+                        ? copy.remove
+                        : language === "zh-CN"
+                          ? "请先停用优惠券"
+                          : "Disable the coupon before deleting"
+                    }
                     type="button"
                   >
                     <Trash2 aria-hidden="true" size={15} />
-                    {copy.remove}
                   </button>
-                </>
+                </div>
               ) : (
                 "-"
               )}

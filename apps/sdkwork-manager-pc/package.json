@@ -12,7 +12,10 @@
     "lint": "pnpm run typecheck",
     "dev:standalone": "pnpm exec sdkwork-app dev --root ../.. --deployment-profile standalone",
     "dev:cloud": "pnpm exec sdkwork-app dev --root ../.. --deployment-profile cloud",
-    "stop": "pnpm exec sdkwork-app stop --root ../.."
+    "stop": "pnpm exec sdkwork-app stop --root ../..",
+    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "verify": "pnpm check",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\""
   },
   "dependencies": {
     "@sdkwork/i18n-pc-react": "workspace:*",
@@ -27,6 +30,7 @@
     "@sdkwork/manager-pc-admin-membership": "workspace:*",
     "@sdkwork/manager-pc-admin-customer": "workspace:*",
     "@sdkwork/manager-pc-shell": "workspace:*",
+    "@sdkwork/manager-pc-user": "workspace:*",
     "@sdkwork/ui-pc-react": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",

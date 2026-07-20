@@ -23,6 +23,7 @@ vi.mock("@sdkwork/ui-pc-react/theme", () => ({
 vi.mock("../src/i18n", () => ({
   useManagerShellMessages: () => ({
     adminHost: {
+      accountCenter: "Account center",
       adminBadge: "Admin",
       brandLabel: "SDKWork Manager",
       capability: "Capability",

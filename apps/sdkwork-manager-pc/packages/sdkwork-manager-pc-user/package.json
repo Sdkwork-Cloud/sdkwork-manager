@@ -1,0 +1,33 @@
+{
+  "name": "@sdkwork/manager-pc-user",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "SDKWork Manager current-operator user center integration adapter.",
+  "exports": {
+    ".": {
+      "types": "./src/index.tsx",
+      "import": "./src/index.tsx",
+      "default": "./src/index.tsx"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.json"
+  },
+  "dependencies": {
+    "@sdkwork/manager-pc-core": "workspace:*",
+    "@sdkwork/user-pc-react": "workspace:*",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0"
+  },
+  "sdkwork": {
+    "architecture": "pc-react",
+    "surface": "app",
+    "domain": "iam",
+    "capability": "current-operator-user-center",
+    "packageType": "integration-adapter",
+    "status": "standard"
+  }
+}

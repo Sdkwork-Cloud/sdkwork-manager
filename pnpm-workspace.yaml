@@ -69,6 +69,9 @@ packages:
   - "../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service"
   - "../sdkwork-membership/sdks/sdkwork-membership-app-sdk/sdkwork-membership-app-sdk-typescript"
   - "../sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript"
+  - "../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-user-pc-react"
+  - "../sdkwork-search/apps/sdkwork-search-common/packages/sdkwork-search-contracts"
+  - "../sdkwork-search/apps/sdkwork-search-pc/packages/sdkwork-search-pc-react"
 
 catalog:
   "@tailwindcss/vite": ^4.1.14

@@ -1,4 +1,4 @@
-import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type ComponentType, type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   Archive,
@@ -8,6 +8,7 @@ import {
   Building2,
   ChartColumn,
   CheckCircle2,
+  CircleUserRound,
   Coins,
   ContactRound,
   CreditCard,
@@ -74,6 +75,7 @@ type AdminHostShellProps = {
   onLocaleChange: (locale: string) => void;
   onSignOut: () => Promise<void>;
   registry: AdminModuleRegistry;
+  UserCenterComponent?: ComponentType;
 };
 
 export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostShellProps, "accessScope" | "registry">) {
@@ -231,7 +233,7 @@ function AdminRouteIcon({ routeId }: { routeId: string }) {
   return <Icon size={16} strokeWidth={1.9} />;
 }
 
-export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut, registry }: AdminHostShellProps) {
+export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut, registry, UserCenterComponent }: AdminHostShellProps) {
   const { adminHost } = useManagerShellMessages();
   const { colorMode, setThemeSelection } = useSdkworkTheme();
   const { pathname } = useLocation();
@@ -257,6 +259,7 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
       && (!activeRoute || registry.hasRouteAccess(activeRoute, accessScope)),
   );
   const isEdgeToEdgeRoute = canAccessActiveRoute && activeRoute?.contentLayout === "edge-to-edge";
+  const isUserCenterRoute = pathname === "/account" || pathname.startsWith("/account/");
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -315,6 +318,18 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
           >
             {colorMode === "light" ? <Moon aria-hidden="true" size={18} /> : <Sun aria-hidden="true" size={18} />}
           </button>
+          {UserCenterComponent ? (
+            <button
+              aria-current={isUserCenterRoute ? "page" : undefined}
+              aria-label={adminHost.accountCenter}
+              className={`manager-icon-button manager-account-button${isUserCenterRoute ? " is-active" : ""}`}
+              onClick={() => navigate("/account")}
+              title={adminHost.accountCenter}
+              type="button"
+            >
+              <CircleUserRound aria-hidden="true" size={18} />
+            </button>
+          ) : null}
           <label className="manager-locale-select" title={adminHost.language}>
             <Languages aria-hidden="true" size={16} />
             <span className="manager-visually-hidden">{adminHost.language}</span>
@@ -343,10 +358,12 @@ export function AdminHostShell({ accessScope, locale, onLocaleChange, onSignOut,
         </div>
       </header>
 
-      <div className={`manager-admin-workspace${isSidebarOpen ? "" : " manager-admin-workspace--collapsed"}`}>
-        {isSidebarOpen ? <AdminModuleNavigation accessScope={accessScope} registry={registry} /> : null}
-        <main className={`manager-main-content${isEdgeToEdgeRoute ? " manager-main-content--edge-to-edge" : ""}`}>
-          {activeRoute && canAccessActiveRoute ? (
+      <div className={`manager-admin-workspace${isSidebarOpen && !isUserCenterRoute ? "" : " manager-admin-workspace--collapsed"}`}>
+        {isSidebarOpen && !isUserCenterRoute ? <AdminModuleNavigation accessScope={accessScope} registry={registry} /> : null}
+        <main className={`manager-main-content${isEdgeToEdgeRoute || isUserCenterRoute ? " manager-main-content--edge-to-edge" : ""}`}>
+          {isUserCenterRoute && UserCenterComponent ? (
+            <UserCenterComponent />
+          ) : activeRoute && canAccessActiveRoute ? (
             <activeRoute.Component />
           ) : pathname === "/" ? (
             <AdminHostWelcomePage accessScope={accessScope} registry={registry} />

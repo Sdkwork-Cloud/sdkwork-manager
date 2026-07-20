@@ -18,6 +18,7 @@ type IamRouteDependencies = {
   getPermissionScope: () => readonly string[];
   getService: () => SdkworkIamService;
   getTenantId: () => string;
+  locale?: string | null;
 };
 
 type IamContributionDependencies = IamRouteDependencies & {
@@ -32,9 +33,20 @@ function IamRouteLoadingState() {
 const LazyIamUserRoute = lazy(async () => {
   const { createSdkworkIamUserAdminController, SdkworkIamUserAdminWorkspace } = await import("@sdkwork/iam-pc-admin-user");
   return {
-    default: function IamUserRoute({ getService }: IamRouteDependencies) {
+    default: function IamUserRoute({ getPermissionScope, getService, locale }: IamRouteDependencies) {
       const controller = useMemo(() => createSdkworkIamUserAdminController(getService()), [getService]);
-      return <SdkworkIamUserAdminWorkspace controller={controller} />;
+      const permissionScope = getPermissionScope();
+      return (
+        <SdkworkIamUserAdminWorkspace
+          controller={controller}
+          locale={locale}
+          permissions={{
+            create: permissionScope.includes("iam.users.create"),
+            delete: permissionScope.includes("iam.users.delete"),
+            update: permissionScope.includes("iam.users.update"),
+          }}
+        />
+      );
     },
   };
 });
@@ -143,7 +155,22 @@ function IamCatalogRoute({ dependencies, kind }: { dependencies: IamRouteDepende
   const { module } = useManagerIamAdminMessages();
   const controller = useMemo(() => createSdkworkIamPermissionController({ permissionScope: dependencies.getPermissionScope(), service: dependencies.getService() }), [dependencies]);
   const routeMessages = kind === "role" ? module.routes.roles : kind === "permission" ? module.routes.permissions : module.routes.policies;
-  return <IamCatalogWorkspace controller={controller} description={routeMessages.description} kind={kind} messages={module.catalog} title={routeMessages.label} />;
+  const permissionPrefix = kind === "role" ? "iam.roles" : kind === "permission" ? "iam.permissions" : "iam.policies";
+  const permissionScope = dependencies.getPermissionScope();
+  return (
+    <IamCatalogWorkspace
+      controller={controller}
+      description={routeMessages.description}
+      kind={kind}
+      messages={module.catalog}
+      permissions={{
+        create: permissionScope.includes(`${permissionPrefix}.create`),
+        delete: permissionScope.includes(`${permissionPrefix}.delete`),
+        update: permissionScope.includes(`${permissionPrefix}.update`),
+      }}
+      title={routeMessages.label}
+    />
+  );
 }
 
 export function createSdkworkManagerIamAdminContribution(
@@ -179,6 +206,7 @@ export function createSdkworkManagerIamAdminContribution(
         "iam.tenants.read",
         "iam.organizations.read",
         "iam.roles.read",
+        "iam.policies.read",
         "iam.oauth.read",
         "iam.account_binding_policy.read",
         "iam.audit_events.read",
@@ -230,7 +258,7 @@ export function createSdkworkManagerIamAdminContribution(
       },
       { Component: () => <IamCatalogRoute dependencies={dependencies} kind="role" />, description: messages.routes.roles.description, id: "iam.roles", label: messages.routes.roles.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/roles", requiredPermissions: ["iam.roles.read"] },
       { Component: () => <IamCatalogRoute dependencies={dependencies} kind="permission" />, description: messages.routes.permissions.description, id: "iam.permissions", label: messages.routes.permissions.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/permissions", requiredPermissions: ["iam.permissions.read"] },
-      { Component: () => <IamCatalogRoute dependencies={dependencies} kind="policy" />, description: messages.routes.policies.description, id: "iam.policies", label: messages.routes.policies.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/policies", requiredPermissions: ["iam.permissions.read"] },
+      { Component: () => <IamCatalogRoute dependencies={dependencies} kind="policy" />, description: messages.routes.policies.description, id: "iam.policies", label: messages.routes.policies.label, navigationGroups: [{ id: "access-control", label: messages.navigationGroups.accessControl }], path: "/admin/iam/policies", requiredPermissions: ["iam.policies.read"] },
       ...oauthRoutes,
       {
         Component: createLazyRoute(LazyIamAccountBindingRoute, dependencies),

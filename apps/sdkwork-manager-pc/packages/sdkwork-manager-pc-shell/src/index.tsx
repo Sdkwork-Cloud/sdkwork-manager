@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ComponentType } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { SdkworkSessionAuthBrowserRoot } from "@sdkwork/auth-pc-react";
 import {
@@ -25,12 +25,14 @@ type ManagerPcAppProps = {
   locale: string;
   modules: readonly AdminModuleContribution[];
   onLocaleChange: (locale: string) => void;
+  renderUserCenter?: ComponentType;
 };
 
 function ProtectedAdminHost({
   locale,
   modules,
   onLocaleChange,
+  renderUserCenter,
 }: ManagerPcAppProps) {
   const navigate = useNavigate();
   const registry = useMemo(() => createSdkworkCoreHostRegistry(modules), [modules]);
@@ -62,6 +64,7 @@ function ProtectedAdminHost({
       onLocaleChange={onLocaleChange}
       onSignOut={signOut}
       registry={registry}
+      UserCenterComponent={renderUserCenter}
     />
   );
 }
@@ -71,11 +74,13 @@ function ProtectedAdminArea({
   locale,
   onLocaleChange,
   runtimeConfig,
+  renderUserCenter,
 }: {
   locale: string;
   modules: readonly AdminModuleContribution[];
   onLocaleChange: (locale: string) => void;
   runtimeConfig: Parameters<typeof SdkworkSessionAuthBrowserRoot>[0]["runtimeConfig"];
+  renderUserCenter?: ComponentType;
 }) {
   return (
     <SdkworkSessionAuthBrowserRoot
@@ -91,6 +96,7 @@ function ProtectedAdminArea({
           locale={locale}
           modules={modules}
           onLocaleChange={onLocaleChange}
+          renderUserCenter={renderUserCenter}
         />
       </RequireOperatorSession>
     </SdkworkSessionAuthBrowserRoot>
@@ -101,6 +107,7 @@ export function ManagerPcApp({
   locale,
   modules,
   onLocaleChange,
+  renderUserCenter,
 }: ManagerPcAppProps) {
   const runtimeConfig = useManagerAuthRuntimeConfig();
   return (
@@ -120,6 +127,7 @@ export function ManagerPcApp({
               locale={locale}
               modules={modules}
               onLocaleChange={onLocaleChange}
+              renderUserCenter={renderUserCenter}
               runtimeConfig={runtimeConfig.runtimeConfig}
             />
           )}

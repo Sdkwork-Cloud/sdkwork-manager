@@ -26,6 +26,11 @@ type Props = {
   description: string;
   kind: Kind;
   messages: CatalogMessages;
+  permissions: {
+    create: boolean;
+    delete: boolean;
+    update: boolean;
+  };
   title: string;
 };
 type Draft = {
@@ -67,6 +72,7 @@ export function IamCatalogWorkspace({
   description,
   kind,
   messages,
+  permissions,
   title,
 }: Props) {
   const [items, setItems] = useState<readonly Item[]>([]);
@@ -100,6 +106,7 @@ export function IamCatalogWorkspace({
   }, [refresh]);
 
   const save = async () => {
+    if ((editing && !permissions.update) || (!editing && !permissions.create)) return;
     setBusy(true);
     setError(undefined);
     setNotice(undefined);
@@ -127,7 +134,7 @@ export function IamCatalogWorkspace({
   };
 
   const remove = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || !permissions.delete) return;
     const id = idOf(deleteTarget, kind);
     setBusy(true);
     setError(undefined);
@@ -180,20 +187,22 @@ export function IamCatalogWorkspace({
         <span className="manager-iam-workspace__count">
           {formatMessage(messages.countTemplate, { count: items.length })}
         </span>
-        <button
-          className="manager-iam-button manager-iam-button--primary"
-          disabled={busy}
-          onClick={() => {
-            setDraft(emptyDraft);
-            setEditing(undefined);
-            setError(undefined);
-            setNotice(undefined);
-            setEditorOpen(true);
-          }}
-          type="button"
-        >
-          {formatMessage(messages.editor.createTemplate, { kind: kindLabel })}
-        </button>
+        {permissions.create ? (
+          <button
+            className="manager-iam-button manager-iam-button--primary"
+            disabled={busy}
+            onClick={() => {
+              setDraft(emptyDraft);
+              setEditing(undefined);
+              setError(undefined);
+              setNotice(undefined);
+              setEditorOpen(true);
+            }}
+            type="button"
+          >
+            {formatMessage(messages.editor.createTemplate, { kind: kindLabel })}
+          </button>
+        ) : null}
       </div>
 
       {error ? (
@@ -368,22 +377,26 @@ export function IamCatalogWorkspace({
                       <td>{details.status || "-"}</td>
                     )}
                     <td className="manager-iam-table__actions">
-                      <button
-                        className="manager-iam-button manager-iam-button--quiet"
-                        disabled={busy}
-                        onClick={() => openEditor(item)}
-                        type="button"
-                      >
-                        {messages.table.edit}
-                      </button>
-                      <button
-                        className="manager-iam-button manager-iam-button--danger"
-                        disabled={busy}
-                        onClick={() => setDeleteTarget(item)}
-                        type="button"
-                      >
-                        {messages.table.delete}
-                      </button>
+                      {permissions.update ? (
+                        <button
+                          className="manager-iam-button manager-iam-button--quiet"
+                          disabled={busy}
+                          onClick={() => openEditor(item)}
+                          type="button"
+                        >
+                          {messages.table.edit}
+                        </button>
+                      ) : null}
+                      {permissions.delete ? (
+                        <button
+                          className="manager-iam-button manager-iam-button--danger"
+                          disabled={busy}
+                          onClick={() => setDeleteTarget(item)}
+                          type="button"
+                        >
+                          {messages.table.delete}
+                        </button>
+                      ) : null}
                     </td>
                   </tr>
                 );

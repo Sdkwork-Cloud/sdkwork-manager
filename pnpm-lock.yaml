@@ -727,6 +727,9 @@ importers:
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.4)
       react:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.4
@@ -750,6 +753,37 @@ importers:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.4(react@19.2.4)
     devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+
+  ../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-user-pc-react:
+    dependencies:
+      '@sdkwork/appbase-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/pc-react/foundation/sdkwork-appbase-pc-react
+      '@sdkwork/runtime-bootstrap':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap
+      '@sdkwork/search-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-search/apps/sdkwork-search-pc/packages/sdkwork-search-pc-react
+      '@sdkwork/utils':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+      react:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.4
+      react-dom:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.4(react@19.2.4)
+    devDependencies:
+      '@sdkwork/core-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-core/sdkwork-core-pc-react
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
@@ -1129,6 +1163,24 @@ importers:
         specifier: ^8.0.10
         version: 8.1.0(@types/node@25.9.4)(jiti@2.7.0)
 
+  ../sdkwork-search/apps/sdkwork-search-common/packages/sdkwork-search-contracts:
+    dependencies:
+      '@sdkwork/utils':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+
+  ../sdkwork-search/apps/sdkwork-search-pc/packages/sdkwork-search-pc-react:
+    dependencies:
+      '@sdkwork/search-contracts':
+        specifier: workspace:*
+        version: link:../../../sdkwork-search-common/packages/sdkwork-search-contracts
+      react:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.4
+      react-dom:
+        specifier: '>=18.2.0 <20.0.0'
+        version: 19.2.4(react@19.2.4)
+
   ../sdkwork-ui/sdkwork-ui-pc-react:
     dependencies:
       '@radix-ui/react-avatar':
@@ -1341,6 +1393,9 @@ importers:
       '@sdkwork/manager-pc-shell':
         specifier: workspace:*
         version: link:packages/sdkwork-manager-pc-shell
+      '@sdkwork/manager-pc-user':
+        specifier: workspace:*
+        version: link:packages/sdkwork-manager-pc-user
       '@sdkwork/ui-pc-react':
         specifier: workspace:*
         version: link:../../../sdkwork-ui/sdkwork-ui-pc-react
@@ -1670,6 +1725,18 @@ importers:
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+
+  apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-user:
+    dependencies:
+      '@sdkwork/manager-pc-core':
+        specifier: workspace:*
+        version: link:../sdkwork-manager-pc-core
+      '@sdkwork/user-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-user-pc-react
+      react:
+        specifier: 'catalog:'
+        version: 19.2.7
 
   sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript:
     dependencies:

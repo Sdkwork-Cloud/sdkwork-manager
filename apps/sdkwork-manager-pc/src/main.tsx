@@ -9,6 +9,7 @@ import {
   logManagerSessionPageBoot,
   ManagerPcApp,
 } from "@sdkwork/manager-pc-shell";
+import { ManagerCurrentOperatorUserCenter } from "@sdkwork/manager-pc-user";
 import { SdkworkThemeProvider } from "@sdkwork/ui-pc-react/theme";
 import type { SdkworkThemeSelection } from "@sdkwork/ui-pc-react/theme";
 
@@ -60,6 +61,7 @@ function ManagerPcRoot() {
           locale={locale}
           modules={modules}
           onLocaleChange={handleLocaleChange}
+          renderUserCenter={() => <ManagerCurrentOperatorUserCenter locale={locale} />}
         />
       </SdkworkThemeProvider>
     </SdkworkI18nProvider>

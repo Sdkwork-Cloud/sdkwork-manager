@@ -1,6 +1,7 @@
 import type { ManagerAdminHostMessages } from "../../../../types/i18n";
 
 export const managerAdminHostMessages: ManagerAdminHostMessages = {
+  accountCenter: "Account center",
   adminBadge: "Admin",
   brandLabel: "SDKWork Manager",
   capability: "Capability",

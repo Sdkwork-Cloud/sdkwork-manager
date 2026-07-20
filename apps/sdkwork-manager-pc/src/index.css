@@ -4,6 +4,7 @@
 @source "../src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-react/src";
+@source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-user-pc-react/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-tenant/src";
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-organization/src";
@@ -220,6 +221,12 @@ a {
 .manager-icon-button:hover {
   color: #ffffff;
   background: #17365d;
+}
+
+.manager-icon-button.is-active {
+  color: #ffffff;
+  background: #244a78;
+  border-color: #3b6da5;
 }
 
 .manager-sign-out {
@@ -1025,6 +1032,167 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   resize: vertical;
 }
 
+.manager-inline-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.manager-inline-fields > label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-coupon-workflow-context {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0 14px;
+  border-bottom: 1px solid var(--sdk-color-border-subtle);
+}
+
+.manager-coupon-workflow-context > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.manager-coupon-workflow-context span,
+.manager-coupon-workflow-context small,
+.manager-stock-availability span,
+.manager-stock-availability small {
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.manager-coupon-workflow-context strong {
+  overflow: hidden;
+  color: var(--sdk-color-text-primary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manager-coupon-workflow-context > strong {
+  flex: none;
+  color: var(--sdk-color-brand-primary);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.manager-segmented-control {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  padding: 3px;
+  background: var(--sdk-color-surface-panel-muted);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 6px;
+}
+
+.manager-segmented-control button {
+  min-height: 32px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 650;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.manager-segmented-control button[aria-pressed="true"] {
+  color: var(--sdk-color-brand-primary);
+  background: var(--sdk-color-surface-panel);
+  border-color: var(--sdk-color-border-strong);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--sdk-color-text-primary) 8%, transparent);
+}
+
+.manager-drawer-fields > .manager-toggle-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: var(--sdk-color-surface-panel-muted);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.manager-toggle-field > span {
+  display: grid;
+  gap: 3px;
+}
+
+.manager-toggle-field > span strong {
+  color: var(--sdk-color-text-primary);
+  font-size: 12px;
+}
+
+.manager-toggle-field > span small {
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.manager-drawer-fields .manager-toggle-field input {
+  position: relative;
+  width: 36px;
+  min-height: 20px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  background: var(--sdk-color-border-strong);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.manager-drawer-fields .manager-toggle-field input::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  content: "";
+  transition: transform 120ms ease;
+}
+
+.manager-drawer-fields .manager-toggle-field input:checked {
+  background: var(--sdk-color-brand-primary);
+}
+
+.manager-drawer-fields .manager-toggle-field input:checked::after {
+  transform: translateX(16px);
+}
+
+.manager-stock-availability {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: baseline;
+  gap: 7px;
+  padding: 9px 11px;
+  background: color-mix(in srgb, var(--sdk-color-state-success) 7%, var(--sdk-color-surface-panel));
+  border-left: 3px solid var(--sdk-color-state-success);
+  border-radius: 4px;
+}
+
+.manager-stock-availability strong {
+  color: var(--sdk-color-state-success);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
 .manager-drawer-field input:focus-visible,
 .manager-drawer-field select:focus-visible,
 .manager-drawer-fields input:focus-visible,
@@ -1261,6 +1429,53 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   gap: 5px;
 }
 
+.manager-coupon-table {
+  min-width: 1040px;
+}
+
+.manager-coupon-table th:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  width: 1%;
+  min-width: 316px;
+  text-align: right;
+  white-space: nowrap;
+  box-shadow: -10px 0 14px -14px color-mix(in srgb, var(--sdk-color-text-primary) 42%, transparent);
+}
+
+.manager-coupon-actions {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  width: 1%;
+  min-width: 316px;
+  white-space: nowrap;
+  background: var(--sdk-color-surface-panel);
+  box-shadow: -10px 0 14px -14px color-mix(in srgb, var(--sdk-color-text-primary) 42%, transparent);
+}
+
+.manager-coupon-table tbody tr:hover .manager-coupon-actions,
+.manager-coupon-table tbody tr:focus-within .manager-coupon-actions {
+  background: color-mix(in srgb, var(--sdk-color-brand-primary-soft) 52%, var(--sdk-color-surface-panel));
+}
+
+.manager-operations-table .manager-coupon-primary-action {
+  color: var(--sdk-color-brand-primary);
+  background: var(--sdk-color-brand-primary-soft);
+  border-color: color-mix(in srgb, var(--sdk-color-brand-primary) 28%, var(--sdk-color-border-default));
+}
+
+.manager-operations-table .manager-icon-action {
+  width: 30px;
+  padding: 0;
+}
+
+.manager-coupon-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .manager-action-danger {
   color: var(--sdk-color-state-danger) !important;
   border-color: color-mix(in srgb, var(--sdk-color-state-danger) 30%, var(--sdk-color-border-default)) !important;
@@ -1379,7 +1594,7 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   }
 
   .manager-search,
-  .manager-icon-button:not(.manager-theme-toggle) {
+  .manager-icon-button:not(.manager-theme-toggle):not(.manager-account-button) {
     display: none;
   }
 
@@ -1449,6 +1664,14 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
     padding: 0;
   }
 
+}
+
+@media (max-width: 760px) {
+  .manager-coupon-table th:last-child,
+  .manager-coupon-actions {
+    position: static;
+    box-shadow: none;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1551,6 +1774,10 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
   .manager-operations-pagination {
     justify-content: space-between;
+  }
+
+  .manager-inline-fields {
+    grid-template-columns: 1fr;
   }
 }
 

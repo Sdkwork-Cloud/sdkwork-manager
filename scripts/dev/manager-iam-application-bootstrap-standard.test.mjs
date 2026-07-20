@@ -9,7 +9,6 @@ import {
   resolveManagerRuntimeEnv,
 } from "./manager-profile-env.mjs";
 import { parseClientBind } from "./manager-dev.mjs";
-import { refreshManagerWslPostgresPortProxy } from "./manager-wsl-postgres-portproxy.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const managerIamMenuPermissions = [
@@ -90,7 +89,7 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   ));
   assert.match(devRunner, /resolveManagerRuntimeEnv/);
   assert.match(startRunner, /resolveManagerRuntimeEnv/);
-  assert.match(startRunner, /refreshManagerWslPostgresPortProxy/);
+  assert.doesNotMatch(startRunner, /portproxy/);
   assert.match(startRunner, /sdkwork-api-manager-standalone-gateway/);
   assert.match(devRunner, /@sdkwork\/app-topology\/network-access/);
   assert.match(devRunner, /application started successfully/);
@@ -142,29 +141,24 @@ test("Manager PC development bind is explicit and validated", () => {
   );
 });
 
-test("WSL PostgreSQL proxy refresh is Windows-only and explicitly enabled", () => {
-  let calls = 0;
-  const run = () => {
-    calls += 1;
-    return { status: 0 };
-  };
-
-  assert.equal(refreshManagerWslPostgresPortProxy({}, { platform: "win32", run }), false);
+test("WSL PostgreSQL proxy lifecycle is declared through the topology framework", () => {
+  const topology = JSON.parse(readFileSync(path.join(root, "specs/topology.spec.json"), "utf8"));
+  const profile = topology.orchestration.profiles["standalone.development"];
+  assert.deepEqual(profile.managedResources, [{
+    id: "manager-wsl-postgres-portproxy",
+    driver: "windows-wsl-tcp-portproxy",
+    enabledEnv: "SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED",
+    listenAddressEnv: "SDKWORK_CLAW_DATABASE_HOST",
+    listenAddress: "127.0.0.1",
+    listenPortEnv: "SDKWORK_CLAW_DATABASE_PORT",
+    listenPort: 5432,
+    distributionEnv: "SDKWORK_MANAGER_WSL_DISTRIBUTION",
+    distribution: "Ubuntu-22.04",
+  }]);
   assert.equal(
-    refreshManagerWslPostgresPortProxy(
-      { SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "true" },
-      { platform: "linux", run },
-    ),
-    false,
+    profile.processes.find((process) => process.id === "manager-pc-browser").bindEnv,
+    "SDKWORK_MANAGER_PC_DEV_BIND",
   );
-  assert.equal(
-    refreshManagerWslPostgresPortProxy(
-      { SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "true" },
-      { platform: "win32", run },
-    ),
-    true,
-  );
-  assert.equal(calls, 1);
 });
 
 test("Manager manifests use the PC runtime app id required by IAM login", () => {

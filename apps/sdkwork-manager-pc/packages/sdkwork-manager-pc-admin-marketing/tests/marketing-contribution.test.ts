@@ -72,4 +72,19 @@ describe("createSdkworkManagerMarketingAdminContribution", () => {
     expect(source).toContain("service.listCouponStocks");
     expect(source).toContain("ownerUserIds.length > 200");
   });
+
+  it("keeps coupon batch and stock workflows on the coupon list action rail", () => {
+    const source = readFileSync(
+      resolve(process.cwd(), "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx"),
+      "utf8",
+    );
+
+    expect(source).toContain("manager-coupon-actions");
+    expect(source).toContain("创建批次");
+    expect(source).toContain("库存设置");
+    expect(source).toContain("service.createCodeBatch(batchDraft)");
+    expect(source).toContain("service.createCouponStock(stockDraft)");
+    expect(source).toContain("quantity > Number(selectedBatchStock.availableQuantity)");
+    expect(source).toContain("autoSelectFirst");
+  });
 });

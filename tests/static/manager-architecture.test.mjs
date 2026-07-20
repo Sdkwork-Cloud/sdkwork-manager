@@ -46,6 +46,7 @@ test("package scripts expose the shared SDKWork application lifecycle", () => {
   assert.equal(pkg.scripts.start, "pnpm dev:standalone");
   assert.match(pkg.scripts["dev:standalone"], /sdkwork-app dev --deployment-profile standalone/);
   assert.match(pkg.scripts["dev:cloud"], /sdkwork-app dev --deployment-profile cloud/);
+  assert.equal(pkg.scripts["_sdkwork:stop"], undefined);
 });
 
 test("vite production aliases include sdk-common and composed manager SDK bundles", () => {

@@ -1,5 +1,6 @@
 export interface ManagerAdminHostMessages {
   adminBadge: string;
+  accountCenter: string;
   brandLabel: string;
   capability: string;
   capabilityNavigation: string;

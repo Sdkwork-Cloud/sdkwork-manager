@@ -14,6 +14,7 @@ describe("IAM catalog workspace", () => {
       description: messages.routes.permissions.description,
       kind: "permission",
       messages: messages.catalog,
+      permissions: { create: true, delete: true, update: true },
       title: messages.routes.permissions.label,
     }));
 
@@ -24,5 +25,19 @@ describe("IAM catalog workspace", () => {
     expect(html).not.toContain("manager-iam-editor--permission");
     expect(html).not.toContain("Create permission");
     expect(html).not.toContain("Loading permission");
+  });
+
+  it("does not expose catalog mutations to read-only operators", () => {
+    const messages = MANAGER_IAM_ADMIN_I18N_CATALOG.resolveMessages("en-US").module;
+    const html = renderToStaticMarkup(createElement(IamCatalogWorkspace, {
+      controller: {} as SdkworkIamPermissionController,
+      description: messages.routes.roles.description,
+      kind: "role",
+      messages: messages.catalog,
+      permissions: { create: false, delete: false, update: false },
+      title: messages.routes.roles.label,
+    }));
+
+    expect(html).not.toContain("Create role");
   });
 });
