@@ -56,8 +56,8 @@ sdkwork-database-ops-http = { path = "../sdkwork-database/crates/sdkwork-databas
 sdkwork_platform_manager_service = { path = "crates/sdkwork-platform-manager-service", package = "sdkwork-platform-manager-service" }
 sdkwork_platform_manager_repository_sqlx = { path = "crates/sdkwork-platform-manager-repository-sqlx", package = "sdkwork-platform-manager-repository-sqlx" }
 sdkwork_routes_manager_common = { path = "crates/sdkwork-routes-manager-common", package = "sdkwork-routes-manager-common" }
-sdkwork_routes_manager_app_api = { path = "crates/sdkwork-routes-manager-app-api", package = "sdkwork-routes-manager-app-api" }
-sdkwork_routes_manager_backend_api = { path = "crates/sdkwork-routes-manager-backend-api", package = "sdkwork-routes-manager-backend-api" }
+sdkwork-routes-manager-app-api = { path = "crates/sdkwork-routes-manager-app-api" }
+sdkwork-routes-manager-backend-api = { path = "crates/sdkwork-routes-manager-backend-api" }
 sdkwork_manager_database_host = { path = "crates/sdkwork-manager-database-host", package = "sdkwork-manager-database-host" }
 sdkwork_api_manager_assembly = { path = "crates/sdkwork-api-manager-assembly", package = "sdkwork-api-manager-assembly" }
 sdkwork_manager_service_host = { path = "crates/sdkwork-manager-service-host", package = "sdkwork-manager-service-host" }

@@ -19,5 +19,5 @@ sdkwork_order_gateway_assembly.workspace = true
 sdkwork_promotion_gateway_assembly.workspace = true
 sdkwork_payment_gateway_assembly.workspace = true
 sdkwork_membership_gateway_assembly.workspace = true
-sdkwork-routes-manager-app-api = { path = "../sdkwork-routes-manager-app-api" }
-sdkwork-routes-manager-backend-api = { path = "../sdkwork-routes-manager-backend-api" }
+sdkwork-routes-manager-app-api.workspace = true
+sdkwork-routes-manager-backend-api.workspace = true

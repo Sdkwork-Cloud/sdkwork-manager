@@ -19,7 +19,7 @@ profiles:
     expose:
       - domain: manager.sdkwork.com
         tls: sdkwork.com
-        mode: web+api
+        mode: web
         web: pc
     packages: []
     overrides: {}

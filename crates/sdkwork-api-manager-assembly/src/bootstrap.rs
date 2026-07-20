@@ -8,9 +8,7 @@ pub struct ApiAssembly {
     pub router: Router,
 }
 
-pub async fn assemble_api_router(
-    host: Arc<ManagerServiceHost>,
-) -> Result<ApiAssembly, String> {
+pub async fn assemble_api_router(host: Arc<ManagerServiceHost>) -> Result<ApiAssembly, String> {
     let mut router = Router::new();
     let iam = sdkwork_iam_gateway_assembly::assemble_application_business_router().await;
     router = router.merge(iam.router);

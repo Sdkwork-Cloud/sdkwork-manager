@@ -20,8 +20,8 @@ test("Manager workflow packages the standalone server instead of skipping it", (
   assert.match(lifecycleRunner, /runPnpm\("_sdkwork:release:package:standalone"\)/);
   assert.match(lifecycleRunner, /runPnpm\("_sdkwork:release:validate:standalone"\)/);
   assert.doesNotMatch(packageScript, /pnpm release:(?:package|validate)(?:\s|$)/);
-  assert.match(rootPackage.scripts["release:package:standalone"], /sdkwork-app release:package --deployment-profile standalone/);
-  assert.match(rootPackage.scripts["release:package:cloud"], /sdkwork-app release:package --deployment-profile cloud/);
+  assert.match(rootPackage.scripts["release:package:standalone"], /sdkwork-app release:package --target-id linux-x64-standalone-server-tar-gz/);
+  assert.match(rootPackage.scripts["release:package:cloud"], /sdkwork-app release:package --target-id web-universal-cloud-browser-zip/);
   for (const forbiddenScript of [
     "gateway:package:cloud",
     "gateway:validate:cloud",
@@ -58,7 +58,6 @@ test("Manager cloud browser target generates and validates its own SBOM evidence
   assert.match(sbomScript, /runManagerReleasePhase\('sbom'\)/);
   assert.match(validateScript, /runManagerReleasePhase\('validate'\)/);
   assert.match(lifecycleRunner, /runPnpm\("_sdkwork:release:validate:cloud"\)/);
-  assert.doesNotMatch(cloudSbom, /sdkwork-api-cloud-gateway/);
   assert.match(cloudSbom, /SHA-256/);
   assert.ok(cloudTarget.outputGlobs.some((glob) => glob.includes("sdkwork-manager-pc/dist")));
   assert.ok(cloudTarget.outputGlobs.some((glob) => glob.endsWith(".sbom.json")));

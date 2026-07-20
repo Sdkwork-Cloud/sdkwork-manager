@@ -84,7 +84,8 @@ test("Manager Vite uses the IAM development credential-entry bootstrap only outs
     "utf8",
   );
 
-  assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
+  assert.equal(appPackage.scripts.dev, "pnpm dev:standalone");
+  assert.match(appPackage.scripts["dev:standalone"], /sdkwork-app dev/);
   assert.match(devRunner, /mergeRepoDevBootstrapAccessTokenEnv/);
   assert.match(devRunner, /apps\/sdkwork-manager-pc\/sdkwork\.app\.config\.json/);
   assert.match(devRunner, /@sdkwork\/app-topology\/network-access/);

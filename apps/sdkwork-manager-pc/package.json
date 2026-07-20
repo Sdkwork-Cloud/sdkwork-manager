@@ -4,12 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "node ../../scripts/dev/manager-dev.mjs",
+    "dev": "pnpm dev:standalone",
     "install:bootstrap": "node ../../scripts/dev/manager-bootstrap.mjs",
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "pnpm --dir ../.. run test:vitest",
-    "lint": "pnpm run typecheck"
+    "lint": "pnpm run typecheck",
+    "dev:standalone": "pnpm exec sdkwork-app dev --root ../.. --deployment-profile standalone",
+    "dev:cloud": "pnpm exec sdkwork-app dev --root ../.. --deployment-profile cloud",
+    "stop": "pnpm exec sdkwork-app stop --root ../.."
   },
   "dependencies": {
     "@sdkwork/i18n-pc-react": "workspace:*",

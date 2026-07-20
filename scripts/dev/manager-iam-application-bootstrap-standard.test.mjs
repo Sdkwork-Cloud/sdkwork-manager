@@ -68,7 +68,8 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   assert.match(bootstrap, /ensure_tenant_application_from_app_root/);
   assert.match(bootstrap, /SDKWORK_MANAGER_APP_ROOT/);
   assert.doesNotMatch(bootstrap, /fetch\(|axios\.|INSERT\s+INTO/i);
-  assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
+  assert.equal(appPackage.scripts.dev, "pnpm dev:standalone");
+  assert.match(appPackage.scripts["dev:standalone"], /sdkwork-app dev/);
   assert.match(appPackage.scripts["install:bootstrap"], /manager-bootstrap\.mjs/);
   const rootPackage = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
   const topology = JSON.parse(readFileSync(
