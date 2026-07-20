@@ -3097,17 +3097,50 @@ dependencies = [
 ]
 
 [[package]]
+name = "sdkwork-api-drive-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-drive-config",
+ "sdkwork-drive-http",
+ "sdkwork-drive-security",
+ "sdkwork-drive-workspace-service",
+ "sdkwork-routes-drive-app-api",
+ "sdkwork-routes-drive-backend-api",
+ "sdkwork-routes-drive-open-api",
+ "sdkwork-routes-storage-backend-api",
+ "sqlx",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-api-iam-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-iam-database-host",
+ "sdkwork-iam-web-adapter",
+ "sdkwork-routes-iam-app-api",
+ "sdkwork-routes-iam-backend-api",
+ "sdkwork-routes-iam-open-api",
+ "sdkwork-web-bootstrap",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "sdkwork-api-manager-assembly"
 version = "0.1.0"
 dependencies = [
  "axum",
- "sdkwork-drive-gateway-assembly",
- "sdkwork-iam-gateway-assembly",
+ "sdkwork-api-drive-assembly",
+ "sdkwork-api-iam-assembly",
+ "sdkwork-api-membership-assembly",
+ "sdkwork-api-order-assembly",
+ "sdkwork-api-payment-assembly",
+ "sdkwork-api-promotion-assembly",
  "sdkwork-manager-service-host",
- "sdkwork-membership-gateway-assembly",
- "sdkwork-order-gateway-assembly",
- "sdkwork-payment-gateway-assembly",
- "sdkwork-promotion-gateway-assembly",
  "sdkwork-routes-manager-app-api",
  "sdkwork-routes-manager-backend-api",
  "tokio",
@@ -3128,6 +3161,57 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "sdkwork-api-membership-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-membership-service-host",
+ "sdkwork-routes-membership-app-api",
+ "sdkwork-routes-membership-backend-api",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-api-order-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-database-spi",
+ "sdkwork-database-sqlx",
+ "sdkwork-order-database-host",
+ "sdkwork-order-service-host",
+ "sdkwork-routes-order-app-api",
+ "sdkwork-routes-order-backend-api",
+ "sdkwork-web-bootstrap",
+ "sdkwork-web-core",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-api-payment-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-payment-service-host",
+ "sdkwork-routes-payment-app-api",
+ "sdkwork-routes-payment-backend-api",
+ "sdkwork-web-bootstrap",
+ "sdkwork-web-core",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-api-promotion-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-promotion-service-host",
+ "sdkwork-routes-promotion-app-api",
+ "sdkwork-routes-promotion-backend-api",
+ "tokio",
 ]
 
 [[package]]
@@ -3312,23 +3396,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-drive-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-drive-config",
- "sdkwork-drive-http",
- "sdkwork-drive-security",
- "sdkwork-drive-workspace-service",
- "sdkwork-routes-drive-app-api",
- "sdkwork-routes-drive-backend-api",
- "sdkwork-routes-drive-open-api",
- "sdkwork-routes-storage-backend-api",
- "sqlx",
- "tokio",
-]
-
-[[package]]
 name = "sdkwork-drive-http"
 version = "0.1.0"
 dependencies = [
@@ -3509,22 +3576,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-iam-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-iam-database-host",
- "sdkwork-iam-web-adapter",
- "sdkwork-routes-iam-app-api",
- "sdkwork-routes-iam-backend-api",
- "sdkwork-routes-iam-open-api",
- "sdkwork-web-bootstrap",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "sdkwork-iam-module-registry"
 version = "0.1.0"
 dependencies = [
@@ -3611,17 +3662,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-membership-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-membership-service-host",
- "sdkwork-routes-membership-app-api",
- "sdkwork-routes-membership-backend-api",
- "tokio",
-]
-
-[[package]]
 name = "sdkwork-membership-repository-sqlx"
 version = "0.1.0"
 dependencies = [
@@ -3662,22 +3702,6 @@ dependencies = [
  "sdkwork-database-spi",
  "sdkwork-database-sqlx",
  "sqlx",
-]
-
-[[package]]
-name = "sdkwork-order-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-database-spi",
- "sdkwork-database-sqlx",
- "sdkwork-order-database-host",
- "sdkwork-order-service-host",
- "sdkwork-routes-order-app-api",
- "sdkwork-routes-order-backend-api",
- "sdkwork-web-bootstrap",
- "sdkwork-web-core",
- "tokio",
 ]
 
 [[package]]
@@ -3793,19 +3817,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-payment-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-payment-service-host",
- "sdkwork-routes-payment-app-api",
- "sdkwork-routes-payment-backend-api",
- "sdkwork-web-bootstrap",
- "sdkwork-web-core",
- "tokio",
-]
-
-[[package]]
 name = "sdkwork-payment-providers"
 version = "0.1.0"
 dependencies = [
@@ -3895,17 +3906,6 @@ dependencies = [
  "sdkwork-database-lifecycle",
  "sdkwork-database-spi",
  "sdkwork-database-sqlx",
-]
-
-[[package]]
-name = "sdkwork-promotion-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-promotion-service-host",
- "sdkwork-routes-promotion-app-api",
- "sdkwork-routes-promotion-backend-api",
- "tokio",
 ]
 
 [[package]]

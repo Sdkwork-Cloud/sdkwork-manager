@@ -43,11 +43,11 @@ sdkwork-iam-context-service = { path = "../sdkwork-iam/crates/sdkwork-iam-contex
 sdkwork_api_iam_assembly = { package = "sdkwork-api-iam-assembly", path = "../sdkwork-iam/crates/sdkwork-api-iam-assembly" }
 sdkwork_iam_embedded_application_bootstrap = { package = "sdkwork-iam-embedded-application-bootstrap", path = "../sdkwork-iam/crates/sdkwork-iam-embedded-application-bootstrap" }
 sdkwork_iam_database_host = { package = "sdkwork-iam-database-host", path = "../sdkwork-iam/crates/sdkwork-iam-database-host" }
-sdkwork_drive_gateway_assembly = { package = "sdkwork-drive-gateway-assembly", path = "../sdkwork-drive/crates/sdkwork-drive-gateway-assembly" }
-sdkwork_order_gateway_assembly = { package = "sdkwork-order-gateway-assembly", path = "../sdkwork-order/crates/sdkwork-order-gateway-assembly" }
-sdkwork_promotion_gateway_assembly = { package = "sdkwork-promotion-gateway-assembly", path = "../sdkwork-promotion/crates/sdkwork-promotion-gateway-assembly" }
-sdkwork_payment_gateway_assembly = { package = "sdkwork-payment-gateway-assembly", path = "../sdkwork-payment/crates/sdkwork-payment-gateway-assembly" }
-sdkwork_membership_gateway_assembly = { package = "sdkwork-membership-gateway-assembly", path = "../sdkwork-membership/crates/sdkwork-membership-gateway-assembly" }
+sdkwork_api_drive_assembly = { package = "sdkwork-api-drive-assembly", path = "../sdkwork-drive/crates/sdkwork-api-drive-assembly" }
+sdkwork_api_order_assembly = { package = "sdkwork-api-order-assembly", path = "../sdkwork-order/crates/sdkwork-api-order-assembly" }
+sdkwork_api_promotion_assembly = { package = "sdkwork-api-promotion-assembly", path = "../sdkwork-promotion/crates/sdkwork-api-promotion-assembly" }
+sdkwork_api_payment_assembly = { package = "sdkwork-api-payment-assembly", path = "../sdkwork-payment/crates/sdkwork-api-payment-assembly" }
+sdkwork_api_membership_assembly = { package = "sdkwork-api-membership-assembly", path = "../sdkwork-membership/crates/sdkwork-api-membership-assembly" }
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config" }
 sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle" }
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi" }

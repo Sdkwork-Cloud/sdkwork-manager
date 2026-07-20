@@ -158,11 +158,11 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
   );
 
   for (const dependency of ["drive", "order", "promotion", "payment", "membership"]) {
-    assert.match(cargo, new RegExp(`sdkwork_${dependency}_gateway_assembly\\.workspace = true`));
+    assert.match(cargo, new RegExp(`sdkwork_api_${dependency}_assembly\\.workspace = true`));
     assert.match(
       assembly,
       new RegExp(
-        `sdkwork_${dependency}_gateway_assembly::assemble_backend_business_router_from_env`,
+        `sdkwork_api_${dependency}_assembly::assemble_backend_business_router_from_env`,
       ),
     );
   }
