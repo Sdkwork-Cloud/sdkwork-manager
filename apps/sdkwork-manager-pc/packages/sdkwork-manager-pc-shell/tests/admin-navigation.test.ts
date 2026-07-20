@@ -112,4 +112,32 @@ describe("manager admin capability navigation", () => {
     expect(html).not.toContain("Tenants");
     expect(html).not.toContain("Access control");
   });
+
+  it("marks only the exact OAuth child route as active", () => {
+    const oauthChildRoute: AdminModuleRoute = {
+      Component: () => null,
+      description: "Manage identity providers",
+      id: "iam.oauth.providers",
+      label: "Identity providers",
+      navigationGroups: [{ id: "oauth", label: "OAuth" }],
+      path: "/admin/iam/oauth/providers",
+      requiredPermissions: ["iam.oauth.read"],
+    };
+    const registry = createSdkworkCoreHostRegistry([{
+      ...contribution,
+      routes: [...contribution.routes, oauthChildRoute],
+    }]);
+    const accessScope = createAdminModuleAccessScope({ permissionScope: ["iam.oauth.read"] });
+    const html = renderToStaticMarkup(createElement(
+      MemoryRouter,
+      { initialEntries: [oauthChildRoute.path] },
+      createElement(AdminModuleNavigation, { accessScope, registry }),
+    ));
+    const container = document.createElement("div");
+    container.innerHTML = html;
+    const activeLinks = [...container.querySelectorAll<HTMLAnchorElement>(".manager-sidebar__link.is-active")];
+
+    expect(activeLinks).toHaveLength(1);
+    expect(activeLinks[0]?.getAttribute("href")).toBe(oauthChildRoute.path);
+  });
 });

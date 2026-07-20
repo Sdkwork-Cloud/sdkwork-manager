@@ -160,22 +160,30 @@ export function getManagerDriveAdminStorageSdkClient(): DriveAdminStorageSdkClie
 
 export function getManagerDriveSessionSnapshot(): DriveSessionSnapshot {
   const session = loadManagerIamSession();
+  const context = session?.context;
+  const sessionId = session?.sessionId ?? context?.sessionId;
   return {
     accessToken: session?.accessToken,
     authToken: session?.authToken,
     refreshToken: session?.refreshToken,
-    sessionId: session?.sessionId,
-    user: session?.context?.userId
-      ? { id: session.context.userId }
+    sessionId,
+    user: context?.userId
+      ? { id: context.userId }
       : undefined,
-    context: session?.context?.tenantId && session.context.userId
+    context: context?.tenantId && context.userId
       ? {
-          appId: session.context.appId,
-          organizationId: session.context.organizationId,
+          actorId: context.userId,
+          actorKind: "user",
+          appId: context.appId,
+          authLevel: context.authLevel,
+          dataScope: [...context.dataScope],
+          deploymentMode: context.deploymentMode,
+          environment: context.environment,
+          organizationId: context.organizationId,
           permissionScope: [...getManagerPermissionScope()],
-          sessionId: session.sessionId,
-          tenantId: session.context.tenantId,
-          userId: session.context.userId,
+          sessionId,
+          tenantId: context.tenantId,
+          userId: context.userId,
         }
       : undefined,
   };

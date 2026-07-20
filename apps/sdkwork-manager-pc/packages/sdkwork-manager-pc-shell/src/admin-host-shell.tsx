@@ -126,6 +126,7 @@ export function AdminModuleNavigation({ accessScope, registry }: Pick<AdminHostS
                 {section.routes.map((route) => (
                   <NavLink
                     className={({ isActive }) => `manager-sidebar__link${isActive ? " is-active" : ""}`}
+                    end
                     key={route.id}
                     title={route.description}
                     to={route.path}

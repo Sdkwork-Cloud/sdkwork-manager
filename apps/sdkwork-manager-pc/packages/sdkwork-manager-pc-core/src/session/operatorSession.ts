@@ -84,17 +84,26 @@ function normalizeToken(value: unknown): string | undefined {
 
 function normalizeExpiresAt(value: unknown): number | undefined {
   if (typeof value === "number") {
-    return Number.isFinite(value) ? value : undefined;
+    return normalizeNumericExpiresAt(value);
   }
   if (typeof value !== "string" || !value.trim()) {
     return undefined;
   }
   const numeric = Number(value);
   if (Number.isFinite(numeric)) {
-    return numeric;
+    return normalizeNumericExpiresAt(numeric);
   }
   const parsed = Date.parse(value);
   return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function normalizeNumericExpiresAt(value: number): number | undefined {
+  if (!Number.isFinite(value)) {
+    return undefined;
+  }
+
+  // Unix timestamps below 10^10 are seconds through 2286; TokenManager uses milliseconds.
+  return Math.abs(value) < 10_000_000_000 ? value * 1000 : value;
 }
 
 function isExpired(value: unknown): boolean {

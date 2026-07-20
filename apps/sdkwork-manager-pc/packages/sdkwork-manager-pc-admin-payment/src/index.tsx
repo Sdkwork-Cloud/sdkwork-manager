@@ -383,7 +383,7 @@ export function createSdkworkManagerPaymentAdminContribution(
     },
   ];
 
-  if (environment !== "production") {
+  if (!import.meta.env.PROD && environment !== "production") {
     const developerToolsGroup = [{ id: "developer-tools", label: messages.navigationGroups.developerTools }];
     routes.push(
       {

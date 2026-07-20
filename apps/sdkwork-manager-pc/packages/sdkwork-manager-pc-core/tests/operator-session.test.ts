@@ -69,4 +69,41 @@ describe("manager operator TokenManager lifecycle", () => {
       refreshToken: replacementSession.refreshToken,
     });
   });
+
+  it.each([
+    ["epoch milliseconds", Date.now() + 60_000],
+    ["epoch seconds", Math.floor(Date.now() / 1000) + 60],
+    ["numeric epoch seconds", String(Math.floor(Date.now() / 1000) + 60)],
+    ["ISO timestamp", new Date(Date.now() + 60_000).toISOString()],
+  ])("keeps both SDK tokens for an unexpired %s value", (_label, expiresAt) => {
+    const tokenManager = getOperatorTokenManager();
+    const activeSession: ManagerIamSession = {
+      ...createSession("active"),
+      expiresAt,
+    };
+
+    commitManagerIamSession(activeSession);
+
+    expect(tokenManager.getTokens()).toMatchObject({
+      accessToken: activeSession.accessToken,
+      authToken: activeSession.authToken,
+      refreshToken: activeSession.refreshToken,
+    });
+    expect(tokenManager.getTokens().expiresAt).toBeGreaterThan(Date.now());
+  });
+
+  it.each([
+    ["epoch milliseconds", Date.now() - 60_000],
+    ["epoch seconds", Math.floor(Date.now() / 1000) - 60],
+    ["ISO timestamp", new Date(Date.now() - 60_000).toISOString()],
+  ])("clears SDK tokens for an expired %s value", (_label, expiresAt) => {
+    const tokenManager = getOperatorTokenManager();
+
+    commitManagerIamSession({
+      ...createSession("expired"),
+      expiresAt,
+    });
+
+    expect(tokenManager.getTokens()).toEqual({});
+  });
 });
