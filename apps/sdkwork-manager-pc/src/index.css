@@ -13,6 +13,7 @@
 @source "../../../../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-audit/src";
 @source "../../../../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-operations/src";
 @source "../../../../sdkwork-drive/apps/sdkwork-drive-pc/packages/sdkwork-drive-pc-admin-storage-providers/src";
+@source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-core/src";
 @source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-channel/src";
 @source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-provider/src";
 @source "../../../../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-monitor/src";
@@ -377,6 +378,13 @@ a {
 .manager-main-content {
   min-width: 0;
   padding: 20px 24px 32px;
+}
+
+.manager-main-content [data-slot="management-workbench-header"],
+.manager-main-content > [data-slot="page-header"],
+.manager-main-content > [data-slot="settings-section"] > [data-slot="settings-section-header"],
+.manager-main-content > div > [data-slot="settings-section"]:first-child > [data-slot="settings-section-header"] {
+  display: none;
 }
 
 .manager-main-content--edge-to-edge {
@@ -839,6 +847,8 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 .manager-operations-page {
   display: grid;
+  align-content: start;
+  min-width: 0;
   gap: 14px;
   padding-top: 0;
 }
@@ -854,12 +864,23 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: end;
+  justify-content: flex-start;
   gap: 10px;
+  min-height: 38px;
 }
 
-.manager-operations-filter-row label,
-.manager-operation-form label {
+.manager-operations-toolbar {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.manager-operations-filter-row label {
   display: grid;
+  min-width: 190px;
   gap: 6px;
   color: var(--sdk-color-text-secondary);
   font-size: 12px;
@@ -867,7 +888,7 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 }
 
 .manager-operations-filter-row input,
-.manager-operation-form input,
+.manager-operations-filter-row select,
 .manager-operations-actions select {
   min-height: 36px;
   padding: 0 10px;
@@ -877,8 +898,11 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   border-radius: 6px;
 }
 
-.manager-operations-filter-row > button,
-.manager-operation-form button {
+.manager-operations-filter-row > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-height: 36px;
   padding: 0 12px;
   color: var(--sdk-color-text-secondary);
@@ -889,15 +913,152 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   cursor: pointer;
 }
 
-.manager-operation-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  align-items: end;
-  gap: 12px;
-  padding: 16px;
-  background: var(--sdk-color-surface-panel);
+.manager-operations-filter-row > button:last-child {
+  margin-left: auto;
+  color: #ffffff;
+  background: var(--sdk-color-brand-primary);
+  border-color: var(--sdk-color-brand-primary);
+}
+
+.manager-operations-filter-row > button:not(:disabled):hover,
+.manager-operations-table button:not(:disabled):hover,
+.manager-operations-pagination button:not(:disabled):hover {
+  color: var(--sdk-color-brand-primary);
+  background: var(--sdk-color-brand-primary-soft);
+  border-color: var(--sdk-color-border-focus);
+}
+
+.manager-operations-filter-row > button:last-child:not(:disabled):hover {
+  color: #ffffff;
+  background: color-mix(in srgb, var(--sdk-color-brand-primary) 88%, #000000);
+}
+
+.manager-operations-filter-row input:focus-visible,
+.manager-operations-filter-row select:focus-visible,
+.manager-operations-search input:focus-visible,
+.manager-operations-table button:focus-visible,
+.manager-operations-pagination button:focus-visible {
+  border-color: var(--sdk-color-border-focus);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.manager-feedback,
+.manager-operations-page > [role="alert"],
+.manager-operations-page > [role="status"] {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  background: var(--sdk-color-surface-panel-muted);
   border: 1px solid var(--sdk-color-border-default);
-  border-radius: 8px;
+  border-left: 3px solid var(--sdk-color-brand-primary);
+  border-radius: 6px;
+}
+
+.manager-feedback--success,
+.manager-operations-page > [role="status"] {
+  color: var(--sdk-color-state-success);
+  background: color-mix(in srgb, var(--sdk-color-state-success) 9%, var(--sdk-color-surface-panel));
+  border-color: color-mix(in srgb, var(--sdk-color-state-success) 28%, var(--sdk-color-border-default));
+  border-left-color: var(--sdk-color-state-success);
+}
+
+.manager-feedback--error,
+.manager-operations-page > [role="alert"] {
+  color: var(--sdk-color-state-danger);
+  background: color-mix(in srgb, var(--sdk-color-state-danger) 8%, var(--sdk-color-surface-panel));
+  border-color: color-mix(in srgb, var(--sdk-color-state-danger) 26%, var(--sdk-color-border-default));
+  border-left-color: var(--sdk-color-state-danger);
+}
+
+.manager-drawer-form {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.manager-drawer-fields {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.manager-drawer-field,
+.manager-drawer-fields > label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-drawer-field input,
+.manager-drawer-field select,
+.manager-drawer-fields input,
+.manager-drawer-fields select,
+.manager-drawer-fields textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 11px;
+  color: var(--sdk-color-text-primary);
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-strong);
+  border-radius: 6px;
+}
+
+.manager-drawer-field [data-slot="combobox"] {
+  width: 100%;
+}
+
+.manager-drawer-field [data-slot="combobox-trigger"] {
+  width: 100%;
+  min-height: 38px;
+}
+
+.manager-drawer-fields textarea {
+  min-height: 112px;
+  padding-block: 9px;
+  resize: vertical;
+}
+
+.manager-drawer-field input:focus-visible,
+.manager-drawer-field select:focus-visible,
+.manager-drawer-fields input:focus-visible,
+.manager-drawer-fields select:focus-visible,
+.manager-drawer-fields textarea:focus-visible {
+  border-color: var(--sdk-color-border-focus);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 24%, transparent);
+  outline-offset: 1px;
+}
+
+[data-slot="drawer-footer"] > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 13px;
+  color: var(--sdk-color-text-secondary);
+  font-weight: 650;
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-strong);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+[data-slot="drawer-footer"] > button:last-child {
+  color: #ffffff;
+  background: var(--sdk-color-brand-primary);
+  border-color: var(--sdk-color-brand-primary);
+}
+
+[data-slot="drawer-footer"] > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .manager-detail-grid {
@@ -916,6 +1077,25 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 .manager-detail-grid h2,
 .manager-detail-grid dl {
   margin: 0;
+}
+
+.manager-detail-section-title {
+  margin: 4px 0 0;
+  color: var(--sdk-color-text-primary);
+  font-size: 14px;
+  font-weight: 720;
+}
+
+.manager-operations-toolbar > a {
+  color: var(--sdk-color-brand-primary);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.manager-operations-toolbar > a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .manager-detail-grid dl {
@@ -948,6 +1128,11 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   font-weight: 650;
 }
 
+.manager-operations-toolbar .manager-operations-search {
+  width: min(100%, 380px);
+  max-width: none;
+}
+
 .manager-operations-search input {
   min-height: 36px;
   padding: 0 10px;
@@ -958,36 +1143,89 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 }
 
 .manager-operations-table-wrap {
+  position: relative;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
   background: var(--sdk-color-surface-panel);
   border: 1px solid var(--sdk-color-border-default);
   border-radius: 8px;
 }
 
+.manager-operations-table-wrap:focus-visible,
+.manager-iam-table-wrap:focus-visible {
+  border-color: var(--sdk-color-border-focus);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 22%, transparent);
+  outline-offset: 2px;
+}
+
 .manager-operations-table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 .manager-operations-table th,
 .manager-operations-table td {
   padding: 11px 12px;
+  vertical-align: middle;
   text-align: left;
   border-bottom: 1px solid var(--sdk-color-border-subtle);
 }
 
 .manager-operations-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   color: var(--sdk-color-text-secondary);
   font-size: 11px;
   font-weight: 750;
   background: var(--sdk-color-surface-panel-muted);
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.manager-operations-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.manager-operations-table tbody tr:not(:only-child):hover td,
+.manager-operations-table tbody tr:focus-within td {
+  background: color-mix(in srgb, var(--sdk-color-brand-primary-soft) 52%, transparent);
+}
+
+.manager-operations-table td {
+  overflow-wrap: anywhere;
+  color: var(--sdk-color-text-secondary);
+}
+
+.manager-operations-table td:first-child {
+  color: var(--sdk-color-text-primary);
 }
 
 .manager-operations-table td strong,
 .manager-operations-table td small {
   display: block;
+}
+
+.manager-operations-table td[colspan] {
+  height: 180px;
+  color: var(--sdk-color-text-muted);
+  text-align: center;
+}
+
+.manager-operations-table a {
+  color: var(--sdk-color-brand-primary);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.manager-operations-table a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .manager-operations-table td small {
@@ -997,6 +1235,10 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 .manager-operations-table button,
 .manager-operations-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   min-height: 30px;
   padding: 0 9px;
   color: var(--sdk-color-text-secondary);
@@ -1006,12 +1248,78 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   border: 1px solid var(--sdk-color-border-strong);
   border-radius: 5px;
   cursor: pointer;
+  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
 }
 
 .manager-operations-actions {
   display: flex;
+  width: max-content;
+  min-width: 100%;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
   gap: 5px;
+}
+
+.manager-action-danger {
+  color: var(--sdk-color-state-danger) !important;
+  border-color: color-mix(in srgb, var(--sdk-color-state-danger) 30%, var(--sdk-color-border-default)) !important;
+}
+
+.manager-action-danger:not(:disabled):hover {
+  color: var(--sdk-color-state-danger) !important;
+  background: color-mix(in srgb, var(--sdk-color-state-danger) 10%, transparent) !important;
+  border-color: var(--sdk-color-state-danger) !important;
+}
+
+.manager-status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 8px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--sdk-color-surface-panel-muted);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.manager-status-badge[data-status*="active" i],
+.manager-status-badge[data-status*="success" i],
+.manager-status-badge[data-status*="complete" i],
+.manager-status-badge[data-status*="paid" i],
+.manager-status-badge[data-status*="approve" i] {
+  color: var(--sdk-color-state-success);
+  background: color-mix(in srgb, var(--sdk-color-state-success) 11%, transparent);
+  border-color: color-mix(in srgb, var(--sdk-color-state-success) 28%, transparent);
+}
+
+.manager-status-badge[data-status*="pending" i],
+.manager-status-badge[data-status*="processing" i],
+.manager-status-badge[data-status*="draft" i],
+.manager-status-badge[data-status*="pause" i] {
+  color: var(--sdk-color-state-warning);
+  background: color-mix(in srgb, var(--sdk-color-state-warning) 11%, transparent);
+  border-color: color-mix(in srgb, var(--sdk-color-state-warning) 28%, transparent);
+}
+
+.manager-status-badge[data-status*="failed" i],
+.manager-status-badge[data-status*="reject" i],
+.manager-status-badge[data-status*="cancel" i],
+.manager-status-badge[data-status*="delete" i],
+.manager-status-badge[data-status*="error" i] {
+  color: var(--sdk-color-state-danger);
+  background: color-mix(in srgb, var(--sdk-color-state-danger) 9%, transparent);
+  border-color: color-mix(in srgb, var(--sdk-color-state-danger) 26%, transparent);
+}
+
+.manager-numeric-cell {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .manager-operations-pagination {
@@ -1019,13 +1327,25 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  min-height: 46px;
+  margin-top: -14px;
+  padding: 8px 10px;
   color: var(--sdk-color-text-secondary);
   font-size: 12px;
+  background: var(--sdk-color-surface-panel-muted);
+  border: 1px solid var(--sdk-color-border-default);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
 }
 
 .manager-operations-pagination button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.manager-operations-pagination button {
+  width: 32px;
+  padding: 0;
 }
 
 .manager-session-check {
@@ -1116,6 +1436,14 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
     padding: 18px;
   }
 
+  .manager-operations-table {
+    min-width: 680px;
+  }
+
+  .manager-operations-filter-row > button:last-child {
+    margin-left: 0;
+  }
+
   .manager-main-content--edge-to-edge {
     height: calc(100vh - 94px);
     padding: 0;
@@ -1124,6 +1452,53 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 }
 
 @media (max-width: 520px) {
+  .sdkwork-manager-auth-host .sdkwork-auth-surface {
+    padding: 12px !important;
+  }
+
+  .sdkwork-manager-auth-host .sdkwork-manager-auth-card-shell {
+    display: block !important;
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .sdkwork-manager-auth-host .manager-auth-aside-panel {
+    display: none !important;
+  }
+
+  .sdkwork-manager-auth-host .manager-auth-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 28px 20px !important;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .sdkwork-manager-auth-host .manager-auth-content > *,
+  .sdkwork-manager-auth-host .manager-auth-content form,
+  .sdkwork-manager-auth-host .manager-auth-content input,
+  .sdkwork-manager-auth-host .manager-auth-content button {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .sdkwork-manager-auth-host .manager-auth-content form {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .sdkwork-manager-auth-host .manager-auth-body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+
   .manager-brand__badge {
     display: none;
   }
@@ -1156,6 +1531,26 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
   .manager-module-card dl {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .manager-main-content {
+    padding: 14px;
+  }
+
+  .manager-operations-filter-row,
+  .manager-operations-toolbar {
+    align-items: stretch;
+  }
+
+  .manager-operations-filter-row label,
+  .manager-operations-filter-row > button,
+  .manager-operations-toolbar .manager-operations-search {
+    width: 100%;
+    max-width: none;
+  }
+
+  .manager-operations-pagination {
+    justify-content: space-between;
   }
 }
 
@@ -1213,6 +1608,13 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   gap: 16px;
   padding-top: 0;
   container: manager-iam / inline-size;
+}
+
+.manager-iam-workspace__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .manager-iam-workspace__header {
@@ -1285,13 +1687,17 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 .manager-iam-editor {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  align-items: end;
+  grid-template-columns: 1fr;
+  align-content: start;
+  align-items: start;
   gap: 12px;
-  padding: 16px;
-  background: var(--sdk-color-surface-panel);
-  border: 1px solid var(--sdk-color-border-default);
-  border-radius: 8px;
+}
+
+.manager-iam-drawer-form {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
 }
 
 .manager-iam-editor__heading {
@@ -1390,6 +1796,434 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   min-width: 0;
   gap: 22px;
   container: manager-oauth / inline-size;
+}
+
+.manager-oauth-overview__toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.manager-oauth-accounts {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+  container: manager-oauth-accounts / inline-size;
+}
+
+.manager-oauth-accounts__notice {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  color: var(--sdk-color-status-danger-text, #9f2d35);
+  background: color-mix(in srgb, var(--sdk-color-status-danger, #c9414b) 9%, var(--sdk-color-surface-panel));
+  border: 1px solid color-mix(in srgb, var(--sdk-color-status-danger, #c9414b) 28%, var(--sdk-color-border-default));
+  border-radius: 6px;
+}
+
+.manager-oauth-accounts__notice > span {
+  min-width: 0;
+  flex: 1;
+}
+
+.manager-oauth-accounts__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--sdk-color-surface-panel);
+  border-block: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-accounts__summary > div {
+  display: grid;
+  gap: 3px;
+  padding: 14px 18px;
+  border-inline-end: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-accounts__summary > div:last-child {
+  border-inline-end: 0;
+}
+
+.manager-oauth-accounts__summary strong {
+  color: var(--sdk-color-text-primary);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.manager-oauth-accounts__summary span {
+  color: var(--sdk-color-text-muted);
+  font-size: 12px;
+}
+
+.manager-oauth-accounts__summary [data-tone="warning"] strong {
+  color: #a66a08;
+}
+
+.manager-oauth-accounts__toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(170px, 220px) auto;
+  gap: 10px;
+}
+
+.manager-oauth-accounts__toolbar > select,
+.manager-oauth-accounts__search {
+  min-height: 38px;
+  color: var(--sdk-color-text-primary);
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-strong);
+  border-radius: 6px;
+}
+
+.manager-oauth-accounts__toolbar > select {
+  padding: 0 10px;
+}
+
+.manager-oauth-accounts__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  color: var(--sdk-color-text-muted);
+}
+
+.manager-oauth-accounts__search input {
+  min-width: 0;
+  flex: 1;
+  color: var(--sdk-color-text-primary);
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.manager-oauth-accounts__table-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 6px;
+}
+
+.manager-oauth-accounts__table-wrap:focus-visible {
+  border-color: var(--sdk-color-brand-primary);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 18%, transparent);
+  outline-offset: 2px;
+}
+
+.manager-oauth-accounts__table-meta {
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--sdk-color-text-muted);
+  font-size: 12px;
+}
+
+.manager-oauth-accounts__table-meta strong {
+  color: var(--sdk-color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.manager-oauth-accounts__table {
+  width: 100%;
+  min-width: 930px;
+  border-collapse: collapse;
+  background: var(--sdk-color-surface-panel);
+}
+
+.manager-oauth-accounts__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 9px 12px;
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: start;
+  background: var(--sdk-color-surface-panel-muted);
+  border-bottom: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-accounts__table td {
+  height: 58px;
+  padding: 8px 12px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 13px;
+  border-bottom: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-accounts__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.manager-oauth-accounts__table tbody tr:hover {
+  background: color-mix(in srgb, var(--sdk-color-brand-primary) 4%, var(--sdk-color-surface-panel));
+}
+
+.manager-oauth-accounts__table td > strong,
+.manager-oauth-accounts__table td > span:not(.manager-oauth-accounts__provider, .manager-oauth-accounts__credential, .manager-oauth-accounts__environment) {
+  display: block;
+  color: var(--sdk-color-text-primary);
+}
+
+.manager-oauth-accounts__table td > small,
+.manager-oauth-applications li small {
+  display: block;
+  max-width: 240px;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manager-oauth-accounts__provider,
+.manager-oauth-accounts__credential,
+.manager-oauth-accounts__environment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 25px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 650;
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 999px;
+}
+
+.manager-oauth-accounts__provider[data-provider="wechat"] {
+  color: #167444;
+  background: color-mix(in srgb, #20a162 9%, var(--sdk-color-surface-panel));
+  border-color: color-mix(in srgb, #20a162 25%, var(--sdk-color-border-default));
+}
+
+.manager-oauth-accounts__provider[data-provider="blue"] {
+  color: #215da8;
+  background: color-mix(in srgb, #2f78c4 9%, var(--sdk-color-surface-panel));
+  border-color: color-mix(in srgb, #2f78c4 25%, var(--sdk-color-border-default));
+}
+
+.manager-oauth-accounts__provider[data-provider="neutral"] {
+  color: var(--sdk-color-text-secondary);
+  background: var(--sdk-color-surface-panel-muted);
+}
+
+.manager-oauth-accounts__provider[data-provider="brand"] {
+  color: var(--sdk-color-brand-primary);
+  background: color-mix(in srgb, var(--sdk-color-brand-primary) 8%, var(--sdk-color-surface-panel));
+}
+
+.manager-oauth-accounts__credential[data-ready="true"] {
+  color: #167444;
+  border-color: transparent;
+}
+
+.manager-oauth-accounts__credential[data-ready="false"] {
+  color: #a66a08;
+  border-color: transparent;
+}
+
+.manager-oauth-accounts__environment {
+  color: var(--sdk-color-text-secondary);
+  background: var(--sdk-color-surface-panel-muted);
+}
+
+.manager-oauth-accounts__switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.manager-oauth-accounts__switch span {
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+}
+
+.manager-oauth-accounts__empty,
+.manager-oauth-applications__empty {
+  display: grid;
+  min-height: 140px;
+  place-items: center;
+  padding: 24px;
+  color: var(--sdk-color-text-muted);
+  font-size: 13px;
+  text-align: center;
+  border-block: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-applications {
+  display: grid;
+  border-top: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-applications__group {
+  border-bottom: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-applications__group > header {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  background: var(--sdk-color-surface-panel-muted);
+}
+
+.manager-oauth-applications__group h2,
+.manager-oauth-applications__group p {
+  margin: 0;
+}
+
+.manager-oauth-applications__group h2 {
+  color: var(--sdk-color-text-primary);
+  font-size: 14px;
+}
+
+.manager-oauth-applications__group p,
+.manager-oauth-applications__group > header > span {
+  margin-top: 3px;
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+}
+
+.manager-oauth-applications__group ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manager-oauth-applications__group li {
+  display: grid;
+  grid-template-columns: minmax(170px, 230px) minmax(180px, 1fr) minmax(110px, auto) auto auto;
+  min-height: 58px;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--sdk-color-border-default);
+}
+
+.manager-oauth-applications__group li > div strong {
+  color: var(--sdk-color-text-primary);
+  font-size: 13px;
+}
+
+.manager-oauth-account-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.manager-oauth-account-form label {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 7px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.manager-oauth-account-form input,
+.manager-oauth-account-form select {
+  width: 100%;
+  min-height: 39px;
+  padding: 0 10px;
+  color: var(--sdk-color-text-primary);
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-strong);
+  border-radius: 6px;
+}
+
+.manager-oauth-account-form input:focus,
+.manager-oauth-account-form select:focus {
+  border-color: var(--sdk-color-brand-primary);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 18%, transparent);
+  outline-offset: 1px;
+}
+
+.manager-oauth-account-form small {
+  color: var(--sdk-color-text-muted);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.manager-oauth-account-form__error {
+  display: flex;
+  min-height: 42px;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 12px;
+  color: var(--sdk-color-status-danger-text, #9f2d35);
+  background: color-mix(in srgb, var(--sdk-color-status-danger, #c9414b) 9%, var(--sdk-color-surface-panel));
+  border: 1px solid color-mix(in srgb, var(--sdk-color-status-danger, #c9414b) 28%, var(--sdk-color-border-default));
+  border-radius: 6px;
+}
+
+.manager-oauth-account-form__error svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.manager-oauth-account-form__wide {
+  grid-column: 1 / -1;
+}
+
+.manager-oauth-account-form__toggle {
+  display: flex !important;
+  min-height: 42px;
+  grid-template-columns: auto 1fr;
+  align-items: center !important;
+  align-content: center !important;
+  padding-block: 5px;
+}
+
+.manager-oauth-account-form__footer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@container manager-oauth-accounts (max-width: 760px) {
+  .manager-oauth-accounts__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .manager-oauth-accounts__summary > div:nth-child(2) {
+    border-inline-end: 0;
+  }
+
+  .manager-oauth-accounts__summary > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--sdk-color-border-default);
+  }
+
+  .manager-oauth-accounts__toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-oauth-applications__group li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .manager-oauth-applications__group li > div,
+  .manager-oauth-applications__group li > .manager-oauth-accounts__credential {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .manager-oauth-account-form {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-oauth-account-form__wide {
+    grid-column: auto;
+  }
 }
 
 .manager-oauth-overview__header {
@@ -1647,5 +2481,410 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
   .manager-oauth-overview__readiness b {
     grid-column: 2;
+  }
+}
+
+/* Payment administration is embedded from sdkwork-payment. Keep its dense
+   operational surfaces consistent with the Manager shell without leaking
+   host-specific presentation into other capability workspaces. */
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  container-name: manager-payment;
+  container-type: inline-size;
+  color: var(--sdk-color-text-primary);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) > [role="alert"] {
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="filter-bar"] {
+  border-color: var(--sdk-color-border-default);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="filter-bar-header"] {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--sdk-color-border-subtle);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="filter-bar-title"] {
+  font-size: 13px;
+  font-weight: 720;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="filter-bar-description"] {
+  max-width: 760px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) :is(input, textarea, select):focus-visible {
+  border-color: var(--sdk-color-border-focus);
+  outline: 2px solid color-mix(in srgb, var(--sdk-color-brand-primary) 20%, transparent);
+  outline-offset: 1px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="payment-records-overview"] {
+  overflow: hidden;
+  gap: 0;
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 8px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="payment-records-overview"] > * {
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="payment-records-overview"] > * + * {
+  border-left: 1px solid var(--sdk-color-border-subtle);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table"] {
+  gap: 12px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-header"] {
+  align-items: end;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-description"] {
+  margin-top: 0;
+  color: var(--sdk-color-text-muted);
+  font-size: 12px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+  background: var(--sdk-color-surface-panel);
+  border-color: var(--sdk-color-border-default);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] table {
+  min-width: 760px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] th {
+  height: 38px;
+  color: var(--sdk-color-text-secondary);
+  font-size: 11px;
+  font-weight: 720;
+  background: var(--sdk-color-surface-panel-muted);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] tbody tr {
+  transition: background-color 120ms ease;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] tbody tr:hover,
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-surface"] tbody tr:focus-within {
+  background: color-mix(in srgb, var(--sdk-color-brand-primary-soft) 58%, transparent);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) [data-slot="data-table-footer"] {
+  min-height: 48px;
+  padding: 8px 12px;
+  background: var(--sdk-color-surface-panel-muted);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  background: var(--sdk-color-surface-panel);
+  border-color: var(--sdk-color-border-default);
+  border-radius: 8px;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li {
+  min-width: 0;
+  min-height: 64px;
+  transition: background-color 120ms ease;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li:hover,
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li:focus-within {
+  background: color-mix(in srgb, var(--sdk-color-brand-primary-soft) 42%, transparent);
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li :is(strong, code),
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li dd {
+  overflow-wrap: anywhere;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li dl {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) ul:not([role]) > li dt {
+  color: var(--sdk-color-text-muted);
+  font-weight: 600;
+}
+
+:where(
+  [data-slot="payment-monitor-admin-workspace"],
+  [data-slot="payment-provider-admin-workspace"],
+  [data-slot="payment-channel-admin-workspace"],
+  [data-slot="payment-devconfig-admin-workspace"]
+) :is(button, a):focus-visible {
+  outline: 2px solid var(--sdk-color-border-focus);
+  outline-offset: 2px;
+}
+
+@container manager-payment (max-width: 760px) {
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] > * + * {
+    border-left: 0;
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] > *:nth-child(even) {
+    border-left: 1px solid var(--sdk-color-border-subtle);
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] > *:nth-child(n + 3) {
+    border-top: 1px solid var(--sdk-color-border-subtle);
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="filter-bar-actions"] {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+}
+
+@container manager-payment (max-width: 480px) {
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] > *:nth-child(n) {
+    border-top: 1px solid var(--sdk-color-border-subtle);
+    border-left: 0;
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="payment-records-overview"] > *:first-child {
+    border-top: 0;
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="filter-bar"] {
+    padding: 12px;
+  }
+
+  :where(
+    [data-slot="payment-monitor-admin-workspace"],
+    [data-slot="payment-provider-admin-workspace"],
+    [data-slot="payment-channel-admin-workspace"],
+    [data-slot="payment-devconfig-admin-workspace"]
+  ) [data-slot="filter-bar-actions"] > * {
+    flex: 1 1 auto;
   }
 }

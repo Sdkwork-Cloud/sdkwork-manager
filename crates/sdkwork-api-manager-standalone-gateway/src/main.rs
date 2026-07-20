@@ -1,6 +1,6 @@
 mod iam_application_bootstrap;
 
-use sdkwork_manager_gateway_assembly::assemble_application_router;
+use sdkwork_api_manager_assembly::assemble_api_router;
 use sdkwork_manager_service_host::ManagerServiceHost;
 use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 use std::sync::Arc;
@@ -23,7 +23,7 @@ async fn main() {
     }
 
     let host = Arc::new(ManagerServiceHost::new().await);
-    let assembly = assemble_application_router(host)
+    let assembly = assemble_api_router(host)
         .await
         .expect("assemble Manager standalone dependency routes");
     let app = service_router(

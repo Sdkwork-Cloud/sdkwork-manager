@@ -3,7 +3,6 @@ import type {
   AdminModuleContribution,
   AdminModuleRoute,
 } from "@sdkwork/manager-pc-core";
-import type { SdkworkIamOauthAdminView } from "@sdkwork/iam-pc-admin-oauth";
 import type { SdkworkIamService } from "@sdkwork/iam-service";
 import { createSdkworkIamPermissionController } from "@sdkwork/iam-pc-admin-permission";
 
@@ -12,11 +11,13 @@ import {
   useManagerIamAdminMessages,
 } from "./i18n";
 import { IamCatalogWorkspace } from "./authorization/IamCatalogWorkspace";
-import { IamOauthOverview } from "./oauth/IamOauthOverview";
+import { IamOauthAccountWorkspace } from "./oauth/IamOauthAccountWorkspace";
+import { createIamOauthAccountController } from "./services/oauthAccountController";
 
 type IamRouteDependencies = {
   getPermissionScope: () => readonly string[];
   getService: () => SdkworkIamService;
+  getTenantId: () => string;
 };
 
 type IamContributionDependencies = IamRouteDependencies & {
@@ -80,33 +81,24 @@ const LazyIamPermissionRoute = lazy(async () => {
   };
 });
 
-type IamOauthRouteDependencies = IamRouteDependencies & {
-  description: string;
-  title: string;
-  view: SdkworkIamOauthAdminView;
-};
-
-const LazyIamOauthOverviewRoute = lazy(async () => {
-  const { createSdkworkIamOauthAdminController } = await import("@sdkwork/iam-pc-admin-oauth");
+const LazyIamOauthAccountRoute = lazy(async () => {
   return {
-    default: function IamOauthRoute({ getService }: IamRouteDependencies) {
+    default: function IamOauthRoute({
+      getPermissionScope,
+      getService,
+      getTenantId,
+      view,
+    }: IamRouteDependencies & { view: "accounts" | "applications" }) {
       const { module } = useManagerIamAdminMessages();
-      const controller = useMemo(() => createSdkworkIamOauthAdminController(getService()), [getService]);
-      return <IamOauthOverview controller={controller} messages={module.oauthOverview} />;
-    },
-  };
-});
-
-const LazyIamOauthRoute = lazy(async () => {
-  const { createSdkworkIamOauthAdminController, SdkworkIamOauthAdminSettings } = await import("@sdkwork/iam-pc-admin-oauth");
-  return {
-    default: function IamOauthRoute({ description, getService, title, view }: IamOauthRouteDependencies) {
-      const controller = useMemo(() => createSdkworkIamOauthAdminController(getService()), [getService]);
+      const controller = useMemo(
+        () => createIamOauthAccountController({ service: getService(), tenantId: getTenantId() }),
+        [getService, getTenantId],
+      );
       return (
-        <SdkworkIamOauthAdminSettings
+        <IamOauthAccountWorkspace
+          canManage={getPermissionScope().includes("iam.oauth.manage")}
           controller={controller}
-          description={description}
-          title={title}
+          messages={module.oauthAccounts}
           view={view}
         />
       );
@@ -161,71 +153,23 @@ export function createSdkworkManagerIamAdminContribution(
   const oauthNavigationGroups = [{ id: "oauth", label: messages.navigationGroups.oauth }] as const;
   const oauthRoutes: AdminModuleRoute[] = [
     {
-      Component: createLazyRoute(LazyIamOauthOverviewRoute, dependencies),
-      description: messages.routes.oauth.description,
-      id: "iam.oauth.overview",
-      label: messages.routes.oauth.label,
+      Component: createLazyRoute(LazyIamOauthAccountRoute, { ...dependencies, view: "accounts" }),
+      description: messages.oauthAccounts.form.createDescription,
+      id: "iam.oauth.accounts",
+      label: messages.oauthAccounts.summary.accounts,
       navigationGroups: oauthNavigationGroups,
       path: "/admin/iam/oauth",
       requiredPermissions: ["iam.oauth.read"],
     },
-    ...([
-      {
-        id: "iam.oauth.providers",
-        messages: messages.routes.oauthProviders,
-        path: "/admin/iam/oauth/providers",
-        view: "providers",
-      },
-      {
-        id: "iam.oauth.applications",
-        messages: messages.routes.oauthApplications,
-        path: "/admin/iam/oauth/applications",
-        view: "applications",
-      },
-      {
-        id: "iam.oauth.login-configuration",
-        messages: messages.routes.oauthLoginConfiguration,
-        path: "/admin/iam/oauth/login-configuration",
-        view: "login-configuration",
-      },
-      {
-        id: "iam.oauth.governance",
-        messages: messages.routes.oauthGovernance,
-        path: "/admin/iam/oauth/governance",
-        view: "governance",
-      },
-      {
-        id: "iam.oauth.authorizations",
-        messages: messages.routes.oauthAuthorizations,
-        path: "/admin/iam/oauth/authorizations",
-        view: "authorizations",
-      },
-      {
-        id: "iam.oauth.resources",
-        messages: messages.routes.oauthResources,
-        path: "/admin/iam/oauth/resources",
-        view: "resources",
-      },
-      {
-        id: "iam.oauth.activity",
-        messages: messages.routes.oauthActivity,
-        path: "/admin/iam/oauth/activity",
-        view: "activity",
-      },
-    ] as const).map(({ id, messages: routeMessages, path, view }) => ({
-      Component: createLazyRoute(LazyIamOauthRoute, {
-        ...dependencies,
-        description: routeMessages.description,
-        title: routeMessages.label,
-        view,
-      }),
-      description: routeMessages.description,
-      id,
-      label: routeMessages.label,
+    {
+      Component: createLazyRoute(LazyIamOauthAccountRoute, { ...dependencies, view: "applications" }),
+      description: messages.oauthAccounts.applicationAccess.description,
+      id: "iam.oauth.application-access",
+      label: messages.oauthAccounts.applicationAccess.title,
       navigationGroups: oauthNavigationGroups,
-      path,
+      path: "/admin/iam/oauth/applications",
       requiredPermissions: ["iam.oauth.read"],
-    })),
+    },
   ];
   return {
     access: {

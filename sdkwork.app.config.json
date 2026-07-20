@@ -31,6 +31,7 @@
       "iam.roles.read",
       "iam.permissions.read",
       "iam.oauth.read",
+      "iam.oauth.manage",
       "iam.account_binding_policy.read",
       "iam.audit_events.read",
       "manager.entitlements.read",
@@ -49,6 +50,9 @@
       "commerce.marketing.manage",
       "commerce.payments.intents.read",
       "commerce.payments.attempts.read",
+      "commerce.payments.refunds.read",
+      "commerce.payments.refunds.create",
+      "commerce.payments.refunds.retry",
       "commerce.payments.methods.read",
       "commerce.payments.methods.create",
       "commerce.payments.methods.update",
@@ -89,82 +93,6 @@
     ],
     "defaultDeploymentProfile": "cloud"
   },
-  "envBindings": {
-    "schemaVersion": 2,
-    "family": "web",
-    "runtime": "vite-react",
-    "preset": "vite-react-standard",
-    "outputStrategy": "dotenv-overlay",
-    "platform": "web",
-    "ownerMode": "tenant",
-    "grantMode": "current",
-    "tokenPlatform": "WEB",
-    "variables": [
-      {
-        "name": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
-        "required": true,
-        "tracked": true,
-        "surface": "app-api",
-        "sdkFamily": "sdkwork-manager-app-sdk"
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL",
-        "required": true,
-        "tracked": true,
-        "surface": "platform-api-gateway"
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_ENVIRONMENT",
-        "required": true,
-        "tracked": true
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_DEPLOYMENT_PROFILE",
-        "required": true,
-        "tracked": true
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_DEFAULT_LOCALE",
-        "required": true,
-        "tracked": true
-      },
-      {
-        "name": "VITE_SDKWORK_MANAGER_FALLBACK_LOCALE",
-        "required": true,
-        "tracked": true
-      }
-    ],
-    "sdkBaseUrls": {
-      "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
-      "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
-      "dependencySdkBaseUrlKeys": {
-        "sdkwork-iam-app-sdk": {
-          "appApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"
-        },
-        "sdkwork-iam-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"
-        },
-        "sdkwork-drive-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        },
-        "sdkwork-drive-admin-storage-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        },
-        "sdkwork-payment-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        },
-        "sdkwork-order-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        },
-        "sdkwork-promotion-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        },
-        "sdkwork-membership-backend-sdk": {
-          "backendApiBaseUrlKey": "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"
-        }
-      }
-    }
-  },
   "media": {
     "icons": {
       "primary": {
@@ -191,8 +119,7 @@
   "publish": {
     "status": "ACTIVE",
     "platforms": [
-      "WEB",
-      "BROWSER"
+      "WEB"
     ],
     "installPlatforms": [
       "WEB"
@@ -209,7 +136,15 @@
   },
   "release": {
     "channel": "stable",
-    "governance": "standard"
+    "governance": "standard",
+    "currentVersion": "0.1.0",
+    "notes": [
+      {
+        "version": "0.1.0",
+        "current": true,
+        "packageIds": []
+      }
+    ]
   },
   "security": {
     "dataClassification": "internal",
@@ -220,6 +155,7 @@
   },
   "metadata": {
     "standardOwner": "sdkwork-specs",
-    "initializedAt": "2026-06-21T00:00:00.000Z"
+    "initializedAt": "2026-06-21T00:00:00.000Z",
+    "deploymentConfig": "etc/sdkwork.deployment.config.json"
   }
 }

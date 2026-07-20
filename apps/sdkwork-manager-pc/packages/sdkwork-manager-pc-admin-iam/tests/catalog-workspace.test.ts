@@ -17,11 +17,11 @@ describe("IAM catalog workspace", () => {
       title: messages.routes.permissions.label,
     }));
 
-    expect(html).toContain("访问控制 / 权限");
     expect(html).toContain("创建权限");
     expect(html).toContain("正在加载权限");
-    expect(html).toContain("manager-iam-editor--permission");
     expect(html).toContain("manager-iam-table--empty");
+    expect(html).not.toContain("访问控制 / 权限");
+    expect(html).not.toContain("manager-iam-editor--permission");
     expect(html).not.toContain("Create permission");
     expect(html).not.toContain("Loading permission");
   });

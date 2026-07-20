@@ -18,6 +18,7 @@
     "@sdkwork/manager-pc-admin-core": "workspace:*",
     "@sdkwork/manager-pc-core": "workspace:*",
     "@sdkwork/membership-service": "workspace:*",
+    "@sdkwork/ui-pc-react": "workspace:*",
     "react": "catalog:",
     "react-router-dom": "catalog:"
   },

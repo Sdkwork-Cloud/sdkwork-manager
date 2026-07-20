@@ -27,6 +27,7 @@ type PaymentRouteKey =
   | "providerAccounts"
   | "reconciliation"
   | "records"
+  | "refunds"
   | "routeRules"
   | "subMerchants"
   | "webhooks";
@@ -86,9 +87,9 @@ const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
     displayName: "支付管理",
     loading: "正在加载支付管理模块…",
     navigationGroups: {
-      configuration: "支付配置",
+      configuration: "高级支付编排",
       developerTools: "开发与联调",
-      institutions: "机构管理",
+      institutions: "支付账号配置",
       operations: "支付运营",
     },
     title: "支付管理",
@@ -97,9 +98,10 @@ const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
       channels: { label: "支付通道", description: "配置支付方式与机构账户之间的可用通道" },
       integration: { label: "集成配置", description: "管理证书、凭据测试和沙箱工具" },
       methods: { label: "支付方式", description: "维护面向业务开放的支付方式及启停状态" },
-      providerAccounts: { label: "支付机构", description: "管理支付服务商账户、环境和凭据状态" },
+      providerAccounts: { label: "支付账号", description: "先配置服务商账号、运行环境、收款能力与加密凭据" },
       reconciliation: { label: "对账中心", description: "创建并跟踪渠道账单与平台交易的核对批次" },
       records: { label: "支付记录", description: "查询支付意图、金额、订单归属和生命周期状态" },
+      refunds: { label: "退款处理", description: "跟踪退款进度，基于原支付账号发起全额或部分退款，并安全重试失败任务" },
       routeRules: { label: "路由规则", description: "按场景、优先级和可用性编排支付通道路由" },
       subMerchants: { label: "子商户", description: "管理服务商模式下的子商户进件与绑定关系" },
       webhooks: { label: "Webhook 事件", description: "审计回调验签、处理结果并重放失败事件" },
@@ -110,9 +112,9 @@ const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
     displayName: "Payments",
     loading: "Loading Payment administration…",
     navigationGroups: {
-      configuration: "Payment configuration",
+      configuration: "Advanced orchestration",
       developerTools: "Developer tools",
-      institutions: "Provider management",
+      institutions: "Payment account setup",
       operations: "Payment operations",
     },
     title: "Payment administration",
@@ -121,9 +123,10 @@ const PAYMENT_MESSAGES: Record<"en-US" | "zh-CN", PaymentMessages> = {
       channels: { label: "Payment channels", description: "Configure available links between payment methods and provider accounts" },
       integration: { label: "Integration", description: "Manage certificates, credential tests, and sandbox tools" },
       methods: { label: "Payment methods", description: "Maintain customer-facing payment methods and availability" },
-      providerAccounts: { label: "Providers", description: "Manage provider accounts, environments, and credential health" },
+      providerAccounts: { label: "Payment accounts", description: "Configure provider accounts, environments, capabilities, and encrypted credentials first" },
       reconciliation: { label: "Reconciliation", description: "Create and track matching runs across provider statements and platform payments" },
       records: { label: "Payment records", description: "Search payment intents, amounts, order ownership, and lifecycle status" },
+      refunds: { label: "Refund processing", description: "Track refund progress, create full or partial refunds through the original payment account, and safely retry failures" },
       routeRules: { label: "Routing rules", description: "Orchestrate payment channels by scenario, priority, and availability" },
       subMerchants: { label: "Sub-merchants", description: "Manage onboarding and account links for partner-mode merchants" },
       webhooks: { label: "Webhook events", description: "Audit signature checks, processing outcomes, and replay failed events" },
@@ -142,7 +145,7 @@ function createPaymentRoute(Component: ComponentType, loading: string) {
 }
 
 function createPaymentMonitorRoute(
-  section: "attempts" | "intents" | "reconciliation" | "webhooks",
+  section: "attempts" | "intents" | "reconciliation" | "refunds" | "webhooks",
   message: PaymentRouteMessage,
   loading: string,
 ) {
@@ -157,8 +160,10 @@ function createPaymentMonitorRoute(
         return (
           <module.PaymentMonitorAdminWorkspace
             capabilities={{
+              canCreateRefund: hasManagerPermission("commerce.payments.refunds.create"),
               canCreateReconciliationRun: hasManagerPermission("commerce.payments.reconciliation_runs.create"),
               canReplayWebhookEvent: hasManagerPermission("commerce.payments.webhook_events.replay"),
+              canRetryRefund: hasManagerPermission("commerce.payments.refunds.retry"),
             }}
             controller={controller}
             description={message.description}
@@ -282,6 +287,16 @@ export function createSdkworkManagerPaymentAdminContribution(
   const configurationGroup = [{ id: "configuration", label: messages.navigationGroups.configuration }];
   const routes: Array<AdminModuleContribution["routes"][number]> = [
     {
+      Component: createPaymentProviderRoute("accounts", messages.routes.providerAccounts, messages.loading),
+      description: messages.routes.providerAccounts.description,
+      id: "commerce.payment.providers",
+      label: messages.routes.providerAccounts.label,
+      navigationGroups: institutionsGroup,
+      path: "/admin/payments/providers",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.provider_accounts.read"],
+    },
+    {
       Component: createPaymentMonitorRoute("intents", messages.routes.records, messages.loading),
       description: messages.routes.records.description,
       id: "commerce.payment.records",
@@ -290,6 +305,16 @@ export function createSdkworkManagerPaymentAdminContribution(
       path: "/admin/payments/monitor",
       permissionMode: "all",
       requiredPermissions: ["commerce.payments.intents.read"],
+    },
+    {
+      Component: createPaymentMonitorRoute("refunds", messages.routes.refunds, messages.loading),
+      description: messages.routes.refunds.description,
+      id: "commerce.payment.refunds",
+      label: messages.routes.refunds.label,
+      navigationGroups: operationsGroup,
+      path: "/admin/payments/refunds",
+      permissionMode: "all",
+      requiredPermissions: ["commerce.payments.refunds.read"],
     },
     {
       Component: createPaymentMonitorRoute("attempts", messages.routes.attempts, messages.loading),
@@ -320,16 +345,6 @@ export function createSdkworkManagerPaymentAdminContribution(
       path: "/admin/payments/reconciliation",
       permissionMode: "all",
       requiredPermissions: ["commerce.payments.reconciliation_runs.read"],
-    },
-    {
-      Component: createPaymentProviderRoute("accounts", messages.routes.providerAccounts, messages.loading),
-      description: messages.routes.providerAccounts.description,
-      id: "commerce.payment.providers",
-      label: messages.routes.providerAccounts.label,
-      navigationGroups: institutionsGroup,
-      path: "/admin/payments/providers",
-      permissionMode: "all",
-      requiredPermissions: ["commerce.payments.provider_accounts.read"],
     },
     {
       Component: createPaymentProviderRoute("submerchants", messages.routes.subMerchants, messages.loading),

@@ -19,7 +19,9 @@
     "@sdkwork/manager-pc-core": "workspace:*",
     "@sdkwork/promotion-backend-sdk": "workspace:*",
     "@sdkwork/promotion-service": "workspace:*",
+    "@sdkwork/ui-pc-react": "workspace:*",
     "@sdkwork/utils": "workspace:*",
+    "lucide-react": "catalog:",
     "react": "catalog:"
   },
   "peerDependencies": {

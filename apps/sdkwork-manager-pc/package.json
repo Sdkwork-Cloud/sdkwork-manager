@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node ../../scripts/dev/manager-dev.mjs",
-    "dev:bootstrap": "node ../../scripts/dev/manager-bootstrap.mjs",
+    "install:bootstrap": "node ../../scripts/dev/manager-bootstrap.mjs",
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "pnpm --dir ../.. run test:vitest",

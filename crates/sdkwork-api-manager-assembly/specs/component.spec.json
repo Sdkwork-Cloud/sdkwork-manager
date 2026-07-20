@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-manager-gateway-assembly",
-    "displayName": "SDKWork manager Gateway Assembly",
+    "name": "sdkwork-api-manager-assembly",
+    "displayName": "SDKWork Manager API Assembly",
     "version": "0.1.0",
-    "type": "rust-crate",
-    "root": "sdkwork-manager/crates/sdkwork-manager-gateway-assembly",
+    "type": "rust-api-assembly",
+    "root": "sdkwork-manager/crates/sdkwork-api-manager-assembly",
     "domain": "application",
-    "capability": "manager-gateway-assembly",
-    "surface": "assembly",
+    "capability": "api-assembly",
+    "surface": "api-assembly",
     "languages": [
       "rust"
     ],
@@ -20,6 +20,11 @@
     ]
   },
   "canonicalSpecs": [
+    {
+      "file": "API_ASSEMBLY_SPEC.md",
+      "path": "../../../sdkwork-specs/API_ASSEMBLY_SPEC.md",
+      "purpose": "Host-neutral API ownership, assembly naming, and verification rules."
+    },
     {
       "file": "APPLICATION_GATEWAY_SPEC.md",
       "path": "../../../sdkwork-specs/APPLICATION_GATEWAY_SPEC.md",
@@ -41,19 +46,43 @@
       "."
     ],
     "runtimeEntrypoints": [
-      "sdkwork_manager_gateway_assembly::assemble_application_router"
+      "sdkwork_api_manager_assembly::assemble_api_router"
     ],
     "routeManifest": "assembly-manifest.json",
     "sdkClients": [],
     "sdkDependencies": [
-      { "workspace": "sdkwork-iam-app-sdk", "surface": "app-api" },
-      { "workspace": "sdkwork-iam-backend-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-drive-backend-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-drive-admin-storage-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-order-backend-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-promotion-backend-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-payment-backend-sdk", "surface": "backend-api" },
-      { "workspace": "sdkwork-membership-backend-sdk", "surface": "backend-api" }
+      {
+        "workspace": "sdkwork-iam-app-sdk",
+        "surface": "app-api"
+      },
+      {
+        "workspace": "sdkwork-iam-backend-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-drive-backend-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-drive-admin-storage-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-order-backend-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-promotion-backend-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-payment-backend-sdk",
+        "surface": "backend-api"
+      },
+      {
+        "workspace": "sdkwork-membership-backend-sdk",
+        "surface": "backend-api"
+      }
     ],
     "dependencyApiExports": [],
     "dependencyApiSurfaces": [
@@ -154,8 +183,8 @@
   },
   "verification": {
     "commands": [
-      "pnpm run gateway:assembly:validate",
-      "cargo check -p sdkwork-manager-gateway-assembly"
+      "pnpm run api:assembly:validate",
+      "cargo check -p sdkwork-api-manager-assembly"
     ]
   }
 }

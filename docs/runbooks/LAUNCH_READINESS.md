@@ -195,14 +195,16 @@ application context that resolves the registered tenant application from the
 trusted deployment route. Do not release a browser deployment that substitutes
 a long-lived bootstrap token for this platform capability.
 
-## 7. Cloud packaging
+## 7. Cloud browser packaging
 
 ```bash
-pnpm gateway:package:cloud
-pnpm gateway:validate:cloud
+pnpm release:package:cloud
+pnpm release:validate:cloud
 ```
 
-Artifact: `dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz`
+Artifact: `apps/sdkwork-manager-pc/dist/` with CycloneDX evidence under
+`artifacts/release/sbom/`. Platform cloud gateway registration, configuration,
+and rollout are owned by the platform gateway repository.
 
 ## 8. Operations suite dependency matrix
 

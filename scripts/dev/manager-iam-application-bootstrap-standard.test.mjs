@@ -8,6 +8,7 @@ import {
   resolveManagerProfileEnv,
   resolveManagerRuntimeEnv,
 } from "./manager-profile-env.mjs";
+import { parseClientBind } from "./manager-dev.mjs";
 import { refreshManagerWslPostgresPortProxy } from "./manager-wsl-postgres-portproxy.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -24,11 +25,11 @@ const managerIamMenuPermissions = [
 
 test("Manager standalone startup provisions its manifest-backed IAM runtime before routes", () => {
   const cargo = readFileSync(
-    path.join(root, "crates/sdkwork-manager-standalone-gateway/Cargo.toml"),
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/Cargo.toml"),
     "utf8",
   );
   const main = readFileSync(
-    path.join(root, "crates/sdkwork-manager-standalone-gateway/src/main.rs"),
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/src/main.rs"),
     "utf8",
   );
   const appPackage = JSON.parse(readFileSync(
@@ -46,7 +47,7 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   const bootstrap = readFileSync(
     path.join(
       root,
-      "crates/sdkwork-manager-standalone-gateway/src/iam_application_bootstrap.rs",
+      "crates/sdkwork-api-manager-standalone-gateway/src/iam_application_bootstrap.rs",
     ),
     "utf8",
   );
@@ -56,7 +57,7 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   const bootstrapCallIndex = main.indexOf(
     "iam_application_bootstrap::ensure_manager_iam_application_bootstrap",
   );
-  const routeAssemblyIndex = main.indexOf("let assembly = assemble_application_router");
+  const routeAssemblyIndex = main.indexOf("let assembly = assemble_api_router");
   assert.ok(bootstrapCallIndex >= 0, "startup must invoke the Manager IAM bootstrap");
   assert.ok(routeAssemblyIndex >= 0, "startup must assemble the Manager router");
   assert.ok(
@@ -68,23 +69,31 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   assert.match(bootstrap, /SDKWORK_MANAGER_APP_ROOT/);
   assert.doesNotMatch(bootstrap, /fetch\(|axios\.|INSERT\s+INTO/i);
   assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
-  assert.match(appPackage.scripts["dev:bootstrap"], /manager-bootstrap\.mjs/);
+  assert.match(appPackage.scripts["install:bootstrap"], /manager-bootstrap\.mjs/);
   const rootPackage = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
-  assert.match(rootPackage.scripts.start, /manager-start\.mjs/);
-  assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
-  assert.match(devRunner, /manager-server/);
+  const topology = JSON.parse(readFileSync(
+    path.join(root, "specs/topology.spec.json"),
+    "utf8",
+  ));
+  const standaloneProcesses = topology.orchestration.profiles["standalone.development"].processes;
+  assert.equal(rootPackage.scripts.start, "pnpm dev:standalone");
+  assert.match(rootPackage.scripts["_sdkwork:gateway:standalone"], /manager-start\.mjs/);
+  assert.match(rootPackage.scripts["_sdkwork:client:browser"], /sdkwork-manager-pc dev/);
+  assert.ok(standaloneProcesses.some(
+    (process) => process.role === "api-standalone-gateway"
+      && process.script === "_sdkwork:gateway:standalone",
+  ));
+  assert.ok(standaloneProcesses.some(
+    (process) => process.role === "client"
+      && process.script === "_sdkwork:client:browser",
+  ));
   assert.match(devRunner, /resolveManagerRuntimeEnv/);
   assert.match(startRunner, /resolveManagerRuntimeEnv/);
-  assert.match(devRunner, /refreshManagerWslPostgresPortProxy/);
   assert.match(startRunner, /refreshManagerWslPostgresPortProxy/);
-  assert.match(startRunner, /sdkwork-manager-standalone-gateway/);
-  assert.match(devRunner, /StringComparer\]::OrdinalIgnoreCase\.Equals/);
-  assert.match(devRunner, /Stop-Process -Id \$_\.Id -Force/);
-  assert.ok(
-    devRunner.indexOf("stopExistingGateway(executable)")
-      < devRunner.indexOf("buildGateway();"),
-    "the Windows gateway process must be stopped before Cargo rebuilds it",
-  );
+  assert.match(startRunner, /sdkwork-api-manager-standalone-gateway/);
+  assert.match(devRunner, /@sdkwork\/app-topology\/network-access/);
+  assert.match(devRunner, /application started successfully/);
+  assert.doesNotMatch(devRunner, /sdkwork-api-manager-standalone-gateway/);
 });
 
 test("Manager standalone profile supplies the IAM and Manager CORS allowlists", () => {
@@ -92,6 +101,8 @@ test("Manager standalone profile supplies the IAM and Manager CORS allowlists", 
 
   assert.equal(profileEnv.SDKWORK_MANAGER_PROFILE_ID, "standalone.development");
   assert.equal(profileEnv.SDKWORK_ENVIRONMENT, "development");
+  assert.equal(profileEnv.SDKWORK_MANAGER_APPLICATION_PUBLIC_INGRESS_BIND, "0.0.0.0:18092");
+  assert.equal(profileEnv.SDKWORK_MANAGER_PC_DEV_BIND, "0.0.0.0:5190");
   assert.equal(profileEnv.SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(profileEnv.SDKWORK_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(profileEnv.SDKWORK_IAM_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
@@ -117,6 +128,17 @@ test("Manager runtime environment preserves process overrides", () => {
 
   assert.equal(runtimeEnv.SDKWORK_CLAW_DATABASE_HOST, "database.internal");
   assert.equal(runtimeEnv.SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED, "false");
+});
+
+test("Manager PC development bind is explicit and validated", () => {
+  assert.deepEqual(parseClientBind("0.0.0.0:5190"), {
+    host: "0.0.0.0",
+    port: 5190,
+  });
+  assert.throws(
+    () => parseClientBind("0.0.0.0:not-a-port"),
+    /Invalid SDKWORK_MANAGER_PC_DEV_BIND/,
+  );
 });
 
 test("WSL PostgreSQL proxy refresh is Windows-only and explicitly enabled", () => {

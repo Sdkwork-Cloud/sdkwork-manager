@@ -16,6 +16,8 @@ export type ClientRuntimeEnv = Record<string, string | boolean | undefined> & {
   DEV?: boolean | "true" | "false";
 };
 
+const LOOPBACK_HOSTNAMES = new Set(["127.0.0.1", "localhost", "::1", "[::1]"]);
+
 type RuntimeImportMetaEnv = ClientRuntimeEnv;
 
 function readRuntimeImportMetaEnv(
@@ -72,6 +74,9 @@ export function normalizeHttpSdkBaseUrl(
 export function resolveManagerApplicationBaseUrl(
   explicit?: string,
   env: ClientRuntimeEnv = readRuntimeImportMetaEnv(),
+  browserHostname: string | undefined = typeof globalThis.location === "undefined"
+    ? undefined
+    : globalThis.location.hostname,
 ): string {
   const candidate =
     explicit ??
@@ -80,7 +85,26 @@ export function resolveManagerApplicationBaseUrl(
   if (isBlank(candidate)) {
     return DEFAULT_LOCAL_APPLICATION_PUBLIC_HTTP_URL;
   }
-  return normalizeHttpSdkBaseUrl(candidate.replace(/\/+$/u, ""));
+  const normalizedCandidate = normalizeHttpSdkBaseUrl(candidate.replace(/\/+$/u, ""));
+  if (
+    explicit
+    || (env.DEV !== true && env.DEV !== "true")
+    || resolveManagerDeploymentProfile(env) !== "standalone"
+    || !browserHostname
+    || LOOPBACK_HOSTNAMES.has(browserHostname.toLowerCase())
+  ) {
+    return normalizedCandidate;
+  }
+  try {
+    const parsed = new URL(normalizedCandidate);
+    if (!LOOPBACK_HOSTNAMES.has(parsed.hostname.toLowerCase())) {
+      return normalizedCandidate;
+    }
+    parsed.hostname = browserHostname;
+    return normalizeHttpSdkBaseUrl(parsed.toString());
+  } catch {
+    return normalizedCandidate;
+  }
 }
 
 export function resolvePlatformApiGatewayBaseUrl(

@@ -3,28 +3,30 @@ import { describe, expect, it } from "vitest";
 import { createSdkworkManagerIamAdminContribution } from "../src/index";
 
 describe("manager IAM OAuth navigation", () => {
-  it("contributes OAuth as an independent, focused administration group", () => {
+  it("contributes account configuration and application access as the only OAuth workflows", () => {
     const contribution = createSdkworkManagerIamAdminContribution({
-      getPermissionScope: () => ["iam.oauth.read"],
+      getPermissionScope: () => ["iam.oauth.read", "iam.oauth.manage"],
       getService: () => ({}) as never,
+      getTenantId: () => "tenant-test",
       locale: "zh-CN",
     });
     const oauthRoutes = contribution.routes.filter((route) => route.id.startsWith("iam.oauth."));
 
     expect(oauthRoutes.map((route) => [route.label, route.path])).toEqual([
-      ["总览", "/admin/iam/oauth"],
-      ["身份提供商", "/admin/iam/oauth/providers"],
-      ["客户端应用", "/admin/iam/oauth/applications"],
-      ["登录配置", "/admin/iam/oauth/login-configuration"],
-      ["策略与租户", "/admin/iam/oauth/governance"],
-      ["授权与关联", "/admin/iam/oauth/authorizations"],
-      ["资源访问", "/admin/iam/oauth/resources"],
-      ["运行与诊断", "/admin/iam/oauth/activity"],
+      ["集成账号", "/admin/iam/oauth"],
+      ["应用接入", "/admin/iam/oauth/applications"],
     ]);
     expect(oauthRoutes.every((route) => route.navigationGroups?.[0]?.id === "oauth")).toBe(true);
     expect(oauthRoutes.every((route) => route.requiredPermissions?.includes("iam.oauth.read"))).toBe(true);
 
-    const accountBinding = contribution.routes.find((route) => route.id === "iam.account-binding");
-    expect(accountBinding?.navigationGroups?.[0]?.id).toBe("connections-federation");
+    const removedTechnicalRoutes = contribution.routes.filter((route) => [
+      "/admin/iam/oauth/providers",
+      "/admin/iam/oauth/login-configuration",
+      "/admin/iam/oauth/governance",
+      "/admin/iam/oauth/authorizations",
+      "/admin/iam/oauth/resources",
+      "/admin/iam/oauth/activity",
+    ].includes(route.path));
+    expect(removedTechnicalRoutes).toHaveLength(0);
   });
 });

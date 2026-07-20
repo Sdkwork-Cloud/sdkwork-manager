@@ -14,7 +14,7 @@ catalogs:
       version: 19.2.3
     '@vitejs/plugin-react':
       specifier: ^6.0.1
-      version: 6.0.3
+      version: 6.0.1
     lucide-react:
       specifier: ^1.7.0
       version: 1.7.0
@@ -47,6 +47,9 @@ importers:
 
   .:
     devDependencies:
+      '@sdkwork/app-topology':
+        specifier: workspace:*
+        version: link:../sdkwork-app-topology
       '@sdkwork/iam-application-bootstrap':
         specifier: workspace:*
         version: link:../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-application-bootstrap
@@ -83,6 +86,8 @@ importers:
       vitest:
         specifier: ^4.1.2
         version: 4.1.9(@types/node@25.9.4)(jsdom@29.1.1)(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))
+
+  ../sdkwork-app-topology: {}
 
   ../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap:
     dependencies:
@@ -201,9 +206,15 @@ importers:
       '@sdkwork/drive-backend-sdk':
         specifier: workspace:*
         version: link:../../../../sdks/sdkwork-drive-backend-sdk/sdkwork-drive-backend-sdk-typescript
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.4)
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -225,9 +236,15 @@ importers:
       '@sdkwork/drive-admin-storage-sdk':
         specifier: workspace:*
         version: link:../../../../sdks/sdkwork-drive-admin-storage-sdk/sdkwork-drive-admin-storage-sdk-typescript
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.4)
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -667,6 +684,9 @@ importers:
 
   ../sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-tenant:
     dependencies:
+      '@sdkwork/i18n-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react
       '@sdkwork/iam-pc-admin-core':
         specifier: workspace:*
         version: link:../sdkwork-iam-pc-admin-core
@@ -676,6 +696,9 @@ importers:
       '@sdkwork/ui-pc-react':
         specifier: workspace:*
         version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
+      lucide-react:
+        specifier: ^1.7.0
+        version: 1.7.0(react@19.2.4)
       react:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.4
@@ -831,6 +854,9 @@ importers:
       '@sdkwork/order-service':
         specifier: workspace:*
         version: link:../../../sdkwork-order-common/packages/sdkwork-order-service
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.7)
     devDependencies:
       '@sdkwork/ui-pc-react':
         specifier: workspace:*
@@ -929,6 +955,9 @@ importers:
       '@sdkwork/ui-pc-react':
         specifier: workspace:*
         version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.4)
       react:
         specifier: '>=18.2.0 <20.0.0'
         version: 19.2.4
@@ -976,6 +1005,9 @@ importers:
 
   ../sdkwork-payment/apps/sdkwork-payment-pc/packages/sdkwork-payment-pc-admin-monitor:
     dependencies:
+      '@sdkwork/i18n-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react
       '@sdkwork/payment-contracts':
         specifier: workspace:*
         version: link:../../../sdkwork-payment-common/packages/sdkwork-payment-contracts
@@ -988,6 +1020,9 @@ importers:
       '@sdkwork/ui-pc-react':
         specifier: workspace:*
         version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.7)
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
@@ -1333,7 +1368,7 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: 'catalog:'
-        version: 6.0.3(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))
+        version: 6.0.1(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1466,6 +1501,12 @@ importers:
       '@sdkwork/manager-pc-core':
         specifier: workspace:*
         version: link:../sdkwork-manager-pc-core
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.7)
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -1484,9 +1525,15 @@ importers:
       '@sdkwork/promotion-service':
         specifier: workspace:*
         version: link:../../../../../sdkwork-promotion/apps/sdkwork-promotion-common/packages/sdkwork-promotion-service
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.7.0(react@19.2.7)
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -1502,6 +1549,9 @@ importers:
       '@sdkwork/membership-service':
         specifier: workspace:*
         version: link:../../../../../sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -1550,6 +1600,9 @@ importers:
       '@sdkwork/order-pc-admin-orders':
         specifier: workspace:*
         version: link:../../../../../sdkwork-order/apps/sdkwork-order-pc/packages/sdkwork-order-pc-admin-orders
+      '@sdkwork/ui-pc-react':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-ui/sdkwork-ui-pc-react
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -6661,6 +6714,11 @@ snapshots:
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.7
       vite: 8.0.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.9.4)(jiti@2.7.0)
+
+  '@vitejs/plugin-react@6.0.1(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.0-rc.7
+      vite: 8.1.0(@types/node@25.9.4)(jiti@2.7.0)
 
   '@vitejs/plugin-react@6.0.3(vite@8.1.0(@types/node@25.9.4)(jiti@2.7.0))':
     dependencies:

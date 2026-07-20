@@ -32,7 +32,7 @@ Detailed PC integration and commercialization design:
 
 - `crates/sdkwork-routes-manager-*`: HTTP route boundaries (app-api, backend-api)
 - `crates/sdkwork-platform-manager-service`: domain service
-- `crates/sdkwork-manager-standalone-gateway`: unified process entrypoint
+- `crates/sdkwork-api-manager-standalone-gateway`: unified process entrypoint
 - `apps/sdkwork-manager-common/packages/sdkwork-manager-client-core/`: URL resolution, operator session storage, admin preference list helpers
 - `apps/sdkwork-manager-pc/`: PC browser unified admin host, IAM/bootstrap
   wiring, module registry, Header composition, and route assembly
@@ -71,7 +71,7 @@ Detailed PC integration and commercialization design:
 - Topology authority: `specs/topology.spec.json` (`appId: sdkwork-manager`)
 - Deploy authority: `deployments/deploy.yaml`
 - Profiles: standalone unified-process (dev) and cloud split-services (prod)
-- Gateway configs: `etc/sdkwork-api-cloud-gateway.manager.{profile}.toml`
+- Cloud HTTP hosting consumes the Manager API assembly from the platform gateway repository.
 - Platform ingress embeds the `manager-operations-suite` feature: Drive,
   Membership, Order, Promotion, and Payment gateway assemblies, each with its domain-owned
   database lifecycle and IAM request-context enforcement.
@@ -129,6 +129,6 @@ pnpm verify
 pnpm build
 pnpm deploy:validate
 pnpm topology:validate
-pnpm gateway:validate:cloud
+node ../sdkwork-specs/tools/check-application-cloud-gateway-boundary.mjs --root .
 node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace ..
 ```

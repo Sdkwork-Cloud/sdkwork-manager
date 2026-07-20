@@ -2,19 +2,27 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-manager-standalone-gateway",
+    "name": "sdkwork-api-manager-standalone-gateway",
     "displayName": "SDKWork Manager Standalone Gateway",
     "version": "0.1.0",
-    "type": "rust-crate",
-    "root": ".",
+    "type": "rust-api-standalone-gateway",
+    "root": "sdkwork-manager/crates/sdkwork-api-manager-standalone-gateway",
     "domain": "platform",
     "capability": "manager-standalone-gateway",
-    "surface": "backend",
+    "surface": "application.public-ingress",
     "languages": ["rust"],
     "generated": false,
     "manifests": ["Cargo.toml"]
   },
   "canonicalSpecs": [
+    {
+      "file": "APPLICATION_GATEWAY_SPEC.md",
+      "path": "../../../sdkwork-specs/APPLICATION_GATEWAY_SPEC.md"
+    },
+    {
+      "file": "API_ASSEMBLY_SPEC.md",
+      "path": "../../../sdkwork-specs/API_ASSEMBLY_SPEC.md"
+    },
     {
       "file": "RUST_CODE_SPEC.md",
       "path": "../../../sdkwork-specs/RUST_CODE_SPEC.md"
@@ -32,7 +40,7 @@
     "publicExports": [],
     "runtimeEntrypoints": [
       "src/main.rs",
-      "sdkwork_manager_gateway_assembly::assemble_application_router"
+      "sdkwork_api_manager_assembly::assemble_api_router"
     ],
     "routeManifest": null,
     "sdkClients": [],
@@ -117,10 +125,10 @@
         "surface": "app-api",
         "apiPrefix": "/app/v3/api",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
         "coverageEvidence": [
-          "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
         ]
       },
       {
@@ -130,10 +138,10 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/iam",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
         "coverageEvidence": [
-          "../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"
+          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
         ]
       },
       {
@@ -143,9 +151,9 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/drive",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       },
       {
         "workspace": "sdkwork-drive",
@@ -154,9 +162,9 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/drive/storage",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       },
       {
         "workspace": "sdkwork-order",
@@ -165,9 +173,9 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/orders",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       },
       {
         "workspace": "sdkwork-promotion",
@@ -176,9 +184,9 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/promotions",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       },
       {
         "workspace": "sdkwork-payment",
@@ -187,9 +195,9 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/payments",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       },
       {
         "workspace": "sdkwork-membership",
@@ -198,16 +206,16 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/memberships",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_manager_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_manager_gateway_assembly::assemble_application_router",
-        "coverageEvidence": ["../sdkwork-manager-gateway-assembly/src/bootstrap.rs#assemble_application_router"]
+        "cargoDependency": "sdkwork_api_manager_assembly",
+        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "coverageEvidence": ["../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"]
       }
     ]
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork-manager-standalone-gateway",
-      "cargo check -p sdkwork-manager-standalone-gateway",
+      "cargo test -p sdkwork-api-manager-standalone-gateway",
+      "cargo check -p sdkwork-api-manager-standalone-gateway",
       "node --test tests/static/manager-architecture.test.mjs"
     ]
   }

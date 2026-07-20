@@ -37,7 +37,7 @@ function copyReleaseInputs(stageRoot, binaryPath) {
   const productionProfile = path.join(repoRoot, "etc", "deployments", "standalone.production.env");
   const appManifest = path.join(repoRoot, "sdkwork.app.config.json");
   const topology = path.join(repoRoot, "specs", "topology.spec.json");
-  requirePath(binaryPath, "run cargo build --release -p sdkwork-manager-standalone-gateway --bin manager-server");
+  requirePath(binaryPath, "run cargo build --release -p sdkwork-api-manager-standalone-gateway --bin manager-server");
   requirePath(path.join(webRoot, "index.html"), "run pnpm build");
   requirePath(productionProfile, "restore the standalone production profile");
 

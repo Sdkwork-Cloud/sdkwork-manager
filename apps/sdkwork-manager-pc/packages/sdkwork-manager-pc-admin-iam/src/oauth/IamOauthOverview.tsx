@@ -111,13 +111,8 @@ export function IamOauthOverview({ controller, messages }: IamOauthOverviewProps
       : "warning";
 
   return (
-    <section className="manager-oauth-overview" aria-labelledby="manager-oauth-overview-title">
-      <header className="manager-oauth-overview__header">
-        <div>
-          <p className="manager-oauth-overview__eyebrow">{messages.eyebrow}</p>
-          <h1 id="manager-oauth-overview-title">{messages.title}</h1>
-          <p>{messages.description}</p>
-        </div>
+    <section className="manager-oauth-overview" aria-label={messages.title}>
+      <div className="manager-oauth-overview__toolbar">
         <span
           aria-live="polite"
           className="manager-oauth-overview__status"
@@ -127,7 +122,7 @@ export function IamOauthOverview({ controller, messages }: IamOauthOverviewProps
           <span aria-hidden="true" />
           {statusLabel}
         </span>
-      </header>
+      </div>
 
       <dl className="manager-oauth-overview__metrics">
         {[

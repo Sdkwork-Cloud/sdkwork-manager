@@ -1,4 +1,5 @@
 import type { ManagerIamAdminModuleMessages } from "../../../../types/i18n";
+import { managerIamOauthAccountMessages } from "./oauth-accounts";
 
 export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
   channelTemplate: "{channel} channel",
@@ -86,6 +87,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     readinessDescription: "Completeness checks for the critical OAuth control-plane configuration.",
     readinessTitle: "Integration readiness",
   },
+  oauthAccounts: managerIamOauthAccountMessages,
   routes: {
     accountBinding: { description: "Configure contact and external identity binding policies", label: "Account binding policies" },
     audit: { description: "Review security events and administrator activity", label: "Audit & security" },

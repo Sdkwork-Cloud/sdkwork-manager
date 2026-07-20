@@ -14,7 +14,7 @@ const runtimeEnv = resolveManagerRuntimeEnv();
 refreshManagerWslPostgresPortProxy(runtimeEnv);
 const result = spawnSync(
   process.env.CARGO ?? "cargo",
-  ["run", "-p", "sdkwork-manager-standalone-gateway", "--bin", "manager-server"],
+  ["run", "-p", "sdkwork-api-manager-standalone-gateway", "--bin", "manager-server"],
   {
     cwd: workspaceRoot,
     env: {

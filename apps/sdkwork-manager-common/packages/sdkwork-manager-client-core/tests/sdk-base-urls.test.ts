@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveIamAppApiBaseUrl,
   resolveIamBackendApiBaseUrl,
+  resolveManagerApplicationBaseUrl,
   resolvePlatformApiGatewayBaseUrl,
 } from "../src/config/sdkBaseUrls";
 
@@ -41,5 +42,25 @@ describe("manager SDK base URL topology", () => {
     expect(resolvePlatformApiGatewayBaseUrl(undefined, cloudEnv)).toBe(
       "http://127.0.0.1:3900",
     );
+  });
+
+  it("projects the standalone development API onto the browser LAN host", () => {
+    expect(resolveManagerApplicationBaseUrl(undefined, {
+      ...standaloneEnv,
+      DEV: true,
+    }, "192.168.50.12")).toBe("http://192.168.50.12:18092");
+  });
+
+  it("keeps explicit and non-development API hosts unchanged", () => {
+    expect(resolveManagerApplicationBaseUrl(
+      "http://127.0.0.1:19000",
+      { ...standaloneEnv, DEV: true },
+      "192.168.50.12",
+    )).toBe("http://127.0.0.1:19000");
+    expect(resolveManagerApplicationBaseUrl(
+      undefined,
+      standaloneEnv,
+      "192.168.50.12",
+    )).toBe("http://127.0.0.1:18092");
   });
 });

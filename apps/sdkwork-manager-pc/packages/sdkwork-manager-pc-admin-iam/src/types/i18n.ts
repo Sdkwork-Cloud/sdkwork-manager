@@ -84,6 +84,7 @@ export interface ManagerIamAdminModuleMessages {
     readinessDescription: string;
     readinessTitle: string;
   };
+  oauthAccounts: ManagerIamOauthAccountMessages;
   routes: {
     accountBinding: { description: string; label: string };
     audit: { description: string; label: string };
@@ -104,6 +105,87 @@ export interface ManagerIamAdminModuleMessages {
     users: { description: string; label: string };
   };
   title: string;
+}
+
+export interface ManagerIamOauthAccountMessages {
+  actions: {
+    add: string;
+    cancel: string;
+    edit: string;
+    retry: string;
+    save: string;
+    saving: string;
+  };
+  applicationAccess: {
+    description: string;
+    empty: string;
+    title: string;
+  };
+  empty: {
+    accounts: string;
+    applications: string;
+    filtered: string;
+  };
+  errors: {
+    load: string;
+    save: string;
+    status: string;
+  };
+  filters: {
+    allProviders: string;
+    clear: string;
+    searchPlaceholder: string;
+  };
+  form: {
+    appId: string;
+    appIdHint: string;
+    application: string;
+    callbackUrl: string;
+    callbackUrlHint: string;
+    createDescription: string;
+    createTitle: string;
+    displayName: string;
+    editDescription: string;
+    editTitle: string;
+    enabled: string;
+    environment: string;
+    miniProgramEnvironment: string;
+    miniProgramOriginalId: string;
+    miniProgramOriginalIdHint: string;
+    provider: string;
+    providerTenantId: string;
+    providerTenantIdHint: string;
+    secret: string;
+    secretHint: string;
+  };
+  kind: {
+    miniProgram: string;
+    oauth: string;
+    officialAccount: string;
+  };
+  loading: string;
+  status: {
+    disabled: string;
+    enabled: string;
+    missingSecret: string;
+    ready: string;
+    unbound: string;
+  };
+  summary: {
+    accounts: string;
+    applications: string;
+    enabled: string;
+    missingSecret: string;
+  };
+  table: {
+    account: string;
+    actions: string;
+    application: string;
+    credential: string;
+    environment: string;
+    platform: string;
+    status: string;
+  };
 }
 
 export interface ManagerIamAdminMessages {

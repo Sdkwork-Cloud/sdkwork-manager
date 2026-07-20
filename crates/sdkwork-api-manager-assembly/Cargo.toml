@@ -1,12 +1,12 @@
 [package]
-name = "sdkwork-manager-gateway-assembly"
+name = "sdkwork-api-manager-assembly"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
-description = "Generated gateway assembly for sdkwork-manager application HTTP plane."
+description = "Generated API assembly for sdkwork-manager application HTTP plane."
 
 [lib]
-name = "sdkwork_manager_gateway_assembly"
+name = "sdkwork_api_manager_assembly"
 path = "src/lib.rs"
 
 [dependencies]
@@ -19,5 +19,5 @@ sdkwork_order_gateway_assembly.workspace = true
 sdkwork_promotion_gateway_assembly.workspace = true
 sdkwork_payment_gateway_assembly.workspace = true
 sdkwork_membership_gateway_assembly.workspace = true
-sdkwork_routes_manager_app_api.workspace = true
-sdkwork_routes_manager_backend_api.workspace = true
+sdkwork-routes-manager-app-api = { path = "../sdkwork-routes-manager-app-api" }
+sdkwork-routes-manager-backend-api = { path = "../sdkwork-routes-manager-backend-api" }

@@ -185,6 +185,7 @@ const ADMIN_ROUTE_ICONS: Readonly<Record<string, LucideIcon>> = {
   "commerce.payment.providers": Landmark,
   "commerce.payment.reconciliation": Scale,
   "commerce.payment.records": ReceiptText,
+  "commerce.payment.refunds": RefreshCcw,
   "commerce.payment.routeRules": GitBranch,
   "commerce.payment.subMerchants": Store,
   "commerce.payment.webhooks": Webhook,

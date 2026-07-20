@@ -1,5 +1,5 @@
 [package]
-name = "sdkwork-manager-standalone-gateway"
+name = "sdkwork-api-manager-standalone-gateway"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -11,7 +11,7 @@ name = "manager-server"
 path = "src/main.rs"
 
 [dependencies]
-sdkwork_manager_gateway_assembly.workspace = true
+sdkwork_api_manager_assembly.workspace = true
 axum = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }

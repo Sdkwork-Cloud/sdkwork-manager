@@ -1,5 +1,5 @@
 import type { AdminModuleContribution } from "@sdkwork/manager-pc-core";
-import { getManagerPermissionScope } from "@sdkwork/manager-pc-core";
+import { getManagerPermissionScope, loadManagerIamSession } from "@sdkwork/manager-pc-core";
 import { getManagerIamAdminService } from "@sdkwork/manager-pc-admin-core";
 import { createSdkworkManagerDriveAdminContribution } from "@sdkwork/manager-pc-admin-drive";
 import { createSdkworkManagerIamAdminContribution } from "@sdkwork/manager-pc-admin-iam";
@@ -48,6 +48,7 @@ export function createManagerAdminModuleAssembly(locale: string): readonly Admin
     createSdkworkManagerIamAdminContribution({
       getPermissionScope: getManagerPermissionScope,
       getService: getManagerIamAdminService,
+      getTenantId: () => loadManagerIamSession()?.context?.tenantId ?? "",
       locale,
     }),
     createSdkworkManagerDriveAdminContribution(locale),

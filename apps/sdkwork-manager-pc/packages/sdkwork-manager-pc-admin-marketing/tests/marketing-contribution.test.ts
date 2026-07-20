@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@sdkwork/manager-pc-admin-core", () => ({
@@ -36,5 +38,38 @@ describe("createSdkworkManagerMarketingAdminContribution", () => {
       "audit",
       "audit",
     ]);
+    expect(contribution.commercial).toEqual({
+      entitlementKey: "sdkwork.marketing.admin",
+      releaseChannel: "stable",
+      tier: "professional",
+    });
+  });
+
+  it("exposes coupon creation as an explicit Chinese product workflow", () => {
+    const contribution = createSdkworkManagerMarketingAdminContribution("zh-CN");
+    const couponRoute = contribution.routes.find(
+      (route) => route.path === "/admin/marketing/offers",
+    );
+
+    expect(couponRoute?.label).toBe("优惠券");
+    expect(couponRoute?.description).toContain("创建优惠券");
+    expect(couponRoute?.navigationGroups?.[0]?.label).toBe("活动与优惠券");
+  });
+
+  it("keeps the commercial coupon lifecycle fields and searchable selectors", () => {
+    const source = readFileSync(
+      resolve(process.cwd(), "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx"),
+      "utf8",
+    );
+
+    expect(source).toContain("创建优惠券");
+    expect(source).toContain("maximumDiscountAmount");
+    expect(source).toContain("claimStartsAt");
+    expect(source).toContain("expiresAt");
+    expect(source).toContain("<EntityPicker");
+    expect(source).toContain("service.listCampaigns");
+    expect(source).toContain("service.listOffers");
+    expect(source).toContain("service.listCouponStocks");
+    expect(source).toContain("ownerUserIds.length > 200");
   });
 });

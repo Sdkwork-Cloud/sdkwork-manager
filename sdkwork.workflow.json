@@ -151,22 +151,22 @@
     "package": [
       {
         "name": "Package Manager release target",
-        "shell": "pwsh",
-        "run": "$ErrorActionPreference = \"Stop\"\nif ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') {\n  pnpm gateway:package:cloud\n} elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') {\n  cargo build --release -p sdkwork-manager-standalone-gateway --bin manager-server\n  pnpm build\n  pnpm release:package\n  pnpm release:validate\n} else {\n  throw \"Unsupported Manager package target: $env:SDKWORK_PACKAGE_TARGET_ID\"\n}"
+        "shell": "node",
+        "run": "import { runManagerReleasePhase } from './scripts/release/manager-release-lifecycle.mjs'; await runManagerReleasePhase('package');"
       }
     ],
     "sbom": [
       {
         "name": "Generate or verify Manager release SBOM",
-        "shell": "pwsh",
-        "run": "if ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') { pnpm gateway:sbom:cloud } elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') { pnpm release:validate } else { throw \"Unsupported Manager SBOM target: $env:SDKWORK_PACKAGE_TARGET_ID\" }"
+        "shell": "node",
+        "run": "import { runManagerReleasePhase } from './scripts/release/manager-release-lifecycle.mjs'; await runManagerReleasePhase('sbom');"
       }
     ],
     "validate": [
       {
         "name": "Validate Manager release target",
-        "shell": "pwsh",
-        "run": "$ErrorActionPreference = \"Stop\"\nif ($env:SDKWORK_PACKAGE_VARIANT -eq 'config-bundle') {\n  pnpm gateway:validate:cloud\n  pnpm gateway:sbom:cloud:validate\n} elseif ($env:SDKWORK_PACKAGE_PROFILE -eq 'server') {\n  pnpm release:validate\n} else {\n  throw \"Unsupported Manager package target: $env:SDKWORK_PACKAGE_TARGET_ID\"\n}"
+        "shell": "node",
+        "run": "import { runManagerReleasePhase } from './scripts/release/manager-release-lifecycle.mjs'; await runManagerReleasePhase('validate');"
       }
     ]
   },
@@ -183,20 +183,18 @@
       "runtimeTarget": "server"
     },
     {
-      "id": "container-noarch-cloud-container-config-bundle-tar-gz",
-      "profile": "container",
-      "platform": "container",
-      "architecture": "noarch",
-      "formats": ["tar.gz"],
+      "id": "web-universal-cloud-browser-zip",
+      "profile": "browser",
+      "platform": "web",
+      "architecture": "universal",
+      "formats": ["zip"],
       "runner": "ubuntu-24.04",
       "outputGlobs": [
-        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz",
-        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz.sha256",
-        "dist/cloud-config/sdkwork-manager-api-gateway-config-*.tar.gz.sbom.json"
+        "apps/sdkwork-manager-pc/dist/**",
+        "artifacts/release/sbom/web-universal-cloud-browser-zip.sbom.json"
       ],
       "deploymentProfile": "cloud",
-      "runtimeTarget": "container",
-      "variant": "config-bundle"
+      "runtimeTarget": "browser"
     }
   ],
   "security": {

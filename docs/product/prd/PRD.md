@@ -26,8 +26,9 @@ The supported operating loop is:
 2. Issue coupons to selected users and audit claim, stock-ledger, and discount-application records.
 3. Monitor order conversion, after-sales requests, shipments, refunds, and
    withdrawals in Trade Center.
-4. Configure payment providers, channels, routing rules, webhooks, and
-   reconciliation in Payment Center.
+4. Configure payment accounts first, then add payment methods, channels, and
+   routing rules when advanced orchestration is needed; operate payment refunds,
+   webhooks, and reconciliation in Payment Center.
 5. Manage storage capacity, provider bindings, audit, and maintenance in Drive
    Center for files used by operational workflows.
 6. Use IAM roles and permissions to separate read-only operations, campaign
@@ -85,14 +86,15 @@ Payment Center provides three production routes and one non-production route:
 
 | Route | Environment | Operator outcome |
 | --- | --- | --- |
-| `/admin/payments/monitor` | All | Monitor intents, attempts, webhook events, and reconciliation |
-| `/admin/payments/providers` | All | Manage provider accounts and sub-merchants |
+| `/admin/payments/monitor` | All | Monitor payment records, attempts, refunds, webhook events, and reconciliation |
+| `/admin/payments/providers` | All | Configure payment accounts and sub-merchants |
 | `/admin/payments/channels` | All | Manage payment methods, channels, and route rules |
 | `/admin/payments/integration` | Non-production only | Manage certificates and run sandbox/signature diagnostics |
 
 The route-level `commerce.payments.*` permission family separates read,
-create, update, delete, test, replay, reconcile, and credential-rotation
-operations. Development tools must never be exposed in a production build.
+create, update, delete, test, replay, refund, reconcile, and credential-rotation
+operations. Refund read, create, and retry permissions are independent.
+Development tools must never be exposed in a production build.
 
 ### 3.4 Drive Center
 

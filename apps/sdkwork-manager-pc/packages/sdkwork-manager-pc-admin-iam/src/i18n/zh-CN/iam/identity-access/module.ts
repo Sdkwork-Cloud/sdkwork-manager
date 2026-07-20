@@ -1,4 +1,5 @@
 import type { ManagerIamAdminModuleMessages } from "../../../../types/i18n";
+import { managerIamOauthAccountMessages } from "./oauth-accounts";
 
 export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
   channelTemplate: "{channel} 通道",
@@ -86,6 +87,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     readinessDescription: "关键控制面配置的完整度检查。",
     readinessTitle: "接入就绪度",
   },
+  oauthAccounts: managerIamOauthAccountMessages,
   routes: {
     accountBinding: { description: "配置联系方式与第三方身份绑定策略", label: "账号绑定策略" },
     audit: { description: "查看安全事件与管理员操作记录", label: "审计与安全" },

@@ -6,7 +6,7 @@ SDKWork **platform manager** capability application: unified PC manager admin co
 - Standards: `../sdkwork-specs/README.md`
 - Domain: `platform` / capability: `manager`
 - PC app: `apps/sdkwork-manager-pc/`
-- HTTP API: `crates/sdkwork-manager-standalone-gateway/`
+- HTTP API: `crates/sdkwork-api-manager-standalone-gateway/`
 - Database: `database/` via `sdkwork-database`
 
 ## Quick start

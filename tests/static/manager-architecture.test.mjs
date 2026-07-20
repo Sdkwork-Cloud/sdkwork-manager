@@ -26,11 +26,26 @@ test("component spec declares platform manager capability", () => {
   assert.equal(spec.component.capability, "manager");
 });
 
-test("package scripts follow PNPM_SCRIPT_SPEC minimum surface", () => {
+test("package scripts expose the shared SDKWork application lifecycle", () => {
   const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
-  for (const script of ["dev", "build", "test", "check", "verify", "clean"]) {
+  for (const script of [
+    "dev",
+    "dev:standalone",
+    "dev:cloud",
+    "start",
+    "stop",
+    "build",
+    "test",
+    "check",
+    "verify",
+    "clean",
+  ]) {
     assert.ok(pkg.scripts[script], `missing script: ${script}`);
   }
+  assert.equal(pkg.scripts.dev, "pnpm dev:standalone");
+  assert.equal(pkg.scripts.start, "pnpm dev:standalone");
+  assert.match(pkg.scripts["dev:standalone"], /sdkwork-app dev --deployment-profile standalone/);
+  assert.match(pkg.scripts["dev:cloud"], /sdkwork-app dev --deployment-profile cloud/);
 });
 
 test("vite production aliases include sdk-common and composed manager SDK bundles", () => {
@@ -72,8 +87,10 @@ test("Manager Vite uses the IAM development credential-entry bootstrap only outs
   assert.match(appPackage.scripts.dev, /manager-dev\.mjs/);
   assert.match(devRunner, /mergeRepoDevBootstrapAccessTokenEnv/);
   assert.match(devRunner, /apps\/sdkwork-manager-pc\/sdkwork\.app\.config\.json/);
-  assert.match(devRunner, /sdkwork-manager-standalone-gateway/);
-  assert.match(devRunner, /waitForGateway/);
+  assert.match(devRunner, /@sdkwork\/app-topology\/network-access/);
+  assert.match(devRunner, /waitForClient/);
+  assert.match(devRunner, /application started successfully/);
+  assert.doesNotMatch(devRunner, /sdkwork-api-manager-standalone-gateway/);
   assert.match(viteConfig, /sdkwork-iam-credential-entry\/src\/vite\.ts/);
   assert.match(viteConfig, /createSdkworkCredentialEntryBootstrapVitePlugin/);
   assert.match(viteConfig, /process\.env\.SDKWORK_ACCESS_TOKEN/);
@@ -95,11 +112,11 @@ test("Manager delegates IAM application provisioning to the shared bootstrap fra
 
 test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress", () => {
   const cargo = readFileSync(
-    path.join(root, "crates/sdkwork-manager-gateway-assembly/Cargo.toml"),
+    path.join(root, "crates/sdkwork-api-manager-assembly/Cargo.toml"),
     "utf8",
   );
   const assembly = readFileSync(
-    path.join(root, "crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"),
+    path.join(root, "crates/sdkwork-api-manager-assembly/src/bootstrap.rs"),
     "utf8",
   );
   const iamAssembly = readFileSync(
@@ -115,11 +132,11 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
 
 test("Manager standalone assembly mounts every backend-admin dependency behind its own ingress", () => {
   const cargo = readFileSync(
-    path.join(root, "crates/sdkwork-manager-gateway-assembly/Cargo.toml"),
+    path.join(root, "crates/sdkwork-api-manager-assembly/Cargo.toml"),
     "utf8",
   );
   const assembly = readFileSync(
-    path.join(root, "crates/sdkwork-manager-gateway-assembly/src/bootstrap.rs"),
+    path.join(root, "crates/sdkwork-api-manager-assembly/src/bootstrap.rs"),
     "utf8",
   );
   const promotionWebBootstrap = readFileSync(
@@ -168,47 +185,20 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
   );
 });
 
-test("Manager cloud gateway exposes backend-admin dependency SDK paths", () => {
-  for (const profile of ["development", "production"]) {
-    const gatewayConfig = readFileSync(
-      path.join(root, `etc/sdkwork-api-cloud-gateway.manager.${profile}.toml`),
-      "utf8",
-    );
-    assert.match(gatewayConfig, /serviceId = "sdkwork-drive-backend-api"/);
-    assert.match(gatewayConfig, /workspace = "sdkwork-drive"/);
-    assert.match(gatewayConfig, /apiPrefix = "\/backend\/v3\/api\/drive"/);
-    assert.match(
-      gatewayConfig,
-      /sdkwork_drive_gateway_assembly::assemble_application_business_router_from_env/,
-    );
-    for (const serviceId of [
-      "sdkwork-iam-backend-api",
-      "sdkwork-order-backend-api",
-      "sdkwork-promotion-backend-api",
-      "sdkwork-payment-backend-api",
-      "sdkwork-membership-backend-api",
-    ]) {
-      assert.match(gatewayConfig, new RegExp(`serviceId = "${serviceId}"`));
-    }
-    for (const apiPrefix of [
-      "/backend/v3/api/iam",
-      "/backend/v3/api/orders",
-      "/backend/v3/api/after_sales",
-      "/backend/v3/api/shipments",
-      "/backend/v3/api/account_value_packages",
-      "/backend/v3/api/token_bank_plans",
-      "/backend/v3/api/refund_requests",
-      "/backend/v3/api/withdrawal_requests",
-      "/backend/v3/api/promotions",
-      "/backend/v3/api/payments",
-      "/backend/v3/api/memberships",
-    ]) {
-      assert.match(
-        gatewayConfig,
-        new RegExp(`apiPrefix = "${apiPrefix.replaceAll("/", "\\/")}"`),
-      );
-    }
-  }
+test("Manager cloud profiles consume platform API surfaces without owning the cloud gateway", () => {
+  const topology = JSON.parse(readFileSync(
+    path.join(root, "specs/topology.spec.json"),
+    "utf8",
+  ));
+  const cloudDevelopment = topology.orchestration.profiles["cloud.development"];
+  const cloudProduction = topology.orchestration.profiles["cloud.production"];
+
+  assert.ok(cloudDevelopment.processes.every((process) => process.role === "client"));
+  assert.deepEqual(cloudProduction.processes, []);
+  assert.equal(topology.packaging.cloudConfigFiles, undefined);
+  assert.ok(topology.packaging.targets.every(
+    (target) => !target.id.includes("cloud-container-config-bundle"),
+  ));
 });
 
 test("Manager browser has no Vite API proxy and IAM SDKs use application ingress", () => {
@@ -220,17 +210,31 @@ test("Manager browser has no Vite API proxy and IAM SDKs use application ingress
     path.join(root, "apps/sdkwork-manager-pc/sdkwork.app.config.json"),
     "utf8",
   ));
-  const bindings = manifest.envBindings.sdkBaseUrls.dependencySdkBaseUrlKeys;
+  const component = JSON.parse(readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/specs/component.spec.json"),
+    "utf8",
+  ));
+  const standaloneEnv = readFileSync(
+    path.join(root, "etc/deployments/standalone.development.env"),
+    "utf8",
+  );
+  const sdkWorkspaces = component.contracts.sdkDependencies.map(
+    (dependency) => dependency.workspace,
+  );
 
   assert.doesNotMatch(viteConfig, /server:\s*\{[^}]*proxy:/s);
   assert.doesNotMatch(viteConfig, /buildManagerViteDevProxy|viteDevProxy/);
-  assert.equal(
-    bindings["sdkwork-iam-app-sdk"].appApiBaseUrlKey,
-    "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+  assert.equal(manifest.envBindings, undefined);
+  assert.equal(manifest.metadata.deploymentConfig, "etc/sdkwork.deployment.config.json");
+  assert.ok(sdkWorkspaces.includes("sdkwork-iam-app-sdk"));
+  assert.ok(sdkWorkspaces.includes("sdkwork-iam-backend-sdk"));
+  assert.match(
+    standaloneEnv,
+    /^VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL=http:\/\/127\.0\.0\.1:18092$/mu,
   );
-  assert.equal(
-    bindings["sdkwork-iam-backend-sdk"].backendApiBaseUrlKey,
-    "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL",
+  assert.match(
+    standaloneEnv,
+    /^VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL=http:\/\/127\.0\.0\.1:18092$/mu,
   );
 });
 
@@ -355,7 +359,7 @@ test("commercial entitlement routes bind read, manage, and enforcement permissio
 
 test("Manager Web Framework is the single CORS policy authority", () => {
   const gateway = readFileSync(
-    path.join(root, "crates/sdkwork-manager-standalone-gateway/src/main.rs"),
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/src/main.rs"),
     "utf8",
   );
   assert.doesNotMatch(gateway, /application_cors_layer_from_env|CorsLayer/);
@@ -393,11 +397,13 @@ test("Manager Backend SDK publishes the Rust entitlement enforcement transport",
 
 test("verify pipeline includes governance, complete frontend tests, production build, and gateway validation", () => {
   const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
-  assert.match(pkg.scripts.check, /check:governance/);
-  assert.match(pkg.scripts.verify, /test:node/);
-  assert.match(pkg.scripts.verify, /test:vitest/);
-  assert.match(pkg.scripts.verify, /pnpm build/);
-  assert.match(pkg.scripts.verify, /gateway:validate:cloud/);
+  assert.match(pkg.scripts.check, /sdkwork-app check/);
+  assert.match(pkg.scripts.verify, /sdkwork-app verify/);
+  assert.match(pkg.scripts["_sdkwork:check"], /check:governance/);
+  assert.match(pkg.scripts["_sdkwork:verify"], /test:node/);
+  assert.match(pkg.scripts["_sdkwork:verify"], /test:vitest/);
+  assert.match(pkg.scripts["_sdkwork:verify"], /pnpm build/);
+  assert.match(pkg.scripts["_sdkwork:verify"], /api:assembly:validate/);
   assert.match(pkg.scripts["sdk:check"], /sdk:rust:check/);
 });
 
@@ -459,7 +465,11 @@ test("Manager auth host keeps the ClawRouter PC geometry while using IAM-owned r
   assert.match(authStyles, /height: 100dvh/);
   assert.match(authStyles, /position: fixed/);
   assert.match(authStyles, /overflow-y: auto/);
-  assert.match(authStyles, /#e55039/);
+  assert.match(authStyles, /--manager-auth-brand:\s*#[0-9a-f]{6}/i);
+  assert.match(
+    authStyles,
+    /--sdkwork-auth-primary-button-background-color:\s*var\(--manager-auth-brand\)/,
+  );
   assert.match(authStyles, /\.sdkwork-manager-auth-main/);
   assert.match(authStyles, /letter-spacing: 0\.16em/);
   assert.match(

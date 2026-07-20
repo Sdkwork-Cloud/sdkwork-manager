@@ -3097,6 +3097,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "sdkwork-api-manager-assembly"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-drive-gateway-assembly",
+ "sdkwork-iam-gateway-assembly",
+ "sdkwork-manager-service-host",
+ "sdkwork-membership-gateway-assembly",
+ "sdkwork-order-gateway-assembly",
+ "sdkwork-payment-gateway-assembly",
+ "sdkwork-promotion-gateway-assembly",
+ "sdkwork-routes-manager-app-api",
+ "sdkwork-routes-manager-backend-api",
+ "tokio",
+]
+
+[[package]]
+name = "sdkwork-api-manager-standalone-gateway"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-api-manager-assembly",
+ "sdkwork-database-sqlx",
+ "sdkwork-iam-database-host",
+ "sdkwork-iam-embedded-application-bootstrap",
+ "sdkwork-manager-service-host",
+ "sdkwork-web-bootstrap",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "sdkwork-commerce-promotion-repository-sqlx"
 version = "0.1.0"
 dependencies = [
@@ -3555,23 +3589,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-manager-gateway-assembly"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-drive-gateway-assembly",
- "sdkwork-iam-gateway-assembly",
- "sdkwork-manager-service-host",
- "sdkwork-membership-gateway-assembly",
- "sdkwork-order-gateway-assembly",
- "sdkwork-payment-gateway-assembly",
- "sdkwork-promotion-gateway-assembly",
- "sdkwork-routes-manager-app-api",
- "sdkwork-routes-manager-backend-api",
- "tokio",
-]
-
-[[package]]
 name = "sdkwork-manager-service-host"
 version = "0.1.0"
 dependencies = [
@@ -3580,23 +3597,6 @@ dependencies = [
  "sdkwork-manager-database-host",
  "sdkwork-platform-manager-repository-sqlx",
  "sdkwork-platform-manager-service",
-]
-
-[[package]]
-name = "sdkwork-manager-standalone-gateway"
-version = "0.1.0"
-dependencies = [
- "axum",
- "sdkwork-database-sqlx",
- "sdkwork-iam-database-host",
- "sdkwork-iam-embedded-application-bootstrap",
- "sdkwork-manager-gateway-assembly",
- "sdkwork-manager-service-host",
- "sdkwork-web-bootstrap",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
@@ -4252,6 +4252,7 @@ dependencies = [
  "serde_json",
  "sha2 0.10.9",
  "sqlx",
+ "tokio",
 ]
 
 [[package]]
