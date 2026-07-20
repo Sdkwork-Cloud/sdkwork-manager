@@ -79,7 +79,7 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
   const standaloneProcesses = topology.orchestration.profiles["standalone.development"].processes;
   assert.equal(rootPackage.scripts.start, "pnpm dev:standalone");
   assert.match(rootPackage.scripts["_sdkwork:gateway:standalone"], /manager-start\.mjs/);
-  assert.match(rootPackage.scripts["_sdkwork:client:browser"], /sdkwork-manager-pc dev/);
+  assert.match(rootPackage.scripts["_sdkwork:client:browser"], /manager-dev\.mjs/);
   assert.ok(standaloneProcesses.some(
     (process) => process.role === "api-standalone-gateway"
       && process.script === "_sdkwork:gateway:standalone",
