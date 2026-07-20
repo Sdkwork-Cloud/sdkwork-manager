@@ -126,7 +126,7 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
   );
 
   assert.match(cargo, /sdkwork_iam_gateway_assembly\.workspace = true/);
-  assert.match(assembly, /sdkwork_iam_gateway_assembly::assemble_application_business_router/);
+  assert.match(assembly, /sdkwork_iam_gateway_assembly::assemble_api_router/);
   assert.match(iamAssembly, /sdkwork_routes_iam_app_api::gateway_mount/);
   assert.match(iamAssembly, /sdkwork_routes_iam_backend_api::gateway_mount/);
 });

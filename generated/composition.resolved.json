@@ -571,7 +571,7 @@
       {
         "name": "sdkwork-api-manager-assembly",
         "type": "rust-api-assembly",
-        "root": "sdkwork-manager/crates/sdkwork-api-manager-assembly",
+        "root": "crates/sdkwork-api-manager-assembly",
         "domain": "application",
         "capability": "api-assembly",
         "surface": "api-assembly",
@@ -632,7 +632,7 @@
             "apiPrefix": "/app/v3/api",
             "runtimeMode": "same-origin-mounted",
             "cargoDependency": "sdkwork_iam_gateway_assembly",
-            "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+            "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_business_router"
           },
           {
             "workspace": "sdkwork-iam",
@@ -642,7 +642,7 @@
             "apiPrefix": "/backend/v3/api/iam",
             "runtimeMode": "same-origin-mounted",
             "cargoDependency": "sdkwork_iam_gateway_assembly",
-            "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+            "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_business_router"
           },
           {
             "workspace": "sdkwork-drive",
@@ -709,15 +709,15 @@
       {
         "name": "sdkwork-api-manager-standalone-gateway",
         "type": "rust-api-standalone-gateway",
-        "root": "sdkwork-manager/crates/sdkwork-api-manager-standalone-gateway",
+        "root": "crates/sdkwork-api-manager-standalone-gateway",
         "domain": "platform",
-        "capability": "manager-standalone-gateway",
-        "surface": "application.public-ingress",
+        "capability": "api-gateway",
+        "surface": "gateway-api",
         "languages": [
           "rust"
         ],
         "source": "crates/sdkwork-api-manager-standalone-gateway/specs/component.spec.json",
-        "layerRole": null,
+        "layerRole": "runtime-gateway",
         "publicExports": [],
         "providedPorts": [],
         "requiredPorts": [],
@@ -1236,7 +1236,7 @@
           "apiPrefix": "/app/v3/api",
           "runtimeMode": "same-origin-mounted",
           "cargoDependency": "sdkwork_iam_gateway_assembly",
-          "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+          "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_business_router"
         },
         {
           "component": "sdkwork-api-manager-assembly",
@@ -1248,7 +1248,7 @@
           "apiPrefix": "/backend/v3/api/iam",
           "runtimeMode": "same-origin-mounted",
           "cargoDependency": "sdkwork_iam_gateway_assembly",
-          "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+          "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_business_router"
         },
         {
           "component": "sdkwork-api-manager-assembly",

@@ -6,7 +6,7 @@
     "displayName": "SDKWork Manager API Assembly",
     "version": "0.1.0",
     "type": "rust-api-assembly",
-    "root": "sdkwork-manager/crates/sdkwork-api-manager-assembly",
+    "root": "crates/sdkwork-api-manager-assembly",
     "domain": "application",
     "capability": "api-assembly",
     "surface": "api-assembly",
@@ -94,7 +94,7 @@
         "apiPrefix": "/app/v3/api",
         "runtimeMode": "same-origin-mounted",
         "cargoDependency": "sdkwork_iam_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_api_router"
       },
       {
         "workspace": "sdkwork-iam",
@@ -104,7 +104,7 @@
         "apiPrefix": "/backend/v3/api/iam",
         "runtimeMode": "same-origin-mounted",
         "cargoDependency": "sdkwork_iam_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_application_business_router"
+        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_api_router"
       },
       {
         "workspace": "sdkwork-drive",
@@ -179,7 +179,8 @@
       "SDKWORK_PAYMENT_DATABASE_SEED_PROFILE",
       "SDKWORK_PAYMENT_DATABASE_SEED_LOCALE",
       "SDKWORK_MEMBERSHIP_DATABASE_URL"
-    ]
+    ],
+    "layerRole": "runtime-composition"
   },
   "verification": {
     "commands": [
