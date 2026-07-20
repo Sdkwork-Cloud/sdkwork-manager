@@ -20,8 +20,8 @@ test("Manager workflow packages the standalone server instead of skipping it", (
   assert.match(lifecycleRunner, /runPnpm\("_sdkwork:release:package:standalone"\)/);
   assert.match(lifecycleRunner, /runPnpm\("_sdkwork:release:validate:standalone"\)/);
   assert.doesNotMatch(packageScript, /pnpm release:(?:package|validate)(?:\s|$)/);
-  assert.match(rootPackage.scripts["release:package:standalone"], /sdkwork-app release:package --target-id linux-x64-standalone-server-tar-gz/);
-  assert.match(rootPackage.scripts["release:package:cloud"], /sdkwork-app release:package --target-id web-universal-cloud-browser-zip/);
+  assert.match(rootPackage.scripts["release:package:standalone"], /sdkwork-app release:package --deployment-profile standalone/);
+  assert.match(rootPackage.scripts["release:package:cloud"], /sdkwork-app release:package --deployment-profile cloud/);
   for (const forbiddenScript of [
     "gateway:package:cloud",
     "gateway:validate:cloud",

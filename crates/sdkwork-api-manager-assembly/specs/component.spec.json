@@ -93,8 +93,8 @@
         "surface": "app-api",
         "apiPrefix": "/app/v3/api",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_iam_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_api_router"
+        "cargoDependency": "sdkwork_api_iam_assembly",
+        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_business_router"
       },
       {
         "workspace": "sdkwork-iam",
@@ -103,8 +103,8 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/iam",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_iam_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_iam_gateway_assembly::assemble_api_router"
+        "cargoDependency": "sdkwork_api_iam_assembly",
+        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_business_router"
       },
       {
         "workspace": "sdkwork-drive",

@@ -121,12 +121,12 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
     "utf8",
   );
   const iamAssembly = readFileSync(
-    path.join(root, "../sdkwork-iam/crates/sdkwork-iam-gateway-assembly/src/bootstrap.rs"),
+    path.join(root, "../sdkwork-iam/crates/sdkwork-api-iam-assembly/src/bootstrap.rs"),
     "utf8",
   );
 
-  assert.match(cargo, /sdkwork_iam_gateway_assembly\.workspace = true/);
-  assert.match(assembly, /sdkwork_iam_gateway_assembly::assemble_api_router/);
+  assert.match(cargo, /sdkwork_api_iam_assembly\.workspace = true/);
+  assert.match(assembly, /sdkwork_api_iam_assembly::assemble_business_router/);
   assert.match(iamAssembly, /sdkwork_routes_iam_app_api::gateway_mount/);
   assert.match(iamAssembly, /sdkwork_routes_iam_backend_api::gateway_mount/);
 });
