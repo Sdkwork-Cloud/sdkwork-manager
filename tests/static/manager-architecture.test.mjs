@@ -310,6 +310,49 @@ test("Manager operation controls use wildcard-aware IAM permission checks", () =
     const contribution = readFileSync(path.join(root, relativePath), "utf8");
     assert.doesNotMatch(contribution, /getManagerPermissionScope\(\)\.includes\(/);
   }
+
+  const iamContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam/src/index.tsx"),
+    "utf8",
+  );
+  assert.match(iamContribution, /hasAdminScopePermission/);
+  assert.doesNotMatch(iamContribution, /permissionScope\.includes\(/);
+});
+
+test("Manager IAM permission catalogs remain route-lazy", () => {
+  const iamContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam/src/index.tsx"),
+    "utf8",
+  );
+
+  assert.match(iamContribution, /import\("@sdkwork\/iam-pc-admin-permission"\)/);
+  assert.match(iamContribution, /import\("\.\/authorization\/IamCatalogWorkspace"\)/);
+  assert.doesNotMatch(
+    iamContribution,
+    /from\s+["']@sdkwork\/iam-pc-admin-permission["']/,
+  );
+  assert.doesNotMatch(
+    iamContribution,
+    /from\s+["']\.\/authorization\/IamCatalogWorkspace["']/,
+  );
+});
+
+test("Manager IAM OAuth operations remain route-lazy", () => {
+  const iamContribution = readFileSync(
+    path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-iam/src/index.tsx"),
+    "utf8",
+  );
+
+  assert.match(iamContribution, /import\("\.\/oauth\/IamOauthAccountWorkspace"\)/);
+  assert.match(iamContribution, /import\("\.\/services\/oauthAccountController"\)/);
+  assert.doesNotMatch(
+    iamContribution,
+    /from\s+["']\.\/oauth\/IamOauthAccountWorkspace["']/,
+  );
+  assert.doesNotMatch(
+    iamContribution,
+    /from\s+["']\.\/services\/oauthAccountController["']/,
+  );
 });
 
 test("commercial modules declare sellable metadata without blocking Manager login", () => {

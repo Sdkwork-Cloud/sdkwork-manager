@@ -22,6 +22,7 @@ describe("manager IAM adapter i18n catalog", () => {
       "身份提供商",
       "资源访问",
       "组织管理",
+      "组织结构",
       "权限",
       "策略",
       "角色绑定",

@@ -100,6 +100,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     oauthProviders: { description: "维护提供商目录与租户连接", label: "身份提供商" },
     oauthResources: { description: "管理开放平台、资源账号及其授权", label: "资源访问" },
     organizations: { description: "管理组织架构、部门与成员关系", label: "组织管理" },
+    organizationStructure: { description: "管理所选组织的部门层级与部门成员", label: "组织结构" },
     permissions: { description: "定义管理员可执行的资源操作", label: "权限" },
     policies: { description: "维护可复用的授权策略定义", label: "策略" },
     roleBindings: { description: "在受控范围内为主体分配角色", label: "角色绑定" },

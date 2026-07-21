@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type {
   AccountValuePackageResponse,
   AccountValueRequestResponse,
@@ -210,26 +211,41 @@ function TradeTable<T>({
           </tbody>
         </table>
       </div>
-      <div className="manager-operations-pagination">
-        <button
-          disabled={state.page <= 1 || state.loading}
-          onClick={() => state.setPage((value) => value - 1)}
-          type="button"
-        >
-          {messages.previous}
-        </button>
-        <span>
-          {state.page} / {Math.max(1, state.result.totalPages)}
+      <div
+        aria-label={`${state.page} / ${Math.max(1, state.result.totalPages)}`}
+        className="manager-operations-pagination"
+        role="navigation"
+      >
+        <span className="manager-operations-pagination__summary">
+          {state.result.totalItems.toLocaleString()} {language === "zh-CN" ? "条记录" : "records"}
         </span>
-        <button
-          disabled={
-            state.page >= Math.max(1, state.result.totalPages) || state.loading
-          }
-          onClick={() => state.setPage((value) => value + 1)}
-          type="button"
-        >
-          {messages.next}
-        </button>
+        <div className="manager-operations-pagination__controls">
+          <button
+            aria-label={messages.previous}
+            disabled={state.page <= 1 || state.loading}
+            onClick={() => state.setPage((value) => value - 1)}
+            title={messages.previous}
+            type="button"
+          >
+            <ChevronLeft aria-hidden="true" />
+          </button>
+          <span className="manager-operations-pagination__page" aria-hidden="true">
+            <strong>{state.page}</strong>
+            <span>/</span>
+            <span>{Math.max(1, state.result.totalPages)}</span>
+          </span>
+          <button
+            aria-label={messages.next}
+            disabled={
+              state.page >= Math.max(1, state.result.totalPages) || state.loading
+            }
+            onClick={() => state.setPage((value) => value + 1)}
+            title={messages.next}
+            type="button"
+          >
+            <ChevronRight aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </section>
   );

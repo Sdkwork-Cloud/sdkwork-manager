@@ -100,6 +100,7 @@ export const managerIamAdminModuleMessages: ManagerIamAdminModuleMessages = {
     oauthProviders: { description: "Maintain the provider catalog and tenant connections", label: "Identity providers" },
     oauthResources: { description: "Manage operator platforms, resource accounts, and authorizations", label: "Resource access" },
     organizations: { description: "Manage organization structure, departments, and memberships", label: "Organization management" },
+    organizationStructure: { description: "Manage the department hierarchy and members of the selected organization", label: "Organization structure" },
     permissions: { description: "Define the resource actions available to administrators", label: "Permissions" },
     policies: { description: "Maintain reusable authorization policy definitions", label: "Policies" },
     roleBindings: { description: "Assign roles to principals within a controlled scope", label: "Role bindings" },

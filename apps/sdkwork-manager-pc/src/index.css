@@ -1321,6 +1321,10 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
   border-radius: 8px;
 }
 
+.manager-operations-table-wrap:has(+ .manager-operations-pagination) {
+  border-radius: 8px 8px 0 0;
+}
+
 .manager-operations-table-wrap:focus-visible,
 .manager-iam-table-wrap:focus-visible {
   border-color: var(--sdk-color-border-focus);
@@ -1539,18 +1543,56 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 .manager-operations-pagination {
   display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
-  min-height: 46px;
+  gap: 12px;
+  min-height: 52px;
   margin-top: -14px;
-  padding: 8px 10px;
+  padding: 9px 12px;
   color: var(--sdk-color-text-secondary);
   font-size: 12px;
-  background: var(--sdk-color-surface-panel-muted);
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--sdk-color-surface-panel-muted) 72%, var(--sdk-color-surface-panel));
   border: 1px solid var(--sdk-color-border-default);
   border-top: 0;
   border-radius: 0 0 8px 8px;
+}
+
+.manager-operations-pagination__summary {
+  min-width: 0;
+  margin-right: auto;
+  overflow: hidden;
+  color: var(--sdk-color-text-muted);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.manager-operations-pagination__controls {
+  display: inline-grid;
+  grid-template-columns: 34px minmax(68px, auto) 34px;
+  align-items: center;
+  gap: 4px;
+}
+
+.manager-operations-pagination__page {
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
+  color: var(--sdk-color-text-muted);
+  background: var(--sdk-color-surface-panel);
+  border: 1px solid var(--sdk-color-border-default);
+  border-radius: 5px;
+}
+
+.manager-operations-pagination__page strong {
+  color: var(--sdk-color-text-primary);
+  font-weight: 750;
 }
 
 .manager-operations-pagination button:disabled {
@@ -1559,8 +1601,20 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 }
 
 .manager-operations-pagination button {
-  width: 32px;
+  width: auto;
+  min-width: 32px;
+}
+
+.manager-operations-pagination__controls button {
+  width: 34px;
+  min-width: 34px;
+  min-height: 34px;
   padding: 0;
+}
+
+.manager-operations-pagination__controls button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .manager-session-check {
@@ -1774,6 +1828,20 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
   .manager-operations-pagination {
     justify-content: space-between;
+  }
+
+  .manager-operations-pagination:has(.manager-operations-pagination__controls) {
+    align-items: stretch;
+  }
+
+  .manager-operations-pagination__summary {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .manager-operations-pagination__controls {
+    width: 100%;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
   }
 
   .manager-inline-fields {

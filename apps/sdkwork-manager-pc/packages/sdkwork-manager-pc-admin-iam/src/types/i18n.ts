@@ -97,6 +97,7 @@ export interface ManagerIamAdminModuleMessages {
     oauthProviders: { description: string; label: string };
     oauthResources: { description: string; label: string };
     organizations: { description: string; label: string };
+    organizationStructure: { description: string; label: string };
     permissions: { description: string; label: string };
     policies: { description: string; label: string };
     roleBindings: { description: string; label: string };
