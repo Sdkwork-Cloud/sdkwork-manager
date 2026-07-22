@@ -2,16 +2,15 @@ use axum::extract::State;
 use axum::response::Response;
 use sdkwork_routes_manager_common::{
     envelope::{preference_resource, ManagerPreferenceItem},
-    finish_api_json, ApiProblem, SdkWorkResourceData,
+    finish_api_json, parse_context_uuid, ApiProblem, SdkWorkResourceData,
 };
 use sdkwork_web_core::WebRequestContext;
 use serde::Deserialize;
-use uuid::Uuid;
 
 use crate::routes::ManagerAppState;
 
 #[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct UpdatePreferencesBody {
     pub pinned_app_keys: Vec<String>,
     pub theme: String,
@@ -36,8 +35,8 @@ async fn retrieve_preferences_inner(
     ctx: &WebRequestContext,
     state: ManagerAppState,
 ) -> Result<SdkWorkResourceData<ManagerPreferenceItem>, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
-    let user_id = parse_uuid(ctx.user_id(), "user_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
+    let user_id = parse_context_uuid(ctx.user_id(), "user_id")?;
 
     let preference = state
         .host
@@ -57,8 +56,8 @@ async fn update_preferences_inner(
     state: ManagerAppState,
     body: UpdatePreferencesBody,
 ) -> Result<SdkWorkResourceData<ManagerPreferenceItem>, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
-    let user_id = parse_uuid(ctx.user_id(), "user_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
+    let user_id = parse_context_uuid(ctx.user_id(), "user_id")?;
 
     let preference = state
         .host
@@ -80,11 +79,6 @@ async fn update_preferences_inner(
     }))
 }
 
-fn parse_uuid(value: Option<&str>, field: &str) -> Result<Uuid, ApiProblem> {
-    let raw = value.ok_or_else(|| ApiProblem::unauthorized(format!("missing {field}")))?;
-    Uuid::parse_str(raw).map_err(|_| ApiProblem::bad_request(format!("invalid {field}")))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -95,5 +89,12 @@ mod tests {
             serde_json::from_str(r#"{"pinnedAppKeys":["drive"],"theme":"dark"}"#).expect("json");
         assert_eq!(body.theme, "dark");
         assert_eq!(body.pinned_app_keys, vec!["drive".to_owned()]);
+    }
+
+    #[test]
+    fn update_body_rejects_unknown_fields() {
+        let result: Result<UpdatePreferencesBody, _> =
+            serde_json::from_str(r#"{"pinnedAppKeys":["drive"],"theme":"dark","extra":1}"#);
+        assert!(result.is_err());
     }
 }

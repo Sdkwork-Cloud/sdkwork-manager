@@ -46,7 +46,10 @@
       "."
     ],
     "runtimeEntrypoints": [
-      "sdkwork_api_manager_assembly::assemble_api_router"
+      "sdkwork_api_manager_assembly::assemble_api_router",
+      "sdkwork_api_manager_assembly::assemble_api_router_from_env",
+      "sdkwork_api_manager_assembly::assemble_business_routes",
+      "sdkwork_api_manager_assembly::assemble_business_routes_from_env"
     ],
     "routeManifest": "assembly-manifest.json",
     "sdkClients": [],

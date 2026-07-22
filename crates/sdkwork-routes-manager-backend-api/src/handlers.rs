@@ -8,12 +8,12 @@ use sdkwork_platform_manager_service::{
 };
 use sdkwork_routes_manager_common::{
     admin_preference_page, commercial_entitlement_resource, envelope::AdminPreferenceItem,
-    finish_api_json, ApiProblem, CommercialEntitlementDecisionItem, CommercialEntitlementItem,
-    SdkWorkPageData, SdkWorkResourceData,
+    finish_api_json, parse_context_uuid, required_context_value, ApiProblem,
+    CommercialEntitlementDecisionItem, CommercialEntitlementItem, SdkWorkPageData,
+    SdkWorkResourceData,
 };
 use sdkwork_web_core::WebRequestContext;
 use serde::Deserialize;
-use uuid::Uuid;
 
 use crate::routes::ManagerBackendState;
 
@@ -78,7 +78,7 @@ async fn retrieve_commercial_entitlement_inner(
     ctx: &WebRequestContext,
     state: ManagerBackendState,
 ) -> Result<SdkWorkResourceData<CommercialEntitlementItem>, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
     let app_id = required_context_value(ctx.app_id(), "app_id")?;
     let snapshot = state
         .host
@@ -94,7 +94,7 @@ async fn update_commercial_entitlement_inner(
     state: ManagerBackendState,
     request: UpdateCommercialEntitlementRequest,
 ) -> Result<SdkWorkResourceData<CommercialEntitlementItem>, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
     let updated_by = required_context_value(ctx.user_id(), "user_id")?.to_owned();
     let expected_version = request
         .expected_version
@@ -123,7 +123,7 @@ async fn decide_commercial_entitlement_inner(
     state: ManagerBackendState,
     request: DecideCommercialEntitlementRequest,
 ) -> Result<CommercialEntitlementDecisionItem, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
     let decision = state
         .host
         .manager_service()
@@ -137,7 +137,7 @@ async fn list_preferences_admin_inner(
     ctx: &WebRequestContext,
     state: ManagerBackendState,
 ) -> Result<SdkWorkPageData<AdminPreferenceItem>, ApiProblem> {
-    let tenant_id = parse_uuid(ctx.tenant_id(), "tenant_id")?;
+    let tenant_id = parse_context_uuid(ctx.tenant_id(), "tenant_id")?;
     let items = state
         .host
         .manager_service()
@@ -157,17 +157,6 @@ fn map_admin_items(items: Vec<ManagerPreferenceSummary>) -> Vec<AdminPreferenceI
             pinned_count: item.pinned_count,
         })
         .collect()
-}
-
-fn parse_uuid(value: Option<&str>, field: &str) -> Result<Uuid, ApiProblem> {
-    let raw = value.ok_or_else(|| ApiProblem::unauthorized(format!("missing {field}")))?;
-    Uuid::parse_str(raw).map_err(|_| ApiProblem::bad_request(format!("invalid {field}")))
-}
-
-fn required_context_value<'a>(value: Option<&'a str>, field: &str) -> Result<&'a str, ApiProblem> {
-    value
-        .filter(|value| !value.trim().is_empty())
-        .ok_or_else(|| ApiProblem::unauthorized(format!("missing {field}")))
 }
 
 fn map_snapshot(snapshot: CommercialEntitlementSnapshot) -> CommercialEntitlementItem {

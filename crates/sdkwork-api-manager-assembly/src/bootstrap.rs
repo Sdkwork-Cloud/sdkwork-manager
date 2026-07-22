@@ -10,7 +10,7 @@ pub struct ApiAssembly {
 
 pub async fn assemble_api_router(host: Arc<ManagerServiceHost>) -> Result<ApiAssembly, String> {
     let mut router = Router::new();
-    let iam = sdkwork_api_iam_assembly::assemble_business_router().await;
+    let iam = sdkwork_api_iam_assembly::assemble_api_router().await;
     router = router.merge(iam.router);
 
     let drive = sdkwork_api_drive_assembly::assemble_backend_business_router_from_env()

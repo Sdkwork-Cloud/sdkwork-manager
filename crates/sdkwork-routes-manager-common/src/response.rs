@@ -8,6 +8,7 @@ use sdkwork_web_core::{
     problem_response, WebFrameworkError, WebFrameworkErrorKind, WebRequestContext,
 };
 use serde::Serialize;
+use uuid::Uuid;
 
 pub type ApiResult<T> = Result<T, ApiProblem>;
 
@@ -108,4 +109,17 @@ pub fn finish_api_json<T: Serialize>(ctx: &WebRequestContext, result: ApiResult<
 
 pub fn service_result<T, E: Into<ApiProblem>>(result: Result<T, E>) -> ApiResult<T> {
     result.map_err(Into::into)
+}
+
+/// 从请求上下文中解析必填的 UUID，缺失返回 401，格式错误返回 400。
+pub fn parse_context_uuid(value: Option<&str>, field: &str) -> Result<Uuid, ApiProblem> {
+    let raw = value.ok_or_else(|| ApiProblem::unauthorized(format!("missing {field}")))?;
+    Uuid::parse_str(raw).map_err(|_| ApiProblem::bad_request(format!("invalid {field}")))
+}
+
+/// 从请求上下文中提取必填的非空字符串，缺失或空白返回 401。
+pub fn required_context_value<'a>(value: Option<&'a str>, field: &str) -> Result<&'a str, ApiProblem> {
+    value
+        .filter(|value| !value.trim().is_empty())
+        .ok_or_else(|| ApiProblem::unauthorized(format!("missing {field}")))
 }
