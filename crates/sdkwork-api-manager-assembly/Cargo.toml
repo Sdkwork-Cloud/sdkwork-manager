@@ -14,6 +14,7 @@ axum.workspace = true
 tokio.workspace = true
 sdkwork_manager_service_host.workspace = true
 sdkwork_api_iam_assembly.workspace = true
+sdkwork-iam-web-adapter.workspace = true
 sdkwork_api_drive_assembly.workspace = true
 sdkwork_api_order_assembly.workspace = true
 sdkwork_api_promotion_assembly.workspace = true

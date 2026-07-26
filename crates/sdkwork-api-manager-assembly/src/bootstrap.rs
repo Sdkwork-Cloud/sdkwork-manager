@@ -10,8 +10,19 @@ pub struct ApiAssembly {
 
 pub async fn assemble_api_router(host: Arc<ManagerServiceHost>) -> Result<ApiAssembly, String> {
     let mut router = Router::new();
-    let iam = sdkwork_api_iam_assembly::assemble_api_router().await;
-    router = router.merge(iam.router);
+    let (iam, iam_host) = sdkwork_api_iam_assembly::bootstrap_iam_for_application()
+        .await
+        .map_err(|error| format!("assemble sdkwork-iam routes failed: {error}"))?;
+    let iam_resolver = sdkwork_iam_web_adapter::IamWebRequestContextResolver::from_database_pool(
+        Some(iam_host.pool().clone()),
+    );
+    router = router.merge(
+        sdkwork_iam_web_adapter::wrap_router_with_iam_owner_web_framework(
+            iam.router,
+            iam_resolver,
+            iam.route_manifest,
+        ),
+    );
 
     let drive = sdkwork_api_drive_assembly::assemble_backend_business_router_from_env()
         .await
