@@ -7,7 +7,6 @@ import {
   type SdkworkAppbasePcAuthRuntimeComposition,
   type SdkworkAppbasePcAuthRuntimeSdkClient,
 } from "@sdkwork/auth-runtime-pc-react";
-import { wrapCredentialEntryClient } from "@sdkwork/iam-credential-entry";
 import { resolveIamAppApiBaseUrl, readSdkBaseUrlEnvValue } from "@sdkwork/manager-client-core";
 
 import {
@@ -89,11 +88,7 @@ function createManagerIamRuntimeComposition(): SdkworkAppbasePcAuthRuntimeCompos
     baseUrls: {
       appbaseAppApiBaseUrl: resolveIamAppApiBaseUrl(),
     },
-    createAppbaseAppClient: () =>
-      wrapCredentialEntryClient(getAppbaseAppSdkClient(), { tokenManager }),
-    credentialEntry: {
-      skipWrap: true,
-    },
+    createAppbaseAppClient: getAppbaseAppSdkClient,
     hooks: {
       onSessionChanged: () => {
         resetManagerAuthenticatedSdkClients();

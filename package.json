@@ -6,6 +6,8 @@
   "type": "module",
   "packageManager": "pnpm@10.33.0",
   "scripts": {
+    "workflow:materialize-client-env": "node ../sdkwork-specs/tools/materialize-client-env.mjs --root .",
+    "check:client-env": "node ../sdkwork-specs/tools/materialize-client-env.mjs --root . --check",
     "stop": "pnpm exec sdkwork-app stop",
     "dev": "pnpm dev:standalone",
     "build": "pnpm exec sdkwork-app build",

@@ -2,6 +2,9 @@
 
 `sdkwork.deployment.config.json` indexes the supported deployment profiles. The profile files under
 `deployments/` are the checked-in source for public origins, bind addresses, and SDK Base URLs.
+The canonical matrix contains `standalone|cloud` crossed with
+`development|test|staging|production`. Run `pnpm workflow:materialize-client-env` after changing a
+profile and `pnpm check:client-env` to verify the tracked PC env projections.
 
 Local `.env` files and process environment variables may override these values. Secrets and access
 tokens must not be committed under `etc/`. Validate the topology with `pnpm topology:validate`.

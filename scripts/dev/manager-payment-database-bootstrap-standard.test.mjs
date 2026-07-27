@@ -24,7 +24,12 @@ test("Manager standalone production requires an explicit Payment seed opt-in", (
 });
 
 test("Manager cloud profiles do not configure local Payment database seeding", () => {
-  for (const profileId of ["cloud.development", "cloud.production"]) {
+  for (const profileId of [
+    "cloud.development",
+    "cloud.test",
+    "cloud.staging",
+    "cloud.production",
+  ]) {
     const profile = resolveManagerProfileEnv({ SDKWORK_MANAGER_PROFILE_ID: profileId });
 
     assert.equal(profile.SDKWORK_PAYMENT_DATABASE_SEED_ON_BOOT, undefined, profileId);

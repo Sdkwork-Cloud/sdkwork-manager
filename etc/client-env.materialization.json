@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.client-env-materialization",
+  "application": "sdkwork-manager",
+  "command": "pnpm workflow:materialize-client-env",
+  "sourceIdentity": {
+    "deploymentProfileKeys": ["SDKWORK_DEPLOYMENT_PROFILE", "SDKWORK_MANAGER_DEPLOYMENT_PROFILE"],
+    "environmentKeys": ["SDKWORK_ENVIRONMENT", "SDKWORK_MANAGER_ENVIRONMENT"],
+    "profileIdKeys": ["SDKWORK_PROFILE_ID", "SDKWORK_MANAGER_PROFILE_ID"]
+  },
+  "surfaces": [
+    {
+      "id": "sdkwork-manager-pc",
+      "root": "apps/sdkwork-manager-pc",
+      "format": "vite",
+      "runtimeTarget": "browser",
+      "identityPrefixes": ["VITE_SDKWORK_MANAGER"],
+      "bindings": {
+        "VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL": ["VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL", "SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL"],
+        "VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL": ["VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL", "SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL"]
+      }
+    }
+  ]
+}

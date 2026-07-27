@@ -15,6 +15,8 @@
     "environment": {
       "allowed": [
         "development",
+        "test",
+        "staging",
         "production"
       ]
     }
@@ -27,8 +29,12 @@
   },
   "profileFiles": {
     "standalone.development": "etc/deployments/standalone.development.env",
+    "standalone.test": "etc/deployments/standalone.test.env",
+    "standalone.staging": "etc/deployments/standalone.staging.env",
     "standalone.production": "etc/deployments/standalone.production.env",
     "cloud.development": "etc/deployments/cloud.development.env",
+    "cloud.test": "etc/deployments/cloud.test.env",
+    "cloud.staging": "etc/deployments/cloud.staging.env",
     "cloud.production": "etc/deployments/cloud.production.env"
   },
   "envKeys": {
@@ -137,6 +143,22 @@
           "application.public-ingress",
           "platform.api-gateway"
         ]
+      },
+      "standalone.test": {
+        "processes": [],
+        "healthSurfaces": []
+      },
+      "standalone.staging": {
+        "processes": [],
+        "healthSurfaces": []
+      },
+      "cloud.test": {
+        "processes": [],
+        "healthSurfaces": []
+      },
+      "cloud.staging": {
+        "processes": [],
+        "healthSurfaces": []
       },
       "cloud.production": {
         "processes": [],
