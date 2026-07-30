@@ -38,7 +38,7 @@ const DIR_RENAMES = [
   ["configs/sdkwork-api-cloud-gateway.portal.development.toml", "etc/sdkwork-api-cloud-gateway.manager.development.toml"],
   ["configs/sdkwork-api-cloud-gateway.portal.production.toml", "etc/sdkwork-api-cloud-gateway.manager.production.toml"],
   ["database/ddl/baseline/postgres/0001_portal_baseline.sql", "database/ddl/baseline/postgres/0001_manager_baseline.sql"],
-  ["database/ddl/baseline/sqlite/0001_portal_baseline.sql", "database/ddl/baseline/sqlite/0001_manager_baseline.sql"],
+  ["tests/fixtures/database/sqlite/ddl/baseline/0001_portal_baseline.sql", "tests/fixtures/database/sqlite/ddl/baseline/0001_manager_baseline.sql"],
   ["apis/app-api/manager/portal-app-api.openapi.json", "apis/app-api/manager/manager-app-api.openapi.json"],
   ["apis/backend-api/manager/portal-backend-api.openapi.json", "apis/backend-api/manager/manager-backend-api.openapi.json"],
 ];

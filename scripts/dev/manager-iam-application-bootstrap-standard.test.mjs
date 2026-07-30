@@ -114,19 +114,19 @@ test("Manager standalone profile supplies the IAM and Manager CORS allowlists", 
     profileEnv.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
     profileEnv.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
   );
-  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_URL, undefined);
-  assert.equal(profileEnv.SDKWORK_DRIVE_DATABASE_MAX_CONNECTIONS, undefined);
+  assert.equal(profileEnv.SDKWORK_DATABASE_URL, undefined);
+  assert.equal(profileEnv.SDKWORK_DATABASE_MAX_CONNECTIONS, undefined);
   assert.equal(profileEnv.SDKWORK_DATABASE_TEMPORARY_ANY_POOL_EXCEPTION, "true");
   assert.equal(profileEnv.SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED, "true");
 });
 
 test("Manager runtime environment preserves process overrides", () => {
   const runtimeEnv = resolveManagerRuntimeEnv({
-    SDKWORK_CLAW_DATABASE_HOST: "database.internal",
+    SDKWORK_DATABASE_HOST: "database.internal",
     SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED: "false",
   });
 
-  assert.equal(runtimeEnv.SDKWORK_CLAW_DATABASE_HOST, "database.internal");
+  assert.equal(runtimeEnv.SDKWORK_DATABASE_HOST, "database.internal");
   assert.equal(runtimeEnv.SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED, "false");
 });
 
@@ -148,9 +148,9 @@ test("WSL PostgreSQL proxy lifecycle is declared through the topology framework"
     id: "manager-wsl-postgres-portproxy",
     driver: "windows-wsl-tcp-portproxy",
     enabledEnv: "SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED",
-    listenAddressEnv: "SDKWORK_CLAW_DATABASE_HOST",
+    listenAddressEnv: "SDKWORK_DATABASE_HOST",
     listenAddress: "127.0.0.1",
-    listenPortEnv: "SDKWORK_CLAW_DATABASE_PORT",
+    listenPortEnv: "SDKWORK_DATABASE_PORT",
     listenPort: 5432,
     distributionEnv: "SDKWORK_MANAGER_WSL_DISTRIBUTION",
     distribution: "Ubuntu-22.04",

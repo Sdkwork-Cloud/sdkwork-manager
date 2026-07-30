@@ -3,19 +3,28 @@
   "kind": "sdkwork.database.table-registry",
   "tables": [
     {
-      "name": "platform_manager_preference",
       "prefix": "platform_",
-      "domain": "manager"
+      "domain": "manager",
+      "table_name": "platform_manager_preference",
+      "owner": "manager-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
     },
     {
-      "name": "platform_manager_entitlement_snapshot",
       "prefix": "platform_",
-      "domain": "manager"
+      "domain": "manager",
+      "table_name": "platform_manager_entitlement_snapshot",
+      "owner": "manager-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
     },
     {
-      "name": "platform_manager_entitlement_grant",
       "prefix": "platform_",
-      "domain": "manager"
+      "domain": "manager",
+      "table_name": "platform_manager_entitlement_grant",
+      "owner": "manager-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
     }
   ]
 }

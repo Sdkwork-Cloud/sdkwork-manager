@@ -1,5 +1,6 @@
 schema_version: 1
 kind: sdkwork.database.schema
+database_role: authoritative-server
 module_id: manager
 contract_version: 1.1.0
 owner_team: manager-platform

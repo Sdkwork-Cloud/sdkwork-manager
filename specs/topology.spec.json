@@ -112,9 +112,9 @@
             "id": "manager-wsl-postgres-portproxy",
             "driver": "windows-wsl-tcp-portproxy",
             "enabledEnv": "SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED",
-            "listenAddressEnv": "SDKWORK_CLAW_DATABASE_HOST",
+            "listenAddressEnv": "SDKWORK_DATABASE_HOST",
             "listenAddress": "127.0.0.1",
-            "listenPortEnv": "SDKWORK_CLAW_DATABASE_PORT",
+            "listenPortEnv": "SDKWORK_DATABASE_PORT",
             "listenPort": 5432,
             "distributionEnv": "SDKWORK_MANAGER_WSL_DISTRIBUTION",
             "distribution": "Ubuntu-22.04"
