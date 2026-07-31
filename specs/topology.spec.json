@@ -2,6 +2,7 @@
   "schemaVersion": 5,
   "kind": "sdkwork.app.topology",
   "appId": "sdkwork-manager",
+  "applicationCode": "manager",
   "archetype": "application-http-gateway",
   "profileRoot": "etc/deployments",
   "profilePattern": "{deploymentProfile}.{environment}.env",
@@ -72,9 +73,6 @@
     "platform.api-gateway": {
       "httpHost": "api.sdkwork.com"
     }
-  },
-  "database": {
-    "appPrefix": "SDKWORK_MANAGER"
   },
   "components": {
     "applicationServer": {
