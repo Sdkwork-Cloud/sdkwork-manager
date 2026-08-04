@@ -39,6 +39,7 @@
     "@sdkwork/auth-pc-react": "workspace:*",
     "@sdkwork/auth-runtime-pc-react": "workspace:*",
     "@sdkwork/iam-app-sdk": "workspace:*",
+    "@sdkwork/iam-credential-entry": "workspace:*",
     "@sdkwork/iam-contracts": "workspace:*",
     "@sdkwork/manager-client-core": "workspace:*",
     "@sdkwork/sdk-common": "workspace:*",

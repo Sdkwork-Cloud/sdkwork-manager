@@ -3,6 +3,7 @@ import {
   type AuthTokenManager,
   type AuthTokens,
 } from "@sdkwork/sdk-common";
+import { initializeCredentialEntryTokenManager } from "@sdkwork/iam-credential-entry";
 
 import { loadManagerIamSession, toOperatorSession } from "./iamOperatorSessionBridge";
 import { OPERATOR_SESSION_CHANGED_EVENT } from "./sessionEvents";
@@ -40,6 +41,11 @@ export function getOperatorTokenManager(): AuthTokenManager {
     globalTokenManager = createTokenManager();
   }
   syncOperatorTokenManagerFromIamSession();
+  // Credential-entry bootstrap: while no operator session exists, keep the
+  // injected bootstrap Access-Token installed so access-token-only IAM
+  // bootstrap requests (auth runtime, verification policy, login) can
+  // dispatch before the session bridge owns the manager.
+  initializeCredentialEntryTokenManager(globalTokenManager);
   return globalTokenManager;
 }
 

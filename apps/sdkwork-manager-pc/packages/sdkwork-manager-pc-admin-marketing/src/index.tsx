@@ -489,7 +489,7 @@ function useStockOptionLoader(
         page: 1,
         pageSize: 20,
         q: query.trim() || undefined,
-        status: 1,
+        status: "active",
       });
       return page.items.map((item) => ({
         value: item.id,
@@ -824,7 +824,7 @@ function MarketingCampaigns({ service, language }: PageProps) {
             <td>
               {item.channelScope} / {item.audienceScope}
             </td>
-            <td><MarketingStatus language={language} status={item.status} /></td>
+            <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
             <td className="manager-operations-actions">
               {canManage ? (
                 <>
@@ -874,7 +874,7 @@ const emptyOffer = (): PromotionOfferRequest => ({
   priority: 0,
   startsAt: nowLocal(),
   endsAt: null,
-  status: 0,
+  status: "disabled",
   discountType: "FIXED",
   discountValue: "10",
   minimumAmount: "100",
@@ -904,7 +904,7 @@ function emptyCouponStock(item: PromotionOffer): CouponStockRequest {
     perUserLimit: 1,
     claimStartsAt: couponWorkflowStart(item),
     claimEndsAt: toLocalDate(item.endsAt) || null,
-    status: 1,
+    status: "active",
   };
 }
 
@@ -1066,9 +1066,9 @@ function CouponStockDrawer({
           </small>
         </span>
         <input
-          checked={draft.status === 1}
+          checked={draft.status === "active"}
           onChange={(event) =>
-            onChange({ ...draft, status: event.target.checked ? 1 : 0 })
+            onChange({ ...draft, status: event.target.checked ? "active" : "disabled" })
           }
           role="switch"
           type="checkbox"
@@ -1265,7 +1265,7 @@ function MarketingOffers({ service, language }: PageProps) {
         page: 1,
         pageSize: 20,
         q: query.trim() || undefined,
-        status: 1,
+        status: "active",
       });
       const stocks = page.items.filter(
         (item) =>
@@ -1307,7 +1307,7 @@ function MarketingOffers({ service, language }: PageProps) {
             priority: item.priority,
             startsAt: toLocalDate(item.startsAt),
             endsAt: toLocalDate(item.endsAt) || null,
-            status: item.status as 0 | 1,
+            status: item.status,
             discountType: item.discountType || "FIXED",
             discountValue: item.discountValue || "0",
             minimumAmount: item.minimumAmount || "0",
@@ -1513,7 +1513,7 @@ function MarketingOffers({ service, language }: PageProps) {
     setStatusPendingId(item.id);
     setFeedback(null);
     try {
-      await service.updateOfferStatus(item.id, item.status === 1 ? 0 : 1);
+      await service.updateOfferStatus(item.id, item.status === "active" ? "disabled" : "active");
       setFeedback({ kind: "success", message: copy.success });
       await reload();
     } catch (error) {
@@ -1704,11 +1704,11 @@ function MarketingOffers({ service, language }: PageProps) {
             <select
               value={draft.status}
               onChange={(e) =>
-                setDraft({ ...draft, status: Number(e.target.value) as 0 | 1 })
+                setDraft({ ...draft, status: e.target.value as "active" | "disabled" })
               }
             >
-              <option value={0}>{language === "zh-CN" ? "停用" : "Inactive"}</option>
-              <option value={1}>{language === "zh-CN" ? "启用" : "Active"}</option>
+              <option value="disabled">{language === "zh-CN" ? "停用" : "Inactive"}</option>
+              <option value="active">{language === "zh-CN" ? "启用" : "Active"}</option>
             </select>
           </label>
         </FeedbackForm>
@@ -1787,17 +1787,17 @@ function MarketingOffers({ service, language }: PageProps) {
               {item.startsAt}
               <small>{item.endsAt || (language === "zh-CN" ? "长期有效" : "No end date")}</small>
             </td>
-            <td><MarketingStatus language={language} status={item.status} /></td>
+            <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
             <td className="manager-coupon-actions">
               {canManage ? (
                 <div className="manager-operations-actions">
                   <button
                     aria-label={`${language === "zh-CN" ? "创建批次" : "Create batch"}: ${item.displayName}`}
                     className="manager-coupon-primary-action"
-                    disabled={item.status !== 1}
+                    disabled={item.status !== "active"}
                     onClick={() => beginCodeBatch(item)}
                     title={
-                      item.status === 1
+                      item.status === "active"
                         ? language === "zh-CN"
                           ? "创建券码批次"
                           : "Create code batch"
@@ -1812,10 +1812,10 @@ function MarketingOffers({ service, language }: PageProps) {
                   </button>
                   <button
                     aria-label={`${language === "zh-CN" ? "库存设置" : "Stock settings"}: ${item.displayName}`}
-                    disabled={item.status !== 1}
+                    disabled={item.status !== "active"}
                     onClick={() => beginStockSetup(item)}
                     title={
-                      item.status === 1
+                      item.status === "active"
                         ? language === "zh-CN"
                           ? "库存设置"
                           : "Stock settings"
@@ -1838,22 +1838,22 @@ function MarketingOffers({ service, language }: PageProps) {
                     <Pencil aria-hidden="true" size={15} />
                   </button>
                   <button
-                    aria-label={`${item.status === 1 ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}: ${item.displayName}`}
+                    aria-label={`${item.status === "active" ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}: ${item.displayName}`}
                     className="manager-icon-action"
                     disabled={statusPendingId === item.id}
                     onClick={() => void toggleStatus(item, reload)}
-                    title={item.status === 1 ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}
+                    title={item.status === "active" ? (language === "zh-CN" ? "停用" : "Disable") : (language === "zh-CN" ? "启用" : "Enable")}
                     type="button"
                   >
-                    {item.status === 1 ? <PowerOff aria-hidden="true" size={15} /> : <Power aria-hidden="true" size={15} />}
+                    {item.status === "active" ? <PowerOff aria-hidden="true" size={15} /> : <Power aria-hidden="true" size={15} />}
                   </button>
                   <button
                     aria-label={`${copy.remove}: ${item.displayName}`}
                     className="manager-action-danger manager-icon-action"
-                    disabled={item.status !== 0}
+                    disabled={item.status !== "disabled"}
                     onClick={() => setDeleteTarget(item)}
                     title={
-                      item.status === 0
+                      item.status === "disabled"
                         ? copy.remove
                         : language === "zh-CN"
                           ? "请先停用优惠券"
@@ -1904,7 +1904,7 @@ function MarketingStocks({ service, language }: PageProps) {
         page: 1,
         pageSize: 20,
         q: query.trim() || undefined,
-        status: 1,
+        status: "active",
       });
       return page.items.map((item) => ({
         value: item.id,
@@ -2061,11 +2061,11 @@ function MarketingStocks({ service, language }: PageProps) {
             <select
               value={draft.status}
               onChange={(e) =>
-                setDraft({ ...draft, status: Number(e.target.value) as 0 | 1 })
+                setDraft({ ...draft, status: e.target.value as "active" | "disabled" })
               }
             >
-              <option value={1}>{language === "zh-CN" ? "启用" : "Active"}</option>
-              <option value={0}>{language === "zh-CN" ? "停用" : "Inactive"}</option>
+              <option value="active">{language === "zh-CN" ? "启用" : "Active"}</option>
+              <option value="disabled">{language === "zh-CN" ? "停用" : "Inactive"}</option>
             </select>
           </label>
         </FeedbackForm>
@@ -2092,7 +2092,7 @@ function MarketingStocks({ service, language }: PageProps) {
                   perUserLimit: 1,
                   claimStartsAt: nowLocal(),
                   claimEndsAt: null,
-                  status: 1,
+                  status: "active",
                 });
               }}
               type="button"
@@ -2302,7 +2302,7 @@ function MarketingCodeBatches({ service, language }: PageProps) {
             <td>
               {item.codePrefix} / {item.codeLength}
             </td>
-            <td><MarketingStatus language={language} status={item.status} /></td>
+            <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
           </tr>
         )}
       />
@@ -2450,7 +2450,7 @@ function MarketingDistributions({ service, language }: PageProps) {
             <td className="manager-numeric-cell">
               {item.succeededQuantity} / {item.failedQuantity}
             </td>
-            <td><MarketingStatus language={language} status={item.status} /></td>
+            <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
           </tr>
         )}
       />
@@ -2501,10 +2501,10 @@ function ReadOnlyTable<T>({
         ) => Promise<PromotionAdminPage<T>>
       }
       renderRow={(raw: T) => {
-        const item = raw as PromotionUserCoupon &
-          PromotionCode &
-          PromotionCouponLedgerEntry &
-          DiscountApplication;
+        const item = raw as unknown as Partial<PromotionUserCoupon> &
+          Partial<PromotionCode> &
+          Partial<PromotionCouponLedgerEntry> &
+          Partial<DiscountApplication>;
         if (kind === "claims")
           return (
             <tr key={item.id}>
@@ -2514,7 +2514,7 @@ function ReadOnlyTable<T>({
               </td>
               <td>{item.ownerUserId}</td>
               <td>{item.stockId}</td>
-              <td><MarketingStatus language={language} status={item.status} /></td>
+              <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
               <td>{item.claimedAt}</td>
             </tr>
           );
@@ -2529,7 +2529,7 @@ function ReadOnlyTable<T>({
               <td>
                 {item.claimedQuantity} / {item.maxClaims}
               </td>
-              <td><MarketingStatus language={language} status={item.status} /></td>
+              <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
               <td>{item.expiresAt || "-"}</td>
             </tr>
           );
@@ -2559,7 +2559,7 @@ function ReadOnlyTable<T>({
                 mode: "symbol",
               }) ?? `${item.discountAmount} ${item.currencyCode}`}
             </td>
-            <td><MarketingStatus language={language} status={item.status} /></td>
+            <td><MarketingStatus language={language} status={item.status ?? "disabled"} /></td>
             <td>{item.appliedAt}</td>
           </tr>
         );

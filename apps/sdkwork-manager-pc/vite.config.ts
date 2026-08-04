@@ -8,11 +8,6 @@ import { defineConfig } from "vite";
 const appRoot = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(appRoot, "../..");
 const workspaceRoot = path.resolve(repoRoot, "..");
-const managerNodeModulesRoot = path.resolve(repoRoot, "node_modules");
-const i18nRuntimeNodeModulesRoot = path.resolve(
-  workspaceRoot,
-  "sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react/node_modules",
-);
 const viteWorkspaceSourceRoots = [
   repoRoot,
   workspacePath("sdkwork-iam"),
@@ -26,10 +21,6 @@ const viteWorkspaceSourceRoots = [
   workspacePath("sdkwork-sdk-commons"),
   workspacePath("sdkwork-utils"),
 ];
-
-function repoPath(...segments: string[]): string {
-  return path.resolve(repoRoot, ...segments);
-}
 
 function workspacePath(...segments: string[]): string {
   return path.resolve(workspaceRoot, ...segments);
@@ -77,96 +68,11 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
     ],
     resolve: {
-      // Linked workspace packages are transformed from source. Pin hook-bearing
-      // runtime dependencies to one copy so all pages share React's dispatcher.
+      // Package imports resolve through pnpm workspace links and package
+      // exports maps (APP_PC_ARCHITECTURE_SPEC section 2.0.1); no package
+      // aliases are declared. Hook-bearing runtime dependencies are pinned to
+      // one copy with resolve.dedupe so all pages share React's dispatcher.
       dedupe: ["react", "react-dom", "react-i18next", "i18next"],
-      alias: {
-        "@sdkwork/iam-credential-entry/vite": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/vite.ts",
-        ),
-        react: path.resolve(managerNodeModulesRoot, "react"),
-        "react-dom": path.resolve(managerNodeModulesRoot, "react-dom"),
-        i18next: path.resolve(i18nRuntimeNodeModulesRoot, "i18next"),
-        "react-i18next": path.resolve(i18nRuntimeNodeModulesRoot, "react-i18next"),
-        "@sdkwork/i18n-pc-react": workspacePath(
-          "sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react/src/index.ts",
-        ),
-        "@sdkwork/utils": workspacePath(
-          "sdkwork-utils/packages/sdkwork-utils-typescript/src/index.ts",
-        ),
-        "@sdkwork/sdk-common": workspacePath(
-          "sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts",
-        ),
-        "@sdkwork/iam-app-sdk": workspacePath(
-          "sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/src/index.ts",
-        ),
-        "@sdkwork/iam-backend-sdk": workspacePath(
-          "sdkwork-iam/sdks/sdkwork-iam-backend-sdk/sdkwork-iam-backend-sdk-typescript/src/index.ts",
-        ),
-        "@sdkwork/auth-pc-react": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-pc-react/src/index.ts",
-        ),
-        "@sdkwork/auth-runtime-pc-react": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-auth-runtime-pc-react/src/index.ts",
-        ),
-        "@sdkwork/iam-contracts": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-contracts/src/index.ts",
-        ),
-        "@sdkwork/iam-credential-entry": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry/src/index.ts",
-        ),
-        "@sdkwork/iam-pc-admin-user": workspacePath(
-          "sdkwork-iam/apps/sdkwork-iam-pc/packages/sdkwork-iam-pc-admin-user/src/index.ts",
-        ),
-        "@sdkwork/manager-client-core": repoPath(
-          "apps/sdkwork-manager-common/packages/sdkwork-manager-client-core/src/index.ts",
-        ),
-        "@sdkwork/manager-contracts": repoPath(
-          "apps/sdkwork-manager-common/packages/sdkwork-manager-contracts/src/index.ts",
-        ),
-        "@sdkwork/manager-service": repoPath(
-          "apps/sdkwork-manager-common/packages/sdkwork-manager-service/src/index.ts",
-        ),
-        "@sdkwork/manager-pc-core": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-core/src/index.ts",
-        ),
-        "@sdkwork/manager-pc-admin-core": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-core/src/index.ts",
-        ),
-        "@sdkwork/manager-pc-admin-drive": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-drive/src/index.tsx",
-        ),
-        "@sdkwork/manager-pc-admin-payment": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-payment/src/index.tsx",
-        ),
-        "@sdkwork/manager-pc-admin-trade": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-trade/src/index.tsx",
-        ),
-        "@sdkwork/manager-pc-admin-marketing": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-marketing/src/index.tsx",
-        ),
-        "@sdkwork/manager-pc-admin-membership": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-membership/src/index.tsx",
-        ),
-        "@sdkwork/manager-pc-admin-customer": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-admin-customer/src/index.tsx",
-        ),
-        "@sdkwork/membership-backend-sdk": workspacePath(
-          "sdkwork-membership/sdks/sdkwork-membership-backend-sdk/sdkwork-membership-backend-sdk-typescript/src/index.ts",
-        ),
-        "@sdkwork/membership-service": workspacePath(
-          "sdkwork-membership/apps/sdkwork-membership-common/packages/sdkwork-membership-service/src/index.ts",
-        ),
-        "@sdkwork/manager-pc-shell": repoPath(
-          "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/index.tsx",
-        ),
-        "@sdkwork/manager-app-sdk": repoPath(
-          "sdks/sdkwork-manager-app-sdk/sdkwork-manager-app-sdk-typescript/src/index.ts",
-        ),
-        "@sdkwork/manager-backend-sdk": repoPath(
-          "sdks/sdkwork-manager-backend-sdk/sdkwork-manager-backend-sdk-typescript/src/index.ts",
-        ),
-      },
     },
     build: {
       rolldownOptions: {

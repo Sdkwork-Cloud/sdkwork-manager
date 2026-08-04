@@ -782,7 +782,7 @@ html.sdkwork-manager-auth-light-mode .sdkwork-manager-auth-theme-button:hover {
 
 /*
  * The shared Input primitive contributes px-3 after the IAM form's pl-10 in
- * this host's compiled utility order. Keep the ClawRouter auth geometry by
+ * this host's compiled utility order. Keep the CloudRouter auth geometry by
  * reserving the leading icon column explicitly inside the Manager auth shell.
  */
 .sdkwork-manager-auth-host input[data-sdk-ui="input"].pl-10 {

@@ -276,7 +276,7 @@ function AfterSalesPage({ service, language }: TradePageProps) {
           <td>{item.afterSalesType}</td>
           <td className="manager-numeric-cell">
             {formatMoney(item.requestedAmount, {
-              currency: item.currencyCode,
+              currency: item.currencyCode || "CNY",
               locale: language,
               mode: "symbol",
             }) ?? `${item.requestedAmount} ${item.currencyCode}`}
@@ -350,7 +350,7 @@ function PackagesPage({ service, language }: TradePageProps) {
           <td className="manager-numeric-cell">{item.grantAmount}</td>
           <td className="manager-numeric-cell">
             {formatMoney(item.priceAmount, {
-              currency: item.currencyCode,
+              currency: item.currencyCode || "CNY",
               locale: language,
               mode: "symbol",
             }) ?? `${item.priceAmount} ${item.currencyCode}`}
@@ -389,7 +389,7 @@ function TokenBankPage({ service, language }: TradePageProps) {
           <td className="manager-numeric-cell">{item.grantAmount}</td>
           <td className="manager-numeric-cell">
             {formatMoney(item.priceAmount, {
-              currency: item.currencyCode,
+              currency: item.currencyCode || "CNY",
               locale: language,
               mode: "symbol",
             }) ?? `${item.priceAmount} ${item.currencyCode}`}
@@ -487,7 +487,7 @@ function RequestPage({
               <td>{item.targetAsset}</td>
               <td className="manager-numeric-cell">
                 {formatMoney(item.amount, {
-                  currency: item.currencyCode,
+                  currency: item.currencyCode || "CNY",
                   locale: language,
                   mode: "symbol",
                 }) ?? `${item.amount} ${item.currencyCode}`}

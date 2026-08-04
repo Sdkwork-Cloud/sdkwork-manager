@@ -19,7 +19,7 @@ starts, so run `pnpm start` or `pnpm dev` from an elevated terminal. Override
 `SDKWORK_MANAGER_WSL_DISTRIBUTION` when the PostgreSQL distribution is not `Ubuntu-22.04`, or set
 `SDKWORK_MANAGER_WSL_POSTGRES_PORTPROXY_ENABLED=false` when PostgreSQL runs natively on Windows.
 
-The repository-root overlay takes precedence over the legacy sibling `sdkwork-clawrouter` fallback.
+The repository-root overlay takes precedence over the legacy sibling `sdkwork-cloudrouter` fallback.
 Keep database credentials in `.env.postgres` or protected process environment variables; keep only
 development placeholders in `.env.postgres.example`.
 

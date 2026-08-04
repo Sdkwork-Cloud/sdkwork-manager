@@ -49,13 +49,15 @@ test("package scripts expose the shared SDKWork application lifecycle", () => {
   assert.equal(pkg.scripts["_sdkwork:stop"], undefined);
 });
 
-test("vite production aliases include sdk-common and composed manager SDK bundles", () => {
+test("vite config declares no @sdkwork package aliases", () => {
   const viteConfig = readFileSync(
     path.join(root, "apps/sdkwork-manager-pc/vite.config.ts"),
     "utf8",
   );
-  assert.match(viteConfig, /@sdkwork\/sdk-common/);
-  assert.match(viteConfig, /@sdkwork\/manager-app-sdk/);
+  // Package imports resolve through pnpm workspace links and package exports
+  // maps (APP_PC_ARCHITECTURE_SPEC.md section 2.0.1); vite.config must not
+  // restate the workspace dependency graph.
+  assert.doesNotMatch(viteConfig, /["']@sdkwork\/[^"']+["']\s*:/);
   assert.doesNotMatch(viteConfig, /sdkwork-manager-app-sdk-generated-typescript/);
 });
 
@@ -494,7 +496,7 @@ test("manager IAM surface defines the complete branded auth token set", () => {
   }
 });
 
-test("Manager auth host keeps the ClawRouter PC geometry while using IAM-owned routes", () => {
+test("Manager auth host keeps the CloudRouter PC geometry while using IAM-owned routes", () => {
   const authShell = readFileSync(
     path.join(root, "apps/sdkwork-manager-pc/packages/sdkwork-manager-pc-shell/src/auth/ManagerAuthShell.tsx"),
     "utf8",
