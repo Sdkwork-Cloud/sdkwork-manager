@@ -106,14 +106,10 @@ test("Manager standalone profile supplies the IAM and Manager CORS allowlists", 
   assert.equal(profileEnv.SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(profileEnv.SDKWORK_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
   assert.equal(profileEnv.SDKWORK_IAM_CORS_ALLOWED_ORIGINS, "http://127.0.0.1:5190");
-  assert.equal(
-    profileEnv.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
-    profileEnv.SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
-  );
-  assert.equal(
-    profileEnv.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
-    profileEnv.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
-  );
+  // platform.api-gateway URL keys are cloud-only; standalone dependency APIs
+  // are embedded behind application.public-ingress (APP_RUNTIME_TOPOLOGY_SPEC section 7).
+  assert.equal(profileEnv.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, undefined);
+  assert.equal(profileEnv.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, undefined);
   assert.equal(profileEnv.SDKWORK_DATABASE_URL, undefined);
   assert.equal(profileEnv.SDKWORK_DATABASE_MAX_CONNECTIONS, undefined);
   assert.equal(profileEnv.SDKWORK_DATABASE_TEMPORARY_ANY_POOL_EXCEPTION, "true");

@@ -9,7 +9,10 @@ test("Manager standalone development seeds Payment initialization data on startu
   });
 
   assert.equal(profile.SDKWORK_DATABASE_SEED_ON_BOOT, "true");
-  assert.equal(profile.SDKWORK_DATABASE_SEED_PROFILE, "development");
+  // The canonical seed profile is `standard`, owned by each module manifest
+  // (database.manifest.json#lifecycle.defaultSeedProfile); source profiles
+  // must not override it with an environment-named profile.
+  assert.equal(profile.SDKWORK_DATABASE_SEED_PROFILE, undefined);
   assert.equal(profile.SDKWORK_DATABASE_SEED_LOCALE, "zh-CN");
 });
 
@@ -19,7 +22,7 @@ test("Manager standalone production requires an explicit Payment seed opt-in", (
   });
 
   assert.equal(profile.SDKWORK_DATABASE_SEED_ON_BOOT, "false");
-  assert.equal(profile.SDKWORK_DATABASE_SEED_PROFILE, "production");
+  assert.equal(profile.SDKWORK_DATABASE_SEED_PROFILE, undefined);
   assert.equal(profile.SDKWORK_DATABASE_SEED_LOCALE, "zh-CN");
 });
 

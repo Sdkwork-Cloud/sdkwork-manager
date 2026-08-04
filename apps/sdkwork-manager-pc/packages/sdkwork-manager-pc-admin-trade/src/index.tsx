@@ -30,6 +30,7 @@ import {
   getManagerOrderAdminService,
   getManagerTradeOperationsService,
 } from "@sdkwork/manager-pc-admin-core";
+import { formatMoney } from "@sdkwork/utils/money";
 
 type Language = "en-US" | "zh-CN";
 
@@ -274,7 +275,11 @@ function AfterSalesPage({ service, language }: TradePageProps) {
           <td>{item.orderId}</td>
           <td>{item.afterSalesType}</td>
           <td className="manager-numeric-cell">
-            {item.requestedAmount} {item.currencyCode}
+            {formatMoney(item.requestedAmount, {
+              currency: item.currencyCode,
+              locale: language,
+              mode: "symbol",
+            }) ?? `${item.requestedAmount} ${item.currencyCode}`}
           </td>
           <td>
             <span className="manager-status-badge" data-status={item.status}>
@@ -344,7 +349,11 @@ function PackagesPage({ service, language }: TradePageProps) {
           <td>{item.targetAsset}</td>
           <td className="manager-numeric-cell">{item.grantAmount}</td>
           <td className="manager-numeric-cell">
-            {item.priceAmount} {item.currencyCode}
+            {formatMoney(item.priceAmount, {
+              currency: item.currencyCode,
+              locale: language,
+              mode: "symbol",
+            }) ?? `${item.priceAmount} ${item.currencyCode}`}
           </td>
           <td>
             <span className="manager-status-badge" data-status={item.status}>
@@ -379,7 +388,11 @@ function TokenBankPage({ service, language }: TradePageProps) {
           <td>{item.planPeriod}</td>
           <td className="manager-numeric-cell">{item.grantAmount}</td>
           <td className="manager-numeric-cell">
-            {item.priceAmount} {item.currencyCode}
+            {formatMoney(item.priceAmount, {
+              currency: item.currencyCode,
+              locale: language,
+              mode: "symbol",
+            }) ?? `${item.priceAmount} ${item.currencyCode}`}
           </td>
           <td>
             <span className="manager-status-badge" data-status={item.status}>
@@ -473,7 +486,11 @@ function RequestPage({
               <td>{item.originalOrderId}</td>
               <td>{item.targetAsset}</td>
               <td className="manager-numeric-cell">
-                {item.amount} {item.currencyCode}
+                {formatMoney(item.amount, {
+                  currency: item.currencyCode,
+                  locale: language,
+                  mode: "symbol",
+                }) ?? `${item.amount} ${item.currencyCode}`}
               </td>
               <td>
                 <span

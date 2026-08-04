@@ -107,8 +107,11 @@ manifest-scoped credential-entry token for local development only.
    environment template. Tracked templates contain only public base URLs and
    non-secret IAM runtime choices.
 2. Verify the selected profile uses `VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL`
-   for manager APIs and `VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL`
-   for IAM, Drive, Membership, Order, Promotion, and Payment SDKs.
+   for manager APIs and for IAM, Drive, Membership, Order, Promotion, and Payment
+   SDKs. In `standalone` profiles all SDKs resolve through the application
+   ingress; `VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL` is cloud-only
+   and must not appear in standalone env files (see
+   `APP_RUNTIME_TOPOLOGY_SPEC.md` section 7).
 3. Confirm no `VITE_ACCESS_TOKEN`, `SDKWORK_ACCESS_TOKEN`, password, refresh
    token, or private key is present in tracked env files, manifests, build logs,
    or the static asset bundle.

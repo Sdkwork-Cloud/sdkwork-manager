@@ -127,9 +127,15 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
   );
 
   assert.match(cargo, /sdkwork_api_iam_assembly\.workspace = true/);
-  assert.match(assembly, /sdkwork_api_iam_assembly::assemble_business_router/);
-  assert.match(iamAssembly, /sdkwork_routes_iam_app_api::gateway_mount/);
-  assert.match(iamAssembly, /sdkwork_routes_iam_backend_api::gateway_mount/);
+  assert.match(assembly, /sdkwork_api_iam_assembly::bootstrap_iam_for_application/);
+  assert.match(
+    iamAssembly,
+    /sdkwork_routes_iam_app_api::build_sdkwork_iam_app_api_business_router_with_initialized_pool/,
+  );
+  assert.match(
+    iamAssembly,
+    /sdkwork_routes_iam_backend_api::build_sdkwork_iam_backend_api_business_router_with_pool/,
+  );
 });
 
 test("Manager standalone assembly mounts every backend-admin dependency behind its own ingress", () => {
@@ -169,14 +175,10 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
   }
   assert.match(promotionWebBootstrap, /sdkwork_iam_web_adapter::build_web_framework_layer/);
   assert.match(promotionWebBootstrap, /backend_route_manifest\(\)/);
-  assert.equal(
-    standaloneProfile.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
-    standaloneProfile.SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
-  );
-  assert.equal(
-    standaloneProfile.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL,
-    standaloneProfile.VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL,
-  );
+  // platform.api-gateway URL keys are cloud-only; standalone embeds dependency
+  // APIs behind application.public-ingress (APP_RUNTIME_TOPOLOGY_SPEC section 7).
+  assert.equal(standaloneProfile.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, undefined);
+  assert.equal(standaloneProfile.VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, undefined);
   assert.equal(
     standaloneProfile.SDKWORK_ENVIRONMENT,
     standaloneProfile.SDKWORK_MANAGER_ENVIRONMENT,
@@ -234,10 +236,8 @@ test("Manager browser has no Vite API proxy and IAM SDKs use application ingress
     standaloneEnv,
     /^VITE_SDKWORK_MANAGER_APPLICATION_PUBLIC_HTTP_URL=http:\/\/127\.0\.0\.1:18092$/mu,
   );
-  assert.match(
-    standaloneEnv,
-    /^VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL=http:\/\/127\.0\.0\.1:18092$/mu,
-  );
+  // The standalone profile must not carry the cloud-only platform gateway key.
+  assert.doesNotMatch(standaloneEnv, /VITE_SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL/u);
 });
 
 test("Manager default IAM grants exclude payment development operations", () => {

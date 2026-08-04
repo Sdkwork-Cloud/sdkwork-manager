@@ -30,6 +30,7 @@ import {
   type AdminModuleContribution,
 } from "@sdkwork/manager-pc-core";
 import { getManagerPromotionBackendService } from "@sdkwork/manager-pc-admin-core";
+import { formatMoney } from "@sdkwork/utils/money";
 import {
   Check,
   ChevronLeft,
@@ -469,16 +470,13 @@ function validDateRange(startsAt: string, endsAt?: string | null) {
 function formatDiscount(item: PromotionOffer, language: Language) {
   const value = item.discountValue ?? "0";
   if (item.discountType === "PERCENTAGE") return `${value}%`;
-  const amount = Number(value);
-  if (!Number.isFinite(amount)) return `${value} ${item.currencyCode || "CNY"}`;
-  try {
-    return new Intl.NumberFormat(language, {
-      style: "currency",
-      currency: item.currencyCode || "CNY",
-    }).format(amount);
-  } catch {
-    return `${value} ${item.currencyCode || "CNY"}`;
-  }
+  const formatted = formatMoney(value, {
+    currency: item.currencyCode || "CNY",
+    locale: language,
+    mode: "symbol",
+  });
+  if (formatted !== null) return formatted;
+  return `${value} ${item.currencyCode || "CNY"}`;
 }
 
 function useStockOptionLoader(
@@ -1778,7 +1776,11 @@ function MarketingOffers({ service, language }: PageProps) {
               <strong>{formatDiscount(item, language)}</strong>
               <small>
                 {language === "zh-CN" ? "门槛" : "Minimum"}:{" "}
-                {item.minimumAmount} {item.currencyCode}
+                {formatMoney(item.minimumAmount, {
+                  currency: item.currencyCode || "CNY",
+                  locale: language,
+                  mode: "symbol",
+                }) ?? `${item.minimumAmount} ${item.currencyCode}`}
               </small>
             </td>
             <td>
@@ -2551,7 +2553,11 @@ function ReadOnlyTable<T>({
             <td>{item.orderNo || item.orderId}</td>
             <td>{item.offerId}</td>
             <td className="manager-numeric-cell">
-              {item.discountAmount} {item.currencyCode}
+              {formatMoney(item.discountAmount, {
+                currency: item.currencyCode || "CNY",
+                locale: language,
+                mode: "symbol",
+              }) ?? `${item.discountAmount} ${item.currencyCode}`}
             </td>
             <td><MarketingStatus language={language} status={item.status} /></td>
             <td>{item.appliedAt}</td>
