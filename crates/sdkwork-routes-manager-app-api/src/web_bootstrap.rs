@@ -17,10 +17,7 @@ pub fn wrap_router_with_web_framework(
     let (environment, security_policy) =
         sdkwork_web_bootstrap::application_security_policy_from_env(
             &["SDKWORK_MANAGER_ENVIRONMENT", "SDKWORK_ENVIRONMENT"],
-            &[
-                "SDKWORK_MANAGER_CORS_ALLOWED_ORIGINS",
-                "SDKWORK_CORS_ALLOWED_ORIGINS",
-            ],
+            &["SDKWORK_CORS_ALLOWED_ORIGINS"],
         );
     route_manifest
         .validate_public_path_prefixes(&manager_app_api_public_path_prefixes())
