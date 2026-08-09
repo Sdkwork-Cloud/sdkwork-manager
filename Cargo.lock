@@ -3142,6 +3142,7 @@ dependencies = [
  "sdkwork-api-order-assembly",
  "sdkwork-api-payment-assembly",
  "sdkwork-api-promotion-assembly",
+ "sdkwork-database-sqlx",
  "sdkwork-iam-web-adapter",
  "sdkwork-manager-service-host",
  "sdkwork-routes-manager-app-api",
@@ -3219,6 +3220,7 @@ name = "sdkwork-api-promotion-assembly"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "sdkwork-database-sqlx",
  "sdkwork-promotion-service-host",
  "sdkwork-routes-promotion-app-api",
  "sdkwork-routes-promotion-backend-api",

@@ -1,11 +1,32 @@
 //! Authored API assembly bootstrap for sdkwork-manager.
+//!
+//! The assembly exports the indivisible `ApiAssemblyContribution` contract
+//! (API_ASSEMBLY_SPEC.md section 4); the platform cloud gateway composes the
+//! contribution with its process-shared PostgreSQL pool.
 
 use axum::Router;
+use sdkwork_database_sqlx::DatabasePool;
 use sdkwork_manager_service_host::ManagerServiceHost;
+use sdkwork_web_bootstrap::{
+    ApiAssemblyContribution, DatabasePoolReadinessCheck, ReadinessCheck,
+};
+use sdkwork_web_core::HttpRouteManifest;
 use std::sync::Arc;
 
-pub struct ApiAssembly {
-    pub router: Router,
+/// Indivisible host-neutral API assembly contribution (web-bootstrap contract).
+pub type ApiAssembly = ApiAssemblyContribution;
+
+fn combined_route_manifest() -> HttpRouteManifest {
+    let manifests = [
+        sdkwork_routes_manager_app_api::gateway_route_manifest(),
+        sdkwork_routes_manager_backend_api::gateway_route_manifest(),
+    ];
+    HttpRouteManifest::from_owned_routes(
+        manifests
+            .into_iter()
+            .flat_map(|manifest| manifest.routes().to_vec())
+            .collect(),
+    )
 }
 
 pub async fn assemble_api_router(host: Arc<ManagerServiceHost>) -> Result<ApiAssembly, String> {
@@ -51,5 +72,39 @@ pub async fn assemble_api_router(host: Arc<ManagerServiceHost>) -> Result<ApiAss
 
     router = router.merge(sdkwork_routes_manager_app_api::gateway_mount(host.clone()).await);
     router = router.merge(sdkwork_routes_manager_backend_api::gateway_mount(host).await);
-    Ok(ApiAssembly { router })
+    ApiAssemblyContribution::from_manifest(
+        "sdkwork-manager",
+        "SDKWork Manager API",
+        router,
+        combined_route_manifest(),
+        Vec::new(),
+        Arc::new(sdkwork_web_bootstrap::AlwaysReady),
+    )
+}
+
+/// Assemble the manager application router from environment variables.
+pub async fn assemble_business_routes_from_env() -> Result<ApiAssembly, String> {
+    let host = Arc::new(ManagerServiceHost::from_env().await?);
+    assemble_api_router(host).await
+}
+
+/// Assemble the Manager contribution against a caller-provided database pool so
+/// the platform cloud gateway can share its process-wide PostgreSQL pool.
+///
+/// Only manager-owned routes are mounted; the cloud gateway hosts the
+/// dependency-owned IAM, Drive, Order, Promotion, Payment, and Membership
+/// surfaces as separate contributions.
+pub async fn assemble_api_router_with_pool(pool: DatabasePool) -> Result<ApiAssembly, String> {
+    let host = Arc::new(ManagerServiceHost::from_database_pool(pool.clone()).await?);
+    let mut router = Router::new();
+    router = router.merge(sdkwork_routes_manager_app_api::gateway_mount(host.clone()).await);
+    router = router.merge(sdkwork_routes_manager_backend_api::gateway_mount(host).await);
+    ApiAssemblyContribution::from_manifest(
+        "sdkwork-manager",
+        "SDKWork Manager API",
+        router,
+        combined_route_manifest(),
+        Vec::new(),
+        Arc::new(DatabasePoolReadinessCheck::new(pool)),
+    )
 }

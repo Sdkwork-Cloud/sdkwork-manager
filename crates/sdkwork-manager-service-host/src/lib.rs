@@ -1,5 +1,7 @@
 use sdkwork_database_sqlx::DatabasePool;
-use sdkwork_manager_database_host::{bootstrap_manager_database_from_env, ManagerDatabaseHost};
+use sdkwork_manager_database_host::{
+    bootstrap_manager_database, bootstrap_manager_database_from_env, ManagerDatabaseHost,
+};
 use sdkwork_platform_manager_repository_sqlx::SqlxManagerRepository;
 use sdkwork_platform_manager_service::ManagerService;
 
@@ -17,6 +19,17 @@ impl ManagerServiceHost {
 
     pub async fn from_env() -> Result<Self, String> {
         let database = bootstrap_manager_database_from_env().await?;
+        let repository = SqlxManagerRepository::new(database.pool().clone());
+        Ok(Self {
+            manager_service: ManagerService::new(repository),
+            database,
+        })
+    }
+
+    /// Build the host against a caller-provided database pool so the platform
+    /// cloud gateway can share its process-wide PostgreSQL pool.
+    pub async fn from_database_pool(pool: DatabasePool) -> Result<Self, String> {
+        let database = bootstrap_manager_database(pool).await?;
         let repository = SqlxManagerRepository::new(database.pool().clone());
         Ok(Self {
             manager_service: ManagerService::new(repository),
