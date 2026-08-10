@@ -6,30 +6,46 @@
   "defaultProfile": "standalone.development",
   "environments": {
     "development": {
-      "applicationOrigin": "https://manager-dev.sdkwork.com",
+      "applicationOrigin": "https://admin-dev.sdkwork.com",
       "cloudApiBaseUrl": "https://api-dev.sdkwork.com"
     },
     "test": {
-      "applicationOrigin": "https://manager-test.sdkwork.com",
+      "applicationOrigin": "https://admin-test.sdkwork.com",
       "cloudApiBaseUrl": "https://api-test.sdkwork.com"
     },
     "staging": {
-      "applicationOrigin": "https://manager-staging.sdkwork.com",
+      "applicationOrigin": "https://admin-staging.sdkwork.com",
       "cloudApiBaseUrl": "https://api-staging.sdkwork.com"
     },
     "production": {
-      "applicationOrigin": "https://manager.sdkwork.com",
+      "applicationOrigin": "https://admin.sdkwork.com",
       "cloudApiBaseUrl": "https://api.sdkwork.com"
     }
   },
   "profiles": {
-    "standalone.development": { "config": "deployments/standalone.development.env" },
-    "standalone.test": { "config": "deployments/standalone.test.env" },
-    "standalone.staging": { "config": "deployments/standalone.staging.env" },
-    "standalone.production": { "config": "deployments/standalone.production.env" },
-    "cloud.development": { "config": "deployments/cloud.development.env" },
-    "cloud.test": { "config": "deployments/cloud.test.env" },
-    "cloud.staging": { "config": "deployments/cloud.staging.env" },
-    "cloud.production": { "config": "deployments/cloud.production.env" }
+    "standalone.development": {
+      "config": "topology/standalone.development.env"
+    },
+    "standalone.test": {
+      "config": "topology/standalone.test.env"
+    },
+    "standalone.staging": {
+      "config": "topology/standalone.staging.env"
+    },
+    "standalone.production": {
+      "config": "topology/standalone.production.env"
+    },
+    "cloud.development": {
+      "config": "topology/cloud.development.env"
+    },
+    "cloud.test": {
+      "config": "topology/cloud.test.env"
+    },
+    "cloud.staging": {
+      "config": "topology/cloud.staging.env"
+    },
+    "cloud.production": {
+      "config": "topology/cloud.production.env"
+    }
   }
 }

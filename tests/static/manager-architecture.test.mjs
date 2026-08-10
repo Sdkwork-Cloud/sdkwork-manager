@@ -15,9 +15,10 @@ test("workspace declares sdkwork-web-framework and sdkwork-database deps", () =>
   assert.doesNotMatch(cargo, /sdkwork-discovery/);
 });
 
-test("tsconfig wires sdkwork utils", () => {
+test("tsconfig wires sdkwork drive paths", () => {
   const tsconfig = JSON.parse(readFileSync(path.join(root, "tsconfig.base.json"), "utf8"));
-  assert.ok(tsconfig.compilerOptions.paths["@sdkwork/utils"]);
+  assert.ok(tsconfig.compilerOptions.paths["sdkwork-drive-pc-core"]);
+  assert.ok(tsconfig.compilerOptions.paths["sdkwork-drive-pc-commons"]);
 });
 
 test("component spec declares platform manager capability", () => {
@@ -157,7 +158,7 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
     "utf8",
   );
   const standaloneProfile = Object.fromEntries(
-    readFileSync(path.join(root, "etc/deployments/standalone.development.env"), "utf8")
+    readFileSync(path.join(root, "etc/topology/standalone.development.env"), "utf8")
       .split(/\r?\n/u)
       .filter((line) => line.includes("="))
       .map((line) => {
@@ -221,7 +222,7 @@ test("Manager browser has no Vite API proxy and IAM SDKs use application ingress
     "utf8",
   ));
   const standaloneEnv = readFileSync(
-    path.join(root, "etc/deployments/standalone.development.env"),
+    path.join(root, "etc/topology/standalone.development.env"),
     "utf8",
   );
   const sdkWorkspaces = component.contracts.sdkDependencies.map(

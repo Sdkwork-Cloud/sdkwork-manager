@@ -14,6 +14,7 @@
     "start": "pnpm dev:standalone",
     "test": "pnpm exec sdkwork-app test",
     "test:node": "node --test tests/static/*.test.mjs tests/contract/*.test.mjs scripts/dev/*.test.mjs scripts/release/*.test.mjs",
+    "test:web-domain-routing-standard": "node scripts/dev/sdkwork-manager-web-domain-routing-standard.test.mjs",
     "test:vitest": "vitest run --config vitest.config.ts --configLoader native --pool vmThreads",
     "check": "pnpm exec sdkwork-app check",
     "verify": "pnpm exec sdkwork-app verify",

@@ -37,6 +37,8 @@ test("Manager cloud profiles do not configure local Payment database seeding", (
 
     assert.equal(profile.SDKWORK_DATABASE_SEED_ON_BOOT, undefined, profileId);
     assert.equal(profile.SDKWORK_DATABASE_SEED_PROFILE, undefined, profileId);
-    assert.equal(profile.SDKWORK_DATABASE_SEED_LOCALE, undefined, profileId);
+    // Region dimension declares the canonical seed locale on every profile;
+    // it is not a Payment-local seeding override.
+    assert.equal(profile.SDKWORK_DATABASE_SEED_LOCALE, "zh-CN", profileId);
   }
 });
