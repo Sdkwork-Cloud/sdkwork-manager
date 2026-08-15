@@ -88,6 +88,15 @@ pub async fn assemble_business_routes_from_env() -> Result<ApiAssembly, String> 
     assemble_api_router(host).await
 }
 
+/// Initializes the IAM persistence and Manager tenant-application state through
+/// the dependency-owned IAM assembly entrypoint (API_ASSEMBLY_SPEC §6.1).
+pub async fn bootstrap_manager_iam_application_from_env() -> Result<(), String> {
+    let (_iam, _host) = sdkwork_api_iam_assembly::bootstrap_iam_for_application()
+        .await
+        .map_err(|error| format!("bootstrap Manager IAM tenant application: {error}"))?;
+    Ok(())
+}
+
 /// Assemble the Manager contribution against a caller-provided database pool so
 /// the platform cloud gateway can share its process-wide PostgreSQL pool.
 ///

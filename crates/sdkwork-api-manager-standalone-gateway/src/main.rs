@@ -1,9 +1,7 @@
-mod iam_application_bootstrap;
-
-use sdkwork_api_manager_assembly::assemble_api_router;
-use sdkwork_manager_service_host::ManagerServiceHost;
+use sdkwork_api_manager_assembly::{
+    assemble_business_routes_from_env, bootstrap_manager_iam_application_from_env,
+};
 use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
-use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
@@ -12,7 +10,7 @@ async fn main() {
 
     sdkwork_database_sqlx::enable_process_shared_database_pool();
 
-    iam_application_bootstrap::ensure_manager_iam_application_bootstrap()
+    bootstrap_manager_iam_application_from_env()
         .await
         .expect("bootstrap Manager IAM tenant application");
     tracing::info!("Manager IAM tenant application bootstrap completed");
@@ -22,8 +20,7 @@ async fn main() {
         return;
     }
 
-    let host = Arc::new(ManagerServiceHost::new().await);
-    let assembly = assemble_api_router(host)
+    let assembly = assemble_business_routes_from_env()
         .await
         .expect("assemble Manager standalone dependency routes");
     let app = service_router(

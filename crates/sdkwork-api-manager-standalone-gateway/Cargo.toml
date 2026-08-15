@@ -18,7 +18,4 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 serde_json = { workspace = true }
 sdkwork-web-bootstrap = { workspace = true }
-sdkwork_manager_service_host.workspace = true
-sdkwork_iam_embedded_application_bootstrap.workspace = true
-sdkwork_iam_database_host.workspace = true
 sdkwork-database-sqlx.workspace = true
