@@ -115,8 +115,8 @@ test("Manager delegates IAM application provisioning to the shared bootstrap fra
   assert.match(pkg.scripts["admin:bootstrap:app"], /sdkwork-iam\/scripts\/bootstrap\/bootstrap-app\.mjs/);
 });
 
-test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress", () => {
-  const cargo = readFileSync(
+test("Manager standalone composes IAM through the dependency owner assembly", () => {
+  const assemblyCargo = readFileSync(
     path.join(root, "crates/sdkwork-api-manager-assembly/Cargo.toml"),
     "utf8",
   );
@@ -124,13 +124,25 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
     path.join(root, "crates/sdkwork-api-manager-assembly/src/bootstrap.rs"),
     "utf8",
   );
+  const standaloneCargo = readFileSync(
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/Cargo.toml"),
+    "utf8",
+  );
+  const standalone = readFileSync(
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/src/main.rs"),
+    "utf8",
+  );
   const iamAssembly = readFileSync(
     path.join(root, "../sdkwork-iam/crates/sdkwork-api-iam-assembly/src/bootstrap.rs"),
     "utf8",
   );
 
-  assert.match(cargo, /sdkwork_api_iam_assembly\.workspace = true/);
-  assert.match(assembly, /sdkwork_api_iam_assembly::bootstrap_iam_for_application/);
+  assert.doesNotMatch(assemblyCargo, /sdkwork_api_iam_assembly\.workspace = true/);
+  assert.doesNotMatch(assembly, /sdkwork_api_iam_assembly/);
+  assert.match(standaloneCargo, /sdkwork_api_iam_assembly\.workspace = true/);
+  assert.match(standalone, /sdkwork_api_iam_assembly::assemble_owner_api_surfaces_with_pool/);
+  assert.match(standalone, /ComposedApiAssembly::try_compose/);
+  assert.match(standalone, /\.into_hosted\(framework\)/);
   assert.match(
     iamAssembly,
     /sdkwork_routes_iam_app_api::build_sdkwork_iam_app_api_business_router_with_initialized_pool/,
@@ -143,18 +155,11 @@ test("Manager Rust assembly bundles IAM app and backend APIs behind one ingress"
 
 test("Manager standalone assembly mounts every backend-admin dependency behind its own ingress", () => {
   const cargo = readFileSync(
-    path.join(root, "crates/sdkwork-api-manager-assembly/Cargo.toml"),
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/Cargo.toml"),
     "utf8",
   );
-  const assembly = readFileSync(
-    path.join(root, "crates/sdkwork-api-manager-assembly/src/bootstrap.rs"),
-    "utf8",
-  );
-  const promotionWebBootstrap = readFileSync(
-    path.join(
-      root,
-      "../sdkwork-promotion/crates/sdkwork-routes-promotion-backend-api/src/web_bootstrap.rs",
-    ),
+  const standalone = readFileSync(
+    path.join(root, "crates/sdkwork-api-manager-standalone-gateway/src/main.rs"),
     "utf8",
   );
   const standaloneProfile = Object.fromEntries(
@@ -170,14 +175,13 @@ test("Manager standalone assembly mounts every backend-admin dependency behind i
   for (const dependency of ["drive", "order", "promotion", "payment", "membership"]) {
     assert.match(cargo, new RegExp(`sdkwork_api_${dependency}_assembly\\.workspace = true`));
     assert.match(
-      assembly,
-      new RegExp(
-        `sdkwork_api_${dependency}_assembly::assemble_backend_business_router_from_env`,
-      ),
+      standalone,
+      new RegExp(`sdkwork_api_${dependency}_assembly::assemble_api_router`),
     );
   }
-  assert.match(promotionWebBootstrap, /sdkwork_iam_web_adapter::build_web_framework_layer/);
-  assert.match(promotionWebBootstrap, /backend_route_manifest\(\)/);
+  assert.doesNotMatch(standalone, /\.router\s*[,)];/);
+  assert.match(standalone, /ComposedApiAssembly::try_compose/);
+  assert.match(standalone, /\.into_hosted\(framework\)/);
   // platform.api-gateway URL keys are cloud-only; standalone embeds dependency
   // APIs behind application.public-ingress (APP_RUNTIME_TOPOLOGY_SPEC section 7).
   assert.equal(standaloneProfile.SDKWORK_MANAGER_PLATFORM_API_GATEWAY_HTTP_URL, undefined);

@@ -6,8 +6,8 @@ mod bootstrap;
 mod generated;
 
 pub use bootstrap::{
-    assemble_api_router, assemble_api_router_with_pool, assemble_business_routes_from_env,
-    bootstrap_manager_iam_application_from_env, ApiAssembly,
+    assemble_api_router, assemble_api_router_with_pool, assemble_api_runtime_from_env,
+    assemble_business_routes_from_env, ApiAssembly, ManagerApiRuntime,
 };
 
 pub fn assembly_route_count() -> usize {

@@ -42,9 +42,47 @@
   ],
   "contracts": {
     "publicExports": [],
+    "providedPorts": [],
+    "requiredPorts": [
+      {
+        "name": "managerApiAssembly",
+        "export": "sdkwork_api_manager_assembly::assemble_api_runtime_from_env",
+        "provider": "sdkwork-api-manager-assembly"
+      },
+      {
+        "name": "iamApiAssembly",
+        "export": "sdkwork_api_iam_assembly::assemble_owner_api_surfaces_with_pool",
+        "provider": "sdkwork-api-iam-assembly"
+      },
+      {
+        "name": "driveApiAssembly",
+        "export": "sdkwork_api_drive_assembly::assemble_api_router",
+        "provider": "sdkwork-api-drive-assembly"
+      },
+      {
+        "name": "orderApiAssembly",
+        "export": "sdkwork_api_order_assembly::assemble_api_router_with_pool",
+        "provider": "sdkwork-api-order-assembly"
+      },
+      {
+        "name": "promotionApiAssembly",
+        "export": "sdkwork_api_promotion_assembly::assemble_api_router_with_pool",
+        "provider": "sdkwork-api-promotion-assembly"
+      },
+      {
+        "name": "paymentApiAssembly",
+        "export": "sdkwork_api_payment_assembly::assemble_api_router_with_pool",
+        "provider": "sdkwork-api-payment-assembly"
+      },
+      {
+        "name": "membershipApiAssembly",
+        "export": "sdkwork_api_membership_assembly::assemble_api_router_with_pool",
+        "provider": "sdkwork-api-membership-assembly"
+      }
+    ],
     "runtimeEntrypoints": [
-      "src/main.rs",
-      "sdkwork_api_manager_assembly::assemble_api_router"
+      "src/main.rs#host_gateway",
+      "sdkwork_api_manager_assembly::assemble_api_runtime_from_env"
     ],
     "routeManifest": null,
     "sdkClients": [],
@@ -129,10 +167,12 @@
         "surface": "app-api",
         "apiPrefix": "/app/v3/api",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_iam_assembly",
+        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_owner_api_surfaces_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -142,10 +182,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/iam",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_iam_assembly",
+        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_owner_api_surfaces_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -155,10 +197,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/drive",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_drive_assembly",
+        "embeddedExecutableExport": "sdkwork_api_drive_assembly::assemble_api_router",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -168,10 +212,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/drive/storage",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_drive_assembly",
+        "embeddedExecutableExport": "sdkwork_api_drive_assembly::assemble_api_router",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -181,10 +227,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/orders",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_order_assembly",
+        "embeddedExecutableExport": "sdkwork_api_order_assembly::assemble_api_router_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -194,10 +242,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/promotions",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_promotion_assembly",
+        "embeddedExecutableExport": "sdkwork_api_promotion_assembly::assemble_api_router_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -207,10 +257,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/payments",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_payment_assembly",
+        "embeddedExecutableExport": "sdkwork_api_payment_assembly::assemble_api_router_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       },
       {
@@ -220,10 +272,12 @@
         "surface": "backend-api",
         "apiPrefix": "/backend/v3/api/memberships",
         "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_manager_assembly",
-        "embeddedExecutableExport": "sdkwork_api_manager_assembly::assemble_api_router",
+        "sameOriginAllowed": true,
+        "cargoDependency": "sdkwork_api_membership_assembly",
+        "embeddedExecutableExport": "sdkwork_api_membership_assembly::assemble_api_router_with_pool",
+        "profileCoverage": ["standalone"],
         "coverageEvidence": [
-          "../sdkwork-api-manager-assembly/src/bootstrap.rs#assemble_api_router"
+          "src/main.rs"
         ]
       }
     ],

@@ -23,5 +23,5 @@ pub fn gateway_route_manifest() -> HttpRouteManifest {
 }
 
 pub async fn gateway_mount(host: Arc<ManagerServiceHost>) -> Router {
-    build_manager_backend_router_with_framework(host).await
+    build_manager_backend_router(host)
 }

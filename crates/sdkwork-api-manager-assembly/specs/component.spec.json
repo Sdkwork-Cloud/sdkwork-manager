@@ -10,185 +10,68 @@
     "domain": "application",
     "capability": "api-assembly",
     "surface": "api-assembly",
-    "languages": [
-      "rust"
-    ],
+    "languages": ["rust"],
     "generated": false,
-    "manifests": [
-      "Cargo.toml",
-      "assembly-manifest.json"
-    ]
+    "manifests": ["Cargo.toml", "assembly-manifest.json"]
   },
   "canonicalSpecs": [
     {
       "file": "API_ASSEMBLY_SPEC.md",
       "path": "../../../sdkwork-specs/API_ASSEMBLY_SPEC.md",
-      "purpose": "Host-neutral API ownership, assembly naming, and verification rules."
+      "purpose": "Host-neutral owner contribution and building-block integration point."
     },
     {
       "file": "APPLICATION_GATEWAY_SPEC.md",
       "path": "../../../sdkwork-specs/APPLICATION_GATEWAY_SPEC.md",
-      "purpose": "Gateway assembly discovery, business-only mounting, and verification rules."
+      "purpose": "Standalone and cloud host boundaries."
     },
     {
       "file": "WEB_FRAMEWORK_SPEC.md",
       "path": "../../../sdkwork-specs/WEB_FRAMEWORK_SPEC.md",
-      "purpose": "Typed request context and HTTP framework composition rules."
+      "purpose": "Single process-level HTTP framework composition."
     },
     {
       "file": "DATABASE_FRAMEWORK_SPEC.md",
       "path": "../../../sdkwork-specs/DATABASE_FRAMEWORK_SPEC.md",
-      "purpose": "Database lifecycle bootstrap ownership for embedded assemblies."
+      "purpose": "Owner database lifecycle and process-shared pool contract."
     }
   ],
   "contracts": {
     "publicExports": [
-      "."
+      ".",
+      "sdkwork_api_manager_assembly::assemble_api_runtime_from_env"
     ],
+    "providedPorts": [
+      {
+        "name": "managerApiAssembly",
+        "export": "sdkwork_api_manager_assembly::assemble_api_runtime_from_env"
+      }
+    ],
+    "requiredPorts": [],
     "runtimeEntrypoints": [
-      "sdkwork_api_manager_assembly::assemble_api_router",
-      "sdkwork_api_manager_assembly::assemble_api_router_from_env",
-      "sdkwork_api_manager_assembly::assemble_business_routes",
-      "sdkwork_api_manager_assembly::assemble_business_routes_from_env"
+      "sdkwork_api_manager_assembly::assemble_api_runtime_from_env",
+      "sdkwork_api_manager_assembly::assemble_api_router_with_pool"
     ],
     "routeManifest": "assembly-manifest.json",
     "sdkClients": [],
-    "sdkDependencies": [
-      {
-        "workspace": "sdkwork-iam-app-sdk",
-        "surface": "app-api"
-      },
-      {
-        "workspace": "sdkwork-iam-backend-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-drive-backend-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-drive-admin-storage-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-order-backend-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-promotion-backend-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-payment-backend-sdk",
-        "surface": "backend-api"
-      },
-      {
-        "workspace": "sdkwork-membership-backend-sdk",
-        "surface": "backend-api"
-      }
-    ],
+    "sdkDependencies": [],
     "dependencyApiExports": [],
-    "dependencyApiSurfaces": [
-      {
-        "workspace": "sdkwork-iam",
-        "sdkFamily": "sdkwork-iam-app-sdk",
-        "apiAuthority": "sdkwork-iam-app-api",
-        "surface": "app-api",
-        "apiPrefix": "/app/v3/api",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_iam_assembly",
-        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_business_router"
-      },
-      {
-        "workspace": "sdkwork-iam",
-        "sdkFamily": "sdkwork-iam-backend-sdk",
-        "apiAuthority": "sdkwork-iam-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/iam",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_iam_assembly",
-        "embeddedExecutableExport": "sdkwork_api_iam_assembly::assemble_business_router"
-      },
-      {
-        "workspace": "sdkwork-drive",
-        "sdkFamily": "sdkwork-drive-backend-sdk",
-        "apiAuthority": "sdkwork-drive-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/drive",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_drive_assembly",
-        "embeddedExecutableExport": "sdkwork_api_drive_assembly::assemble_backend_business_router_from_env"
-      },
-      {
-        "workspace": "sdkwork-drive",
-        "sdkFamily": "sdkwork-drive-admin-storage-sdk",
-        "apiAuthority": "sdkwork-drive-admin-storage-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/drive/storage",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_drive_gateway_assembly",
-        "embeddedExecutableExport": "sdkwork_drive_gateway_assembly::assemble_backend_business_router_from_env"
-      },
-      {
-        "workspace": "sdkwork-order",
-        "sdkFamily": "sdkwork-order-backend-sdk",
-        "apiAuthority": "sdkwork-order-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/orders",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_order_assembly",
-        "embeddedExecutableExport": "sdkwork_api_order_assembly::assemble_backend_business_router_from_env"
-      },
-      {
-        "workspace": "sdkwork-promotion",
-        "sdkFamily": "sdkwork-promotion-backend-sdk",
-        "apiAuthority": "sdkwork-promotion-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/promotions",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_promotion_assembly",
-        "embeddedExecutableExport": "sdkwork_api_promotion_assembly::assemble_backend_business_router_from_env"
-      },
-      {
-        "workspace": "sdkwork-payment",
-        "sdkFamily": "sdkwork-payment-backend-sdk",
-        "apiAuthority": "sdkwork-payment-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/payments",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_payment_assembly",
-        "embeddedExecutableExport": "sdkwork_api_payment_assembly::assemble_backend_business_router_from_env"
-      },
-      {
-        "workspace": "sdkwork-membership",
-        "sdkFamily": "sdkwork-membership-backend-sdk",
-        "apiAuthority": "sdkwork-membership-backend-api",
-        "surface": "backend-api",
-        "apiPrefix": "/backend/v3/api/memberships",
-        "runtimeMode": "same-origin-mounted",
-        "cargoDependency": "sdkwork_api_membership_assembly",
-        "embeddedExecutableExport": "sdkwork_api_membership_assembly::assemble_backend_business_router_from_env"
-      }
-    ],
+    "dependencyApiSurfaces": [],
     "events": [],
     "configKeys": [
-      "SDKWORK_DATABASE_URL",
-      "SDKWORK_DATABASE_URL",
-      "SDKWORK_DATABASE_URL",
-      "SDKWORK_DATABASE_URL",
       "SDKWORK_DATABASE_URL",
       "SDKWORK_DATABASE_AUTO_MIGRATE",
       "SDKWORK_DATABASE_SEED_ON_BOOT",
       "SDKWORK_DATABASE_SEED_PROFILE",
-      "SDKWORK_DATABASE_SEED_LOCALE",
-      "SDKWORK_DATABASE_URL"
+      "SDKWORK_DATABASE_SEED_LOCALE"
     ],
     "layerRole": "runtime-composition"
   },
   "verification": {
     "commands": [
       "pnpm run api:assembly:validate",
-      "cargo check -p sdkwork-api-manager-assembly"
+      "cargo check -p sdkwork-api-manager-assembly",
+      "cargo test -p sdkwork-api-manager-assembly"
     ]
   }
 }

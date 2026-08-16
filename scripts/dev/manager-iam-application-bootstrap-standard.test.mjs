@@ -22,7 +22,7 @@ const managerIamMenuPermissions = [
   "iam.audit_events.read",
 ];
 
-test("Manager standalone startup provisions its manifest-backed IAM runtime before routes", () => {
+test("Manager standalone provisions IAM through its owner assembly before hosting routes", () => {
   const cargo = readFileSync(
     path.join(root, "crates/sdkwork-api-manager-standalone-gateway/Cargo.toml"),
     "utf8",
@@ -43,30 +43,22 @@ test("Manager standalone startup provisions its manifest-backed IAM runtime befo
     path.join(root, "scripts/dev/manager-start.mjs"),
     "utf8",
   );
-  const bootstrap = readFileSync(
-    path.join(
-      root,
-      "crates/sdkwork-api-manager-standalone-gateway/src/iam_application_bootstrap.rs",
-    ),
-    "utf8",
-  );
-
-  assert.match(cargo, /sdkwork_iam_embedded_application_bootstrap\.workspace = true/);
-  assert.match(cargo, /sdkwork_iam_database_host\.workspace = true/);
+  assert.match(cargo, /sdkwork_api_manager_assembly\.workspace = true/);
+  assert.match(cargo, /sdkwork_api_iam_assembly\.workspace = true/);
+  assert.doesNotMatch(cargo, /sdkwork_iam_database_host\.workspace = true/);
   const bootstrapCallIndex = main.indexOf(
-    "iam_application_bootstrap::ensure_manager_iam_application_bootstrap",
+    "sdkwork_api_iam_assembly::assemble_owner_api_surfaces_with_pool",
   );
-  const routeAssemblyIndex = main.indexOf("let assembly = assemble_api_router");
-  assert.ok(bootstrapCallIndex >= 0, "startup must invoke the Manager IAM bootstrap");
-  assert.ok(routeAssemblyIndex >= 0, "startup must assemble the Manager router");
+  const routeAssemblyIndex = main.indexOf("ComposedApiAssembly::try_compose");
+  assert.ok(bootstrapCallIndex >= 0, "startup must invoke the IAM owner assembly");
+  assert.ok(routeAssemblyIndex >= 0, "startup must compose complete owner contributions");
   assert.ok(
     bootstrapCallIndex < routeAssemblyIndex,
-    "IAM application provisioning must finish before Manager routes are assembled",
+    "IAM application provisioning must finish before routes are hosted",
   );
-  assert.match(bootstrap, /bootstrap_iam_database_from_env/);
-  assert.match(bootstrap, /ensure_tenant_application_from_app_root/);
-  assert.match(bootstrap, /SDKWORK_MANAGER_APP_ROOT/);
-  assert.doesNotMatch(bootstrap, /fetch\(|axios\.|INSERT\s+INTO/i);
+  assert.match(main, /assemble_api_runtime_from_env/);
+  assert.match(main, /\.into_hosted\(framework\)/);
+  assert.doesNotMatch(main, /fetch\(|axios\.|INSERT\s+INTO/i);
   assert.equal(appPackage.scripts.dev, "pnpm dev:standalone");
   assert.match(appPackage.scripts["dev:standalone"], /sdkwork-app dev/);
   assert.match(appPackage.scripts["install:bootstrap"], /manager-bootstrap\.mjs/);

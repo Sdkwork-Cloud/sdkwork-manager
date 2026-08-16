@@ -3223,14 +3223,7 @@ name = "sdkwork-api-manager-assembly"
 version = "0.1.0"
 dependencies = [
  "axum",
- "sdkwork-api-drive-assembly",
- "sdkwork-api-iam-assembly",
- "sdkwork-api-membership-assembly",
- "sdkwork-api-order-assembly",
- "sdkwork-api-payment-assembly",
- "sdkwork-api-promotion-assembly",
  "sdkwork-database-sqlx",
- "sdkwork-iam-web-adapter",
  "sdkwork-manager-service-host",
  "sdkwork-routes-manager-app-api",
  "sdkwork-routes-manager-backend-api",
@@ -3244,9 +3237,17 @@ name = "sdkwork-api-manager-standalone-gateway"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "sdkwork-api-drive-assembly",
+ "sdkwork-api-iam-assembly",
  "sdkwork-api-manager-assembly",
+ "sdkwork-api-membership-assembly",
+ "sdkwork-api-order-assembly",
+ "sdkwork-api-payment-assembly",
+ "sdkwork-api-promotion-assembly",
  "sdkwork-database-sqlx",
+ "sdkwork-iam-web-adapter",
  "sdkwork-web-bootstrap",
+ "sdkwork-web-core",
  "serde_json",
  "tokio",
  "tracing",
