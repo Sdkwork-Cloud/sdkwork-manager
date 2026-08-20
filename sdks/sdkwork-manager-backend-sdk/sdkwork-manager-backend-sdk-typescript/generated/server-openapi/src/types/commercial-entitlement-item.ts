@@ -6,7 +6,7 @@ export interface CommercialEntitlementItem {
   entitlementKeys: string[];
   tier: CommercialEntitlementTier;
   status: CommercialEntitlementStatus;
-  validUntil?: string;
+  validUntil?: string | null;
   version: string;
   updatedAt: string;
 }

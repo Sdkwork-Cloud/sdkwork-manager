@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { CommercialEntitlementDecisionItem, CommercialEntitlementDecisionRequest, CommercialEntitlementItem, PageInfo, UpdateCommercialEntitlementRequest } from '../types';
 
@@ -13,13 +13,13 @@ export class ManagerCommercialEntitlementsCurrentApi {
 
 
 /** Retrieve the current tenant application commercial entitlement snapshot */
-  async retrieve(): Promise<CommercialEntitlementItem> {
-    return this.client.get<CommercialEntitlementItem>(backendApiPath(`/manager/commercial_entitlements/current`));
+  async retrieve(requestOptions?: ApiRequestOptions): Promise<CommercialEntitlementItem> {
+    return this.client.request<CommercialEntitlementItem>(backendApiPath(`/manager/commercial_entitlements/current`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'item' });
   }
 
 /** Replace the current tenant application commercial entitlement snapshot */
-  async update(body: UpdateCommercialEntitlementRequest): Promise<CommercialEntitlementItem> {
-    return this.client.put<CommercialEntitlementItem>(backendApiPath(`/manager/commercial_entitlements/current`), body, undefined, undefined, 'application/json');
+  async update(body: UpdateCommercialEntitlementRequest, requestOptions?: ApiRequestOptions): Promise<CommercialEntitlementItem> {
+    return this.client.request<CommercialEntitlementItem>(backendApiPath(`/manager/commercial_entitlements/current`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'PUT' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 }
 
@@ -34,8 +34,8 @@ export class ManagerCommercialEntitlementsApi {
 
 
 /** Evaluate one tenant application commercial entitlement */
-  async verify(body: CommercialEntitlementDecisionRequest): Promise<CommercialEntitlementDecisionItem> {
-    return this.client.post<CommercialEntitlementDecisionItem>(backendApiPath(`/manager/commercial_entitlements/verify`), body, undefined, undefined, 'application/json');
+  async verify(body: CommercialEntitlementDecisionRequest, requestOptions?: ApiRequestOptions): Promise<CommercialEntitlementDecisionItem> {
+    return this.client.request<CommercialEntitlementDecisionItem>(backendApiPath(`/manager/commercial_entitlements/verify`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'command' });
   }
 }
 
@@ -48,29 +48,25 @@ export class ManagerPreferencesAdminApi {
 
 
 /** List manager preferences for tenant administration */
-  async list(): Promise<Record<string, unknown>> {
-    return this.client.get<Record<string, unknown>>(backendApiPath(`/manager/preferences`));
+  async list(requestOptions?: ApiRequestOptions): Promise<{ items: { userId: string; theme: string; pinnedCount: number; }[]; pageInfo: PageInfo; }> {
+    return this.client.request<{ items: { userId: string; theme: string; pinnedCount: number; }[]; pageInfo: PageInfo; }>(backendApiPath(`/manager/preferences`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class ManagerPreferencesApi {
-  private client: HttpClient;
   public readonly admin: ManagerPreferencesAdminApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.admin = new ManagerPreferencesAdminApi(client);
   }
 
 }
 
 export class ManagerApi {
-  private client: HttpClient;
   public readonly preferences: ManagerPreferencesApi;
   public readonly commercialEntitlements: ManagerCommercialEntitlementsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.preferences = new ManagerPreferencesApi(client);
     this.commercialEntitlements = new ManagerCommercialEntitlementsApi(client);
   }
@@ -79,12 +75,4 @@ export class ManagerApi {
 
 export function createManagerApi(client: HttpClient): ManagerApi {
   return new ManagerApi(client);
-}
-
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
 }

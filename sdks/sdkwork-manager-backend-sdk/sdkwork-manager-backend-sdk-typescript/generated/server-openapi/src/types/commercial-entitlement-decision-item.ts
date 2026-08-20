@@ -9,5 +9,5 @@ export interface CommercialEntitlementDecisionItem {
   tier: CommercialEntitlementTier;
   snapshotVersion: string;
   status: 'allowed' | 'denied';
-  validUntil?: string;
+  validUntil?: string | null;
 }

@@ -6,6 +6,6 @@ export interface UpdateCommercialEntitlementRequest {
   entitlementKeys: string[];
   tier: CommercialEntitlementTier;
   status: CommercialEntitlementStatus;
-  validUntil?: string;
+  validUntil?: string | null;
   expectedVersion: string;
 }

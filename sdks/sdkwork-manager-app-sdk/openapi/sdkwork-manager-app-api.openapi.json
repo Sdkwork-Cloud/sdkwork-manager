@@ -127,6 +127,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                   "pinnedAppKeys": {
                     "type": "array",
